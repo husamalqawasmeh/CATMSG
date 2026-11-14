@@ -1,10 +1,11 @@
 /**
  * Cloudflare Worker for CatMsg (cats.can-du-ai.com)
  * Serves the web app assets and provides a live shared edge API for
- * messages, reactions, and server sync alongside Firebase Auth & Firestore.
+ * messages, reactions, server sync, and cloud user data saving/restoring.
  */
 
 const sharedMessagesByChannel = {};
+const savedUserDataByKey = {};
 
 const jsonResponse = (data, status = 200) =>
   new Response(JSON.stringify(data), {
@@ -32,6 +33,35 @@ export default {
         domain: "cats.can-du-ai.com",
         stack: "Flutter + Firebase + Cloudflare Edge"
       });
+    }
+
+    if (url.pathname === "/api/userdata") {
+      const saveKey = (url.searchParams.get("key") || "captain_purr").toLowerCase().trim();
+      if (request.method === "GET") {
+        const snapshot = savedUserDataByKey[saveKey] || null;
+        return jsonResponse({
+          ok: true,
+          key: saveKey,
+          found: !!snapshot,
+          snapshot
+        });
+      }
+      if (request.method === "POST") {
+        try {
+          const body = await request.json();
+          savedUserDataByKey[saveKey] = {
+            ...body,
+            savedAtServer: new Date().toISOString()
+          };
+          return jsonResponse({
+            ok: true,
+            key: saveKey,
+            savedAt: savedUserDataByKey[saveKey].savedAtServer
+          });
+        } catch (err) {
+          return jsonResponse({ ok: false, error: String(err) }, 400);
+        }
+      }
     }
 
     if (url.pathname === "/api/messages") {

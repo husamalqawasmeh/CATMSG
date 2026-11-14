@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -53,6 +54,82 @@ class CatBackendService extends ChangeNotifier {
   String _localeCode = 'en';
   String get localeCode => _localeCode;
   bool get isArabic => _localeCode == 'ar';
+
+  // User Data Saving state
+  bool _autoSaveEnabled = true;
+  bool get autoSaveEnabled => _autoSaveEnabled;
+  String _lastSavedTime = 'Just now';
+  String get lastSavedTime => _lastSavedTime;
+
+  void toggleAutoSave(bool value) {
+    _autoSaveEnabled = value;
+    _showToast(
+      isArabic
+          ? (_autoSaveEnabled
+              ? '💾 تم تفعيل الحفظ التلقائي للبيانات!'
+              : '⏸️ تم إيقاف الحفظ التلقائي.')
+          : (_autoSaveEnabled ? '💾 Auto-Save enabled!' : '⏸️ Auto-Save paused.'),
+    );
+    notifyListeners();
+  }
+
+  Future<void> saveUserDataNow() async {
+    final now = DateTime.now();
+    _lastSavedTime =
+        '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
+    await _syncCurrentUserToFirestore();
+    _showToast(
+      isArabic
+          ? '💾 تم حفظ بيانات المستخدم بنجاح ($_lastSavedTime)!'
+          : '💾 User Data Saved ($_lastSavedTime)!',
+    );
+    notifyListeners();
+  }
+
+  String exportUserDataJson() {
+    final payload = {
+      'version': 1,
+      'savedAt': DateTime.now().toIso8601String(),
+      'localeCode': _localeCode,
+      'autoSaveEnabled': _autoSaveEnabled,
+      'currentUser': _currentUser.toMap(),
+      'quests': _quests.map((q) => q.toMap()).toList(),
+    };
+    return const JsonEncoder.withIndent('  ').convert(payload);
+  }
+
+  bool importUserDataJson(String rawJson) {
+    try {
+      final decoded = jsonDecode(rawJson) as Map<String, dynamic>;
+      if (decoded['localeCode'] is String) {
+        _localeCode = decoded['localeCode'];
+      }
+      if (decoded['autoSaveEnabled'] is bool) {
+        _autoSaveEnabled = decoded['autoSaveEnabled'];
+      }
+      if (decoded['currentUser'] is Map) {
+        _currentUser = CatUser.fromMap(
+          Map<String, dynamic>.from(decoded['currentUser']),
+        ).copyWith(role: CatRole.owner);
+        _users[_currentUser.id] = _currentUser;
+      }
+      if (decoded['quests'] is List) {
+        _quests = (decoded['quests'] as List)
+            .map((q) => CatQuest.fromMap(Map<String, dynamic>.from(q)))
+            .toList();
+      }
+      _showToast(
+        isArabic
+            ? '📤 تمت استعادة بيانات المستخدم بنجاح!'
+            : '📤 Restored User Data from Backup!',
+      );
+      notifyListeners();
+      return true;
+    } catch (_) {
+      _showToast('😾 Invalid JSON backup format.');
+      return false;
+    }
+  }
 
   void setLocaleCode(String code) {
     _localeCode = code == 'ar' ? 'ar' : 'en';

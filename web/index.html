@@ -304,6 +304,24 @@
       cursor: pointer;
     }
 
+    .save-pill {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(67, 217, 173, 0.15);
+      border: 1px solid rgba(67, 217, 173, 0.45);
+      color: var(--mint);
+      padding: 5px 10px;
+      border-radius: 14px;
+      font-weight: 800;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .save-pill:hover {
+      background: rgba(67, 217, 173, 0.26);
+    }
+
     .lang-pill {
       display: flex;
       align-items: center;
@@ -533,6 +551,26 @@
       cursor: pointer;
     }
 
+    .btn-outline {
+      background: var(--card-bg);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 9px 12px;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--paw-pink);
+      background: var(--card-hover);
+    }
+
     .btn-square {
       background: var(--input-bg);
       border: none;
@@ -647,8 +685,10 @@
       background: var(--sidebar-bg);
       border: 1px solid var(--border);
       border-radius: 18px;
-      width: 92%;
-      max-width: 460px;
+      width: 94%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
       padding: 22px;
     }
 
@@ -677,6 +717,21 @@
       color: var(--text-primary);
     }
 
+    .data-save-panel {
+      background: rgba(67, 217, 173, 0.08);
+      border: 1px solid rgba(67, 217, 173, 0.35);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+
+    .data-btn-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
     @media (max-width: 940px) {
       .member-sidebar {
         display: none;
@@ -703,7 +758,10 @@
 </head>
 <body>
   <div id="app"></div>
+  <input type="file" id="json-restore-input" accept=".json,application/json" style="display:none" onchange="handleImportJsonFile(event)" />
   <script>
+    const STORAGE_KEY = 'catmsg_saved_state_v1';
+
     // --- LOCALIZATION DICTIONARY (EN / AR) ---
     const I18N = {
       en: {
@@ -756,14 +814,14 @@
         castleCatsSection: (n) => `🐾 CASTLE CATS — ${n}`,
         statusHeader: 'STATUS',
         aboutCatHeader: 'ABOUT THIS CAT',
-        settingsTitle: '😼 Cat Profile & UI Settings',
+        settingsTitle: '😼 Cat Profile, Language & Data Saving',
         languageLabel: '🌐 UI Language / لغة الواجهة',
         displayNameLabel: 'Cat Display Name',
         avatarEmojiLabel: 'Avatar Emoji',
         customStatusLabel: 'Custom Status',
         ownerBadgeNotice: '👑 OWNER tag is permanently active on your account.',
         cancelBtn: 'Cancel',
-        saveBtn: 'Save Settings',
+        saveBtn: 'Save Profile & Settings',
         createServerTitle: '🏰 Create a New Cat House',
         createServerBtn: 'Create Cat House',
         createChannelTitle: '🐾 Create Channel',
@@ -771,6 +829,15 @@
         pinnedModalTitle: '📌 Pinned Scratching Post Messages',
         noPinnedMessages: 'No pinned messages in this channel yet!',
         closeBtn: 'Close',
+        savePillText: '💾 Saved',
+        dataSavingSectionTitle: '💾 USER DATA SAVING & CLOUD BACKUP',
+        autoSaveLabel: 'Auto-Save User Data (Browser + Cloud)',
+        lastSavedText: (t) => `✓ Last saved: ${t}`,
+        saveNowBtn: '💾 Save Data Now',
+        cloudRestoreBtn: '☁️ Load Cloud Save',
+        exportJsonBtn: '📥 Export Backup (.json)',
+        importJsonBtn: '📤 Restore Backup (.json)',
+        resetDataBtn: '🔄 Reset to Defaults',
         presenceLabels: {
           Purring: 'Purring (Online)',
           Catnapping: 'Catnapping (Idle)',
@@ -828,14 +895,14 @@
         castleCatsSection: (n) => `🐾 قطط القلعة — ${n}`,
         statusHeader: 'الحالة الحالية',
         aboutCatHeader: 'نبذة عن القطة',
-        settingsTitle: '😼 إعدادات حساب القطة واللغة',
+        settingsTitle: '😼 إعدادات الحساب واللغة وحفظ البيانات',
         languageLabel: '🌐 لغة الواجهة / UI Language',
         displayNameLabel: 'الاسم المعروض',
         avatarEmojiLabel: 'إيموجي القطة',
         customStatusLabel: 'الحالة المخصصة',
         ownerBadgeNotice: '👑 شارة المالك (OWNER) مفعّلة دائماً على حسابك.',
         cancelBtn: 'إلغاء',
-        saveBtn: 'حفظ الإعدادات',
+        saveBtn: 'حفظ الملف والإعدادات',
         createServerTitle: '🏰 إنشاء بيت قطط جديد',
         createServerBtn: 'إنشاء بيت القطط',
         createChannelTitle: '🐾 إنشاء قناة جديدة',
@@ -843,6 +910,15 @@
         pinnedModalTitle: '📌 الرسائل المثبتة في القناة',
         noPinnedMessages: 'لا توجد رسائل مثبتة في هذه القناة بعد!',
         closeBtn: 'إغلاق',
+        savePillText: '💾 محفوظ',
+        dataSavingSectionTitle: '💾 حفظ بيانات المستخدم والنسخ الاحتياطي',
+        autoSaveLabel: 'الحفظ التلقائي للبيانات (في المتصفح والسحابة)',
+        lastSavedText: (t) => `✓ آخر حفظ: ${t}`,
+        saveNowBtn: '💾 حفظ البيانات الآن',
+        cloudRestoreBtn: '☁️ استعادة من السحابة',
+        exportJsonBtn: '📥 تصدير نسخة (.json)',
+        importJsonBtn: '📤 استيراد نسخة (.json)',
+        resetDataBtn: '🔄 إعادة ضبط المصنع',
         presenceLabels: {
           Purring: 'يموء (متصل)',
           Catnapping: 'قيلولة (خامل)',
@@ -873,7 +949,9 @@
     const REACTION_PALETTE = ['🐾', '😻', '🐟', '🧶', '🥛', '😾', '⚡', '👑'];
 
     const state = {
-      lang: localStorage.getItem('catmsg_lang') || 'en', // 'en' | 'ar'
+      lang: localStorage.getItem('catmsg_lang') || 'en',
+      autoSaveEnabled: true,
+      lastSavedAt: 'Just now',
       navMode: 'server',
       dmSubView: 'friends',
       selectedServerId: 'server_castle',
@@ -1055,7 +1133,7 @@
             senderRoleColor: '#FFD166',
             senderIsOwner: true,
             senderBadge: '👑 Supreme Loaf',
-            content: 'Welcome to The Grand Cat Castle! 🏰🐾 As Server Owner, I have enabled Daily MeowCoin Quests and Arabic UI support (العربية) in Settings ⚙️!',
+            content: 'Welcome to The Grand Cat Castle! 🏰🐾 As Server Owner, I have enabled Daily MeowCoin Quests, Arabic UI support (العربية), and User Data Saving (💾) in Settings ⚙️!',
             reactions: { '👑': ['user_mochi', 'user_pounce', 'user_duchess', 'user_mittens'], '🐾': ['user_shadow'] },
             time: '6:35 PM',
             isPinned: true
@@ -1127,6 +1205,176 @@
       ]
     };
 
+    // --- USER DATA SAVING & RESTORING ENGINE ---
+    function buildSerializableSnapshot() {
+      return {
+        version: 1,
+        savedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        lang: state.lang,
+        autoSaveEnabled: state.autoSaveEnabled,
+        currentUser: state.currentUser,
+        users: state.users,
+        servers: state.servers,
+        messagesByChannel: state.messagesByChannel,
+        quests: state.quests,
+        visitedChannels: Array.from(state.visitedChannels)
+      };
+    }
+
+    function applySnapshot(snap) {
+      if (!snap || typeof snap !== 'object') return false;
+      if (snap.lang) state.lang = snap.lang;
+      if (typeof snap.autoSaveEnabled === 'boolean') state.autoSaveEnabled = snap.autoSaveEnabled;
+      if (snap.currentUser) state.currentUser = { ...state.currentUser, ...snap.currentUser, isOwner: true };
+      if (snap.users) state.users = snap.users;
+      if (Array.isArray(snap.servers) && snap.servers.length > 0) state.servers = snap.servers;
+      if (snap.messagesByChannel) state.messagesByChannel = snap.messagesByChannel;
+      if (Array.isArray(snap.quests) && snap.quests.length > 0) state.quests = snap.quests;
+      if (Array.isArray(snap.visitedChannels)) state.visitedChannels = new Set(snap.visitedChannels);
+      if (snap.savedAt) state.lastSavedAt = snap.savedAt;
+      document.documentElement.lang = state.lang;
+      document.documentElement.dir = state.lang === 'ar' ? 'rtl' : 'ltr';
+      return true;
+    }
+
+    function loadSavedUserData() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        applySnapshot(parsed);
+      } catch (e) {
+        console.warn('Could not load saved user data:', e);
+      }
+    }
+
+    function saveUserDataNow(showNotification = false) {
+      try {
+        const snap = buildSerializableSnapshot();
+        state.lastSavedAt = snap.savedAt;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(snap));
+        localStorage.setItem('catmsg_lang', state.lang);
+
+        // Also sync to Cloudflare Edge API
+        const key = (state.currentUser.username || 'captain_purr').toLowerCase();
+        fetch(`/api/userdata?key=${encodeURIComponent(key)}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(snap)
+        }).catch(() => {});
+
+        if (showNotification) {
+          showToast(
+            state.lang === 'ar'
+              ? `💾 تم حفظ جميع بياناتك محلياً وفي السحابة (${state.lastSavedAt})!`
+              : `💾 User data saved to Browser & Cloud (${state.lastSavedAt})!`
+          );
+        }
+        render();
+      } catch (e) {
+        console.warn('Save failed:', e);
+      }
+    }
+
+    function autoPersistIfEnabled() {
+      if (state.autoSaveEnabled) {
+        saveUserDataNow(false);
+      }
+    }
+
+    function toggleAutoSave() {
+      state.autoSaveEnabled = !state.autoSaveEnabled;
+      saveUserDataNow(false);
+      showToast(
+        state.lang === 'ar'
+          ? (state.autoSaveEnabled ? '💾 تم تفعيل الحفظ التلقائي للبيانات!' : '⏸️ تم إيقاف الحفظ التلقائي.')
+          : (state.autoSaveEnabled ? '💾 Auto-Save enabled!' : '⏸️ Auto-Save paused.')
+      );
+    }
+
+    async function restoreFromCloudSave() {
+      const key = (state.currentUser.username || 'captain_purr').toLowerCase();
+      try {
+        const res = await fetch(`/api/userdata?key=${encodeURIComponent(key)}`);
+        const data = await res.json();
+        if (data && data.found && data.snapshot) {
+          applySnapshot(data.snapshot);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(data.snapshot));
+          showToast(
+            state.lang === 'ar'
+              ? '☁️ تمت استعادة بياناتك من السحابة بنجاح!'
+              : '☁️ Restored user data from Cloud Save!'
+          );
+          render();
+        } else {
+          showToast(
+            state.lang === 'ar'
+              ? 'ℹ️ لا توجد نسخة سحابية محفوظة بعد — اضغط "حفظ البيانات الآن" أولاً!'
+              : 'ℹ️ No cloud snapshot found yet — click "Save Data Now" first!'
+          );
+        }
+      } catch (_) {
+        showToast('⚠️ Cloud restore unavailable offline.');
+      }
+    }
+
+    function exportUserDataJson() {
+      const snap = buildSerializableSnapshot();
+      const blob = new Blob([JSON.stringify(snap, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `catmsg-backup-${state.currentUser.username || 'owner'}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast(
+        state.lang === 'ar'
+          ? '📥 تم تنزيل ملف النسخة الاحتياطية (.json) بنجاح!'
+          : '📥 Exported User Data Backup (.json)!'
+      );
+    }
+
+    function triggerImportJsonFile() {
+      const input = document.getElementById('json-restore-input');
+      if (input) {
+        input.value = '';
+        input.click();
+      }
+    }
+
+    function handleImportJsonFile(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (applySnapshot(parsed)) {
+            saveUserDataNow(false);
+            showToast(
+              state.lang === 'ar'
+                ? '📤 تمت استعادة جميع بياناتك من ملف النسخة الاحتياطية!'
+                : '📤 User data restored from JSON backup file!'
+            );
+            render();
+          }
+        } catch (_) {
+          showToast('😾 Invalid JSON backup file.');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function resetUserDataToDefault() {
+      localStorage.removeItem(STORAGE_KEY);
+      location.reload();
+    }
+
+    // Hydrate saved user data on startup
+    loadSavedUserData();
+
     function t() {
       return I18N[state.lang] || I18N.en;
     }
@@ -1136,6 +1384,7 @@
       localStorage.setItem('catmsg_lang', state.lang);
       document.documentElement.lang = state.lang;
       document.documentElement.dir = state.lang === 'ar' ? 'rtl' : 'ltr';
+      autoPersistIfEnabled();
       showToast(state.lang === 'ar' ? '🇸🇦 تم تفعيل الواجهة العربية بنجاح!' : '🇬🇧 Switched UI language to English!');
       render();
     }
@@ -1143,10 +1392,6 @@
     function toggleLanguageQuick() {
       setLanguage(state.lang === 'ar' ? 'en' : 'ar');
     }
-
-    // Apply initial dir
-    document.documentElement.lang = state.lang;
-    document.documentElement.dir = state.lang === 'ar' ? 'rtl' : 'ltr';
 
     function showToast(text) {
       state.toast = text;
@@ -1190,6 +1435,7 @@
           }
         }
       }
+      autoPersistIfEnabled();
       if (newlyDone) {
         showToast(
           state.lang === 'ar'
@@ -1274,6 +1520,8 @@
       if (wasReply) incrementQuest('replyMessage', 1);
       if (isDm) incrementQuest('sendDm', 1);
 
+      autoPersistIfEnabled();
+
       fetch(`/api/messages?channelId=${encodeURIComponent(key)}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1320,6 +1568,7 @@
           isPinned: false
         };
         state.messagesByChannel[key].push(botMsg);
+        autoPersistIfEnabled();
         render();
         scrollToBottom();
       }, 1100);
@@ -1340,6 +1589,7 @@
         msg.reactions[emoji].push(state.currentUser.id);
         incrementQuest('addReactions', 1);
       }
+      autoPersistIfEnabled();
       render();
     }
 
@@ -1349,6 +1599,7 @@
       const msg = list.find(m => m.id === msgId);
       if (!msg) return;
       msg.isPinned = !msg.isPinned;
+      autoPersistIfEnabled();
       showToast(msg.isPinned ? '📌 Pinned!' : '📌 Unpinned.');
     }
 
@@ -1357,6 +1608,7 @@
       if (!q || q.currentProgress < q.targetCount || q.isClaimed) return;
       q.isClaimed = true;
       state.currentUser.meowCoins += q.rewardCoins;
+      autoPersistIfEnabled();
       const title = state.lang === 'ar' ? q.titleAr : q.title;
       showToast(`🪙 +${q.rewardCoins} ${t().meowCoins} (${title})!`);
     }
@@ -1375,6 +1627,7 @@
       }
       state.currentUser.meowCoins -= sticker.priceCoins;
       state.currentUser.unlockedStickerIds.push(sticker.id);
+      autoPersistIfEnabled();
       showToast(`🎉 Unlocked "${state.lang === 'ar' ? sticker.nameAr : sticker.name}"!`);
     }
 
@@ -1382,6 +1635,7 @@
       const owned = state.currentUser.unlockedBadges.includes(badgeTitle);
       if (owned) {
         state.currentUser.equippedBadge = badgeTitle;
+        autoPersistIfEnabled();
         showToast(`✨ ${badgeTitle}`);
         return;
       }
@@ -1392,6 +1646,7 @@
       state.currentUser.meowCoins -= priceCoins;
       state.currentUser.unlockedBadges.push(badgeTitle);
       state.currentUser.equippedBadge = badgeTitle;
+      autoPersistIfEnabled();
       showToast(`👑 ${badgeTitle}!`);
     }
 
@@ -1406,6 +1661,7 @@
       const next = order[(curIdx + 1) % order.length];
       state.currentUser.presence = next.label;
       state.currentUser.presenceColor = next.color;
+      autoPersistIfEnabled();
       showToast(`🐾 ${t().presenceLabels[next.label] || next.label}`);
     }
 
@@ -1461,6 +1717,10 @@
 
             <div class="rail-btn-wrap" onclick="state.modal='createServer';render()" title="${L.createServerTitle}">
               <div class="rail-btn" style="color: var(--mint); font-weight:900">+</div>
+            </div>
+
+            <div class="rail-btn-wrap" onclick="saveUserDataNow(true)" title="${L.saveNowBtn} (${state.lastSavedAt})">
+              <div class="rail-btn" style="font-size:19px">💾</div>
             </div>
 
             <div class="rail-btn-wrap" onclick="state.modal='editProfile';render()" title="${L.settingsTitle}">
@@ -1594,6 +1854,9 @@
                <span style="font-weight:800;font-size:15.5px">${escapeHtml(ch.name)}</span>
                <div class="topic-text">${escapeHtml(ch.topic)}</div>`}
 
+          <div class="save-pill" onclick="saveUserDataNow(true)" title="${L.lastSavedText(state.lastSavedAt)}">
+            ${L.savePillText}
+          </div>
           <div class="lang-pill" onclick="toggleLanguageQuick()" title="Switch Language / تغيير اللغة">
             🌐 ${state.lang === 'ar' ? 'English' : 'العربية'}
           </div>
@@ -1737,6 +2000,7 @@
           <span style="font-size:20px">🐾</span>
           <span style="font-weight:800;font-size:16px">${L.catFriends} (${friends.length})</span>
           <div style="flex:1"></div>
+          <div class="save-pill" onclick="saveUserDataNow(true)">${L.savePillText}</div>
           <div class="lang-pill" onclick="toggleLanguageQuick()">🌐 ${state.lang === 'ar' ? 'English' : 'العربية'}</div>
           <div class="coin-pill" onclick="openQuests()">🪙 ${state.currentUser.meowCoins}</div>
         </div>
@@ -1794,6 +2058,7 @@
         equippedBadge: '🐾 New Kitty',
         bio: 'Freshly arrived cat looking for cozy boxes and MeowCoins.'
       };
+      autoPersistIfEnabled();
       showToast(`🎉 + ${name}!`);
     }
 
@@ -1808,6 +2073,7 @@
           <span style="font-size:20px">🪙</span>
           <span style="font-weight:800;font-size:16px">${L.questsHeaderTitle}</span>
           <div style="flex:1"></div>
+          <div class="save-pill" onclick="saveUserDataNow(true)">${L.savePillText}</div>
           <div class="lang-pill" onclick="toggleLanguageQuick()">🌐 ${state.lang === 'ar' ? 'English' : 'العربية'}</div>
           <div class="coin-pill">🪙 ${state.currentUser.meowCoins} ${L.meowCoins}</div>
         </div>
@@ -2033,6 +2299,27 @@
                 <span class="owner-tag">${L.ownerTag}</span>
               </div>
 
+              <!-- USER DATA SAVING & CLOUD BACKUP PANEL -->
+              <div class="data-save-panel">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+                  <span style="font-size:12px;font-weight:900;color:var(--mint)">${L.dataSavingSectionTitle}</span>
+                  <span style="font-size:11px;color:var(--text-secondary)">${L.lastSavedText(state.lastSavedAt)}</span>
+                </div>
+                <label style="display:flex;align-items:center;gap:8px;font-size:12.5px;cursor:pointer;margin-top:6px">
+                  <input type="checkbox" ${state.autoSaveEnabled ? 'checked' : ''} onchange="toggleAutoSave()" />
+                  <span>${L.autoSaveLabel}</span>
+                </label>
+                <div class="data-btn-grid">
+                  <button class="btn-outline" onclick="saveUserDataNow(true)">${L.saveNowBtn}</button>
+                  <button class="btn-outline" onclick="restoreFromCloudSave()">${L.cloudRestoreBtn}</button>
+                  <button class="btn-outline" onclick="exportUserDataJson()">${L.exportJsonBtn}</button>
+                  <button class="btn-outline" onclick="triggerImportJsonFile()">${L.importJsonBtn}</button>
+                </div>
+                <div style="margin-top:8px;text-align:end">
+                  <span style="font-size:11px;color:var(--coral);cursor:pointer" onclick="resetUserDataToDefault()">${L.resetDataBtn}</span>
+                </div>
+              </div>
+
               <div style="font-size:12px;font-weight:800;color:var(--text-secondary);margin-bottom:8px">${L.languageLabel}</div>
               <div class="lang-selector-row">
                 <button class="lang-option-btn ${state.lang === 'en' ? 'selected' : ''}" onclick="setLanguage('en')">
@@ -2125,6 +2412,7 @@
         }
       ];
       state.modal = null;
+      autoPersistIfEnabled();
       selectServer(id);
       showToast(`🏰 "${name}"!`);
     }
@@ -2142,6 +2430,7 @@
         topic
       });
       state.modal = null;
+      autoPersistIfEnabled();
       selectChannel(chanId);
       showToast(`🐾 #${name}!`);
     }
@@ -2154,7 +2443,8 @@
       if (emoji) state.currentUser.avatarEmoji = emoji;
       if (status) state.currentUser.customStatus = status;
       state.modal = null;
-      showToast(state.lang === 'ar' ? '🐾 تم تحديث إعدادات حساب القطة!' : '🐾 Cat Profile & Settings updated!');
+      saveUserDataNow(false);
+      showToast(state.lang === 'ar' ? '💾 تم حفظ الملف الشخصي والبيانات!' : '💾 Cat Profile & User Data saved!');
     }
 
     render();
