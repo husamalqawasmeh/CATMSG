@@ -75,7 +75,7 @@ class CatSticker {
     CatSticker(
       id: 'sticker_royal',
       name: 'Emperor Meow',
-      artEmoji: '👑🦁🍷',
+      artEmoji: '👑🦁',
       caption: 'BOW BEFORE THE WHISKERS',
       bgHex: '#C77DFF',
       priceCoins: 150,

@@ -936,7 +936,7 @@
       { id: 'sticker_bongo', name: 'Bongo Paws', nameAr: 'طبول المخالب', artEmoji: '🐾🥁😺', caption: 'BONGO BONGO MEOW', bgHex: '#FFD166', priceCoins: 50 },
       { id: 'sticker_laser', name: 'Red Dot Target', nameAr: 'هدف النقطة الحمراء', artEmoji: '🔴👀😼', caption: 'TARGET ACQUIRED', bgHex: '#FF6B6B', priceCoins: 75 },
       { id: 'sticker_box', name: 'If I Fits I Sits', nameAr: 'عشاق الصناديق', artEmoji: '📦😺✨', caption: 'IF I FITS, I SITS', bgHex: '#43D9AD', priceCoins: 90 },
-      { id: 'sticker_royal', name: 'Emperor Meow', nameAr: 'الإمبراطور مياو', artEmoji: '👑🦁🍷', caption: 'BOW BEFORE THE WHISKERS', bgHex: '#C77DFF', priceCoins: 150 }
+      { id: 'sticker_royal', name: 'Emperor Meow', nameAr: 'الإمبراطور مياو', artEmoji: '👑🦁', caption: 'BOW BEFORE THE WHISKERS', bgHex: '#C77DFF', priceCoins: 150 }
     ];
 
     const BADGES = [
@@ -1205,13 +1205,12 @@
       ]
     };
 
-    // --- USER DATA SAVING & RESTORING ENGINE ---
+    // --- AUTOMATIC USER DATA PERSISTENCE ENGINE ---
     function buildSerializableSnapshot() {
       return {
         version: 1,
-        savedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        savedAt: new Date().toISOString(),
         lang: state.lang,
-        autoSaveEnabled: state.autoSaveEnabled,
         currentUser: state.currentUser,
         users: state.users,
         servers: state.servers,
@@ -1224,14 +1223,12 @@
     function applySnapshot(snap) {
       if (!snap || typeof snap !== 'object') return false;
       if (snap.lang) state.lang = snap.lang;
-      if (typeof snap.autoSaveEnabled === 'boolean') state.autoSaveEnabled = snap.autoSaveEnabled;
       if (snap.currentUser) state.currentUser = { ...state.currentUser, ...snap.currentUser, isOwner: true };
       if (snap.users) state.users = snap.users;
       if (Array.isArray(snap.servers) && snap.servers.length > 0) state.servers = snap.servers;
       if (snap.messagesByChannel) state.messagesByChannel = snap.messagesByChannel;
       if (Array.isArray(snap.quests) && snap.quests.length > 0) state.quests = snap.quests;
       if (Array.isArray(snap.visitedChannels)) state.visitedChannels = new Set(snap.visitedChannels);
-      if (snap.savedAt) state.lastSavedAt = snap.savedAt;
       document.documentElement.lang = state.lang;
       document.documentElement.dir = state.lang === 'ar' ? 'rtl' : 'ltr';
       return true;
@@ -1240,136 +1237,42 @@
     function loadSavedUserData() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return;
-        const parsed = JSON.parse(raw);
-        applySnapshot(parsed);
+        if (raw) {
+          applySnapshot(JSON.parse(raw));
+        }
       } catch (e) {
         console.warn('Could not load saved user data:', e);
       }
+
+      // Also check cloud edge storage silently in the background
+      const key = (state.currentUser.username || 'captain_purr').toLowerCase();
+      fetch(`/api/userdata?key=${encodeURIComponent(key)}`)
+        .then(r => r.json())
+        .then(data => {
+          if (!localStorage.getItem(STORAGE_KEY) && data && data.found && data.snapshot) {
+            applySnapshot(data.snapshot);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data.snapshot));
+            render();
+          }
+        })
+        .catch(() => {});
     }
 
-    function saveUserDataNow(showNotification = false) {
+    function autoPersistIfEnabled() {
       try {
         const snap = buildSerializableSnapshot();
-        state.lastSavedAt = snap.savedAt;
         localStorage.setItem(STORAGE_KEY, JSON.stringify(snap));
         localStorage.setItem('catmsg_lang', state.lang);
 
-        // Also sync to Cloudflare Edge API
         const key = (state.currentUser.username || 'captain_purr').toLowerCase();
         fetch(`/api/userdata?key=${encodeURIComponent(key)}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(snap)
         }).catch(() => {});
-
-        if (showNotification) {
-          showToast(
-            state.lang === 'ar'
-              ? `💾 تم حفظ جميع بياناتك محلياً وفي السحابة (${state.lastSavedAt})!`
-              : `💾 User data saved to Browser & Cloud (${state.lastSavedAt})!`
-          );
-        }
-        render();
       } catch (e) {
-        console.warn('Save failed:', e);
+        console.warn('Auto-save failed:', e);
       }
-    }
-
-    function autoPersistIfEnabled() {
-      if (state.autoSaveEnabled) {
-        saveUserDataNow(false);
-      }
-    }
-
-    function toggleAutoSave() {
-      state.autoSaveEnabled = !state.autoSaveEnabled;
-      saveUserDataNow(false);
-      showToast(
-        state.lang === 'ar'
-          ? (state.autoSaveEnabled ? '💾 تم تفعيل الحفظ التلقائي للبيانات!' : '⏸️ تم إيقاف الحفظ التلقائي.')
-          : (state.autoSaveEnabled ? '💾 Auto-Save enabled!' : '⏸️ Auto-Save paused.')
-      );
-    }
-
-    async function restoreFromCloudSave() {
-      const key = (state.currentUser.username || 'captain_purr').toLowerCase();
-      try {
-        const res = await fetch(`/api/userdata?key=${encodeURIComponent(key)}`);
-        const data = await res.json();
-        if (data && data.found && data.snapshot) {
-          applySnapshot(data.snapshot);
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(data.snapshot));
-          showToast(
-            state.lang === 'ar'
-              ? '☁️ تمت استعادة بياناتك من السحابة بنجاح!'
-              : '☁️ Restored user data from Cloud Save!'
-          );
-          render();
-        } else {
-          showToast(
-            state.lang === 'ar'
-              ? 'ℹ️ لا توجد نسخة سحابية محفوظة بعد — اضغط "حفظ البيانات الآن" أولاً!'
-              : 'ℹ️ No cloud snapshot found yet — click "Save Data Now" first!'
-          );
-        }
-      } catch (_) {
-        showToast('⚠️ Cloud restore unavailable offline.');
-      }
-    }
-
-    function exportUserDataJson() {
-      const snap = buildSerializableSnapshot();
-      const blob = new Blob([JSON.stringify(snap, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `catmsg-backup-${state.currentUser.username || 'owner'}.json`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      showToast(
-        state.lang === 'ar'
-          ? '📥 تم تنزيل ملف النسخة الاحتياطية (.json) بنجاح!'
-          : '📥 Exported User Data Backup (.json)!'
-      );
-    }
-
-    function triggerImportJsonFile() {
-      const input = document.getElementById('json-restore-input');
-      if (input) {
-        input.value = '';
-        input.click();
-      }
-    }
-
-    function handleImportJsonFile(event) {
-      const file = event.target.files && event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        try {
-          const parsed = JSON.parse(e.target.result);
-          if (applySnapshot(parsed)) {
-            saveUserDataNow(false);
-            showToast(
-              state.lang === 'ar'
-                ? '📤 تمت استعادة جميع بياناتك من ملف النسخة الاحتياطية!'
-                : '📤 User data restored from JSON backup file!'
-            );
-            render();
-          }
-        } catch (_) {
-          showToast('😾 Invalid JSON backup file.');
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    function resetUserDataToDefault() {
-      localStorage.removeItem(STORAGE_KEY);
-      location.reload();
     }
 
     // Hydrate saved user data on startup
@@ -1719,10 +1622,6 @@
               <div class="rail-btn" style="color: var(--mint); font-weight:900">+</div>
             </div>
 
-            <div class="rail-btn-wrap" onclick="saveUserDataNow(true)" title="${L.saveNowBtn} (${state.lastSavedAt})">
-              <div class="rail-btn" style="font-size:19px">💾</div>
-            </div>
-
             <div class="rail-btn-wrap" onclick="state.modal='editProfile';render()" title="${L.settingsTitle}">
               <div class="rail-btn" style="font-size:19px">⚙️</div>
             </div>
@@ -1854,9 +1753,6 @@
                <span style="font-weight:800;font-size:15.5px">${escapeHtml(ch.name)}</span>
                <div class="topic-text">${escapeHtml(ch.topic)}</div>`}
 
-          <div class="save-pill" onclick="saveUserDataNow(true)" title="${L.lastSavedText(state.lastSavedAt)}">
-            ${L.savePillText}
-          </div>
           <div class="lang-pill" onclick="toggleLanguageQuick()" title="Switch Language / تغيير اللغة">
             🌐 ${state.lang === 'ar' ? 'English' : 'العربية'}
           </div>
@@ -2000,7 +1896,6 @@
           <span style="font-size:20px">🐾</span>
           <span style="font-weight:800;font-size:16px">${L.catFriends} (${friends.length})</span>
           <div style="flex:1"></div>
-          <div class="save-pill" onclick="saveUserDataNow(true)">${L.savePillText}</div>
           <div class="lang-pill" onclick="toggleLanguageQuick()">🌐 ${state.lang === 'ar' ? 'English' : 'العربية'}</div>
           <div class="coin-pill" onclick="openQuests()">🪙 ${state.currentUser.meowCoins}</div>
         </div>
@@ -2073,7 +1968,6 @@
           <span style="font-size:20px">🪙</span>
           <span style="font-weight:800;font-size:16px">${L.questsHeaderTitle}</span>
           <div style="flex:1"></div>
-          <div class="save-pill" onclick="saveUserDataNow(true)">${L.savePillText}</div>
           <div class="lang-pill" onclick="toggleLanguageQuick()">🌐 ${state.lang === 'ar' ? 'English' : 'العربية'}</div>
           <div class="coin-pill">🪙 ${state.currentUser.meowCoins} ${L.meowCoins}</div>
         </div>
@@ -2299,27 +2193,6 @@
                 <span class="owner-tag">${L.ownerTag}</span>
               </div>
 
-              <!-- USER DATA SAVING & CLOUD BACKUP PANEL -->
-              <div class="data-save-panel">
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-                  <span style="font-size:12px;font-weight:900;color:var(--mint)">${L.dataSavingSectionTitle}</span>
-                  <span style="font-size:11px;color:var(--text-secondary)">${L.lastSavedText(state.lastSavedAt)}</span>
-                </div>
-                <label style="display:flex;align-items:center;gap:8px;font-size:12.5px;cursor:pointer;margin-top:6px">
-                  <input type="checkbox" ${state.autoSaveEnabled ? 'checked' : ''} onchange="toggleAutoSave()" />
-                  <span>${L.autoSaveLabel}</span>
-                </label>
-                <div class="data-btn-grid">
-                  <button class="btn-outline" onclick="saveUserDataNow(true)">${L.saveNowBtn}</button>
-                  <button class="btn-outline" onclick="restoreFromCloudSave()">${L.cloudRestoreBtn}</button>
-                  <button class="btn-outline" onclick="exportUserDataJson()">${L.exportJsonBtn}</button>
-                  <button class="btn-outline" onclick="triggerImportJsonFile()">${L.importJsonBtn}</button>
-                </div>
-                <div style="margin-top:8px;text-align:end">
-                  <span style="font-size:11px;color:var(--coral);cursor:pointer" onclick="resetUserDataToDefault()">${L.resetDataBtn}</span>
-                </div>
-              </div>
-
               <div style="font-size:12px;font-weight:800;color:var(--text-secondary);margin-bottom:8px">${L.languageLabel}</div>
               <div class="lang-selector-row">
                 <button class="lang-option-btn ${state.lang === 'en' ? 'selected' : ''}" onclick="setLanguage('en')">
@@ -2443,8 +2316,8 @@
       if (emoji) state.currentUser.avatarEmoji = emoji;
       if (status) state.currentUser.customStatus = status;
       state.modal = null;
-      saveUserDataNow(false);
-      showToast(state.lang === 'ar' ? '💾 تم حفظ الملف الشخصي والبيانات!' : '💾 Cat Profile & User Data saved!');
+      autoPersistIfEnabled();
+      showToast(state.lang === 'ar' ? '🐾 تم تحديث إعدادات حساب القطة!' : '🐾 Cat Profile & Settings updated!');
     }
 
     render();
