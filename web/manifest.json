@@ -1,0 +1,11 @@
+{
+  "name": "CatMsg — PurrCord",
+  "short_name": "CatMsg",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#14121D",
+  "theme_color": "#FF7EB6",
+  "description": "Cat-themed Discord-style messaging app with Cat Houses, DMs, Cat Stickers, Reactions, Quests, and MeowCoins.",
+  "orientation": "portrait-primary",
+  "prefer_related_applications": false
+}

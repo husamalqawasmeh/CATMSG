@@ -1,0 +1,16 @@
+{
+  "name": "catmsg",
+  "main": "src/worker.js",
+  "compatibility_date": "2025-01-01",
+  "assets": {
+    "directory": "./web",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
+  },
+  "routes": [
+    {
+      "pattern": "cats.can-du-ai.com",
+      "custom_domain": true
+    }
+  ]
+}
