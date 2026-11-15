@@ -461,9 +461,25 @@ class _ChatViewState extends State<ChatView> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          sticker.artEmoji,
-                          style: const TextStyle(fontSize: 25),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: sticker.emojis
+                              .map(
+                                (em) => Container(
+                                  margin:
+                                      const EdgeInsets.symmetric(horizontal: 2),
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                    color: CatTheme.channelSidebarBg,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Text(
+                                    em,
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                ),
+                              )
+                              .toList(),
                         ),
                         const SizedBox(height: 5),
                         Text(

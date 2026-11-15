@@ -549,9 +549,26 @@ class QuestsAndShopView extends StatelessWidget {
                       ),
                       child: Column(
                         children: [
-                          Text(
-                            sticker.artEmoji,
-                            style: const TextStyle(fontSize: 34),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: sticker.emojis
+                                .map(
+                                  (em) => Container(
+                                    margin: const EdgeInsets.symmetric(
+                                      horizontal: 4,
+                                    ),
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: CatTheme.channelSidebarBg,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Text(
+                                      em,
+                                      style: const TextStyle(fontSize: 22),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
                           ),
                           const SizedBox(height: 6),
                           Text(

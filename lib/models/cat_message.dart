@@ -1,6 +1,7 @@
 class CatSticker {
   final String id;
   final String name;
+  final List<String> emojis;
   final String artEmoji;
   final String caption;
   final String bgHex;
@@ -9,6 +10,7 @@ class CatSticker {
   const CatSticker({
     required this.id,
     required this.name,
+    required this.emojis,
     required this.artEmoji,
     required this.caption,
     required this.bgHex,
@@ -18,15 +20,17 @@ class CatSticker {
   static const List<CatSticker> catalog = [
     CatSticker(
       id: 'sticker_loaf',
-      name: '10/10 Loaf',
-      artEmoji: '🍞🐱',
+      name: '10/10 Loaf Pack',
+      emojis: ['🍞', '🐱', '✨'],
+      artEmoji: '🍞🐱✨',
       caption: '10/10 PURRFECT LOAF',
       bgHex: '#FF9F68',
       priceCoins: 0,
     ),
     CatSticker(
       id: 'sticker_zoomies',
-      name: '3AM Zoomies',
+      name: '3AM Zoomies Pack',
+      emojis: ['⚡', '🐈‍⬛', '💨'],
       artEmoji: '⚡🐈‍⬛💨',
       caption: '3:00 AM ZOOMIES!!',
       bgHex: '#9D7BFF',
@@ -34,7 +38,8 @@ class CatSticker {
     ),
     CatSticker(
       id: 'sticker_boop',
-      name: 'Snoot Boop',
+      name: 'Snoot Boop Pack',
+      emojis: ['👉', '🐽', '🐱'],
       artEmoji: '👉🐽🐱',
       caption: 'BOOP THE SNOOT',
       bgHex: '#FF7EB6',
@@ -42,7 +47,8 @@ class CatSticker {
     ),
     CatSticker(
       id: 'sticker_tuna',
-      name: 'Gib Tuna',
+      name: 'Gib Tuna Pack',
+      emojis: ['🐟', '😿', '🍽️'],
       artEmoji: '🐟😿🍽️',
       caption: 'STARVING FOR 4 MINUTES',
       bgHex: '#5CE1E6',
@@ -50,7 +56,8 @@ class CatSticker {
     ),
     CatSticker(
       id: 'sticker_bongo',
-      name: 'Bongo Paws',
+      name: 'Bongo Paws Pack',
+      emojis: ['🐾', '🥁', '😺'],
       artEmoji: '🐾🥁😺',
       caption: 'BONGO BONGO MEOW',
       bgHex: '#FFD166',
@@ -58,7 +65,8 @@ class CatSticker {
     ),
     CatSticker(
       id: 'sticker_laser',
-      name: 'Red Dot Target',
+      name: 'Red Dot Target Pack',
+      emojis: ['🔴', '👀', '😼'],
       artEmoji: '🔴👀😼',
       caption: 'TARGET ACQUIRED',
       bgHex: '#FF6B6B',
@@ -66,7 +74,8 @@ class CatSticker {
     ),
     CatSticker(
       id: 'sticker_box',
-      name: 'If I Fits I Sits',
+      name: 'If I Fits I Sits Pack',
+      emojis: ['📦', '😺', '✨'],
       artEmoji: '📦😺✨',
       caption: 'IF I FITS, I SITS',
       bgHex: '#43D9AD',
@@ -74,8 +83,9 @@ class CatSticker {
     ),
     CatSticker(
       id: 'sticker_royal',
-      name: 'Emperor Meow',
-      artEmoji: '👑🦁',
+      name: 'Emperor Meow Pack',
+      emojis: ['👑', '🦁', '🪙'],
+      artEmoji: '👑🦁🪙',
       caption: 'BOW BEFORE THE WHISKERS',
       bgHex: '#C77DFF',
       priceCoins: 150,

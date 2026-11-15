@@ -480,8 +480,8 @@
     }
 
     .sticker-option {
-      min-width: 132px;
-      padding: 10px;
+      min-width: 170px;
+      padding: 10px 12px;
       border-radius: 14px;
       background: var(--card-bg);
       border: 1px solid var(--border);
@@ -492,6 +492,33 @@
 
     .sticker-option:hover {
       border-color: var(--paw-pink);
+    }
+
+    .pack-emojis-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin: 6px 0;
+    }
+
+    .single-emoji-slot {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--sidebar-bg);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+      cursor: pointer;
+    }
+
+    .single-emoji-slot:hover {
+      transform: translateY(-2px) scale(1.06);
+      border-color: var(--paw-pink);
+      background: rgba(255, 126, 182, 0.16);
     }
 
     .reply-banner {
@@ -928,15 +955,24 @@
       }
     };
 
+    const GOLD_BARS_DATA_URI = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAyL0lEQVR42u29ebhdV3Hm/ataa+9zzh0lWZZnDDajMYPBTAFaMoGEKVMTKSGENGSATGQgydckIVwr6YYkHTJ0oEnSnRASvpCWSPgCJMxINjMxk0cMxjPYsqzhjuecvdeq+v7Y+17dK8m2JGyDyann2c89dzj37LVXrVpVb71VC0YykpGMZCQjGclIRjKSkYxkJCMZyUhGMpKRjGQkIxnJSEYykpGMZCQjGclIRjKSkYxkJCMZyUhGMpKRPLBFvlPH5T5zaGyy3QV8NN3fIeLu4o7s2LE1uG8Nu2Y2R9+1OfoMetfvmdHRk3vgWACZmZmRi4Gdj75atp58h+wGtuy9xGUb+a7fFiBEeMcg3HbBOx7Zv/26WC8u8ojv/f0rELEdWwnbdt7d+0cKcD+v5BkFFHbDbmDvJc5WTORuzLV0cBtMveXvf7379FMXzzlz8ur1e26rNm1YP/6kQZp92IYQzpYDSzH0ODcyRJKz5Os/P7fheb921jO373YQ3BGR0ZbwrVQAd1QEO/I3EajDV6/4X6dP5GvirTftP/3skzhv7/47zjpjqnpsGgzO6BXxHJ+7I0StpztTA0gGWkDlkGuIQ4bVIu64UTJWlrLkD2U4teW31z/9jb8vIrZjx9awbdvOPFKAb6Es3PCux+f4pR+y2au0vOkOm6/jQ6bG7JHzSzdNFN34YHLdKWWo4xMJ0iKkEhJ4XeOq1NldPBjiOOamJoEgmgIuqo7iFLjO5ZgKieNn6qw+6r1feNz/ffFFp8jCrpnN8aLtl6SRAtzvZv/isHTr78/EAx/4zbJ7vZIHMJdhvoQUIddYniNLRnJwsZjFA6kYksQVorgHQCVggOPA8s4hrs2FIg4mRtJMzINcdsbCLE/5ytLE1h86/T/91NU+sznKf2AlkPt98mW7zx689iFTN/zy17z/fgYlSb1Llkw9PB3tPEP8tn+WXpqWFGpEhqIO4hH3iIghZMTbiRdv3AhXxAOI4WSkHZrgJFGCO1lrMkUeU8LAztp/Z++iXz3rOW/+O3dXmEFku/1HU4D7NzTaebUIeP+Kv/gF23O11XO9LMMzYlmVsaxTZDrH8vTnBC0KjSRRXPBIFqEOFRaGmGSSQK1KrRG8AG+G4ZJaW6A4giMYijo4glqH0iQMUrAgcxvOGP7r2w6894feIlKYyHbzXTNxpAD3Yewu23Zm3/+h6bHFT788VAck98fUDiwg9QLD2pGxLXRP/j580zMYlneivkCZjTIHgrNqVS9fzlp8554MWqMeAdec+17b7bZOPvGz+/9py0fvuOqDD5OLtqcdWwkjBbhPVv82dXdZuvVT/2Mq3LberJ+jIBUT3J4fQXXyf2HqtNfhYQNjj3g1+eznM5w+j7roIJYo6hIxXZ5H3H3NdXwbn0GoBBvXBV9I0xOXXzT5ldd/fv8X/vwXtu3U7E74jwIcyf0U8okIfqV7edqHn/v1qeGnT3IburJJh6dcBA96NmOn/AD4JEuS6EpEuYmlO98Ld/wLcc/noAIxRWTtpEv2lQ/hMHuw8jdrjQAgiBfkuEiSiCO5yAuhO/VE9g6e/oZNz/+z3wLnP0KoeP8owI6tQbbtzNd/9Md+5Kz0sX9g6aAbGgTFvEOKgXr90xl77BvIk+egsx8h3/AHMPgSKkMKd8QKcoorpl9bCMHaIRwyAr7yelkB1BwxZ7WGeIasINlwd7Kod3KdQ3FyvC0/5l39B//Sr5x7/nNungHdDjZSgG8S9Ln4Yucnn/aMyx4kX7kgLfWzSwy0rpp6YiktMXzwj3PSY97Avk/9IJODKyjWdchSk8RxUTRFJDfevnoAV1zsHke3GvMTaX/oeph3kDCgSJKZ7ISDPPGOqnzai0654LUf948+PbJld/5ORA/1fln9gv3Yk37qGRuLGy/IiwvmomF5KTpgvo6y7CBzuxncfCmduavRIVRz0oA/IqQwhDiAWIMaLrKy+u/G5wMHk0NXxptLbM2VVMnBsVAHFuq0rn/JpvX5bbsPfPqXtstFlyQQ+U70C+77AW09z3e5x7HOtf9tbDggx+AuayfOxcB7dIY19Z3vAyZQOng/k+YgDEq6qdOYdzUIhmsGzcdl6tZetupKBCsIaRIrFslhGM16Vhy8TScG737d7Z980Vu3bXMR2W4+g7r7d0waXe5r4Edku33oXc9+zBOnv3T59B2F98fmJbqga56hETzh2qGKBVobBQOyRAzBNRN7gk8YJhlxQTxCDmAKLggKWGPvD5sfOeowbe1fSIWQSbYRC0OERPLCow68LE/V/QfP+pic+vxf3PDYV18OtuLYjizA3crV4u766PHO69enBc+d2oLU6BHPTclSYu7EaoiSyERwUHdCVmxeqGch5IiK4VJjMWFFHwsZkxb68VYJVl3exv9rL111CeYdso8h0idYRk0oZCBSjysLd6YN6z/7TA6879+vu/QNL3b3cUC/E7YEve9W/44gsjPvv/GPn3vSujtfOFzM5nExqI0d4YCtXa5ylz8OAyUdNKgiIoppTY4ZjzUiCXUa5/Cbu/PVexON3xeiDRbymHy8fFB82z9c/68vfYWIZJHttmPH1jBSgCMmS4Cr3N27fP0zvxbmvuSqXUwyanrC+060QKgKqlnD+lAQm11MMhQ1FjJZ762Irfm/on2ciNYbQydNutqNdsa6j/zxng9v/ofL3v2XG7dt25n9sicW7g9Met19ogD20ddFke22OPfhV22Ie58ld0h2zSH7FCL1NzEnCUEIqYvNgc06oS4IAlkG1J0+ucj3EvvP0NxFXMlxiaSBpEFSXqedPG+b1n3hxQ/b8NbLbrz0N79bLvxcrYI/EJXgPlGAnXuvdkRZ/OLbv4fbvmSkrthiSdEPqC/h6rgKvhKeOSZNZm/569Fm0QQcQ4FoERaFfDDDQAkSMc1YqPCY8JAQjJgCwQOKorQmXRxU2ntov6rgos33Qvs6YBIwyeTQJ4c+UYZkm9J6UdNUcdPZ69N737Pn01t/3dw7IvgDzS+Q+wr2Pei+Pr39sdetH35lKnWLILGSbB2cDhYHhKCoarNdiGNiravW3FaTAr7n2zPPWHTChEK3DRPxZmRDweeV4BFUAEd09QSDirRPQRDRFU6BuyDqzRJxaaOLxhmRln2QzSxIFt1whszPPfZDX/e3v+hRz5D5y/7yFcUTX/GX6YEAHMl9kfVrX64/8NGfvnz9wX86Y7jPU+xIzL2D1LaRYBVKbhK3okgULEozGSs5u2O7/eiBRCKFmtCNxDEhFYkkiYDiQ8dnFa2l+SwUcWlxv9U+pyMKeGgfS16xVGttph5CGFURxENlWTshLk6e87W94cU//ZAn/epugJmZGd2+/dubYyD3VQQA27xa/PRjBp940y+OL1320+nOaylkAu8NcCmBiLu1SJ1jwVFRNARUFVc7BkUQ1AIuDTCU3fDCiZONNaipiQRiVZAWjFxlggUExY6A91urYZ0GU9CKhn+ma57Syl21VkMxAjVLOpGmYo6zC6fsmzvp+7efteV//B8R6X+7J5TkxFe4wMXI7i2bdQsAlzQL5CLS4dN2y6X/zw9PH/zU3+uez3ckqIQCNOihDJ4so4FNAkdEoWj4oSq6AuYcXSGaifNldpALLoZMOdoTDMNdUCI2BG19ArN82P9zLDsa1uEmWJ5DSIiF1uCvVJysck+8IaRpItZjGMGknNeyewb9qe+/3J/0Ry8YF7nVd81EuWh7esAqgPuOwM5tsLWF4O9WSpb2XXUW6T0POvjl94Wbbls8+cFnP/apU8Xgl/3L/xx1MBQPJRoF0Wb/lWbmG+fBV20C0oSUIkIIgVRaAyH4oUyCuq2hewQvUIsMYx96RjFRYFI3Jl4UtwipQzBvzX8zIEHwvIBt/AGkvhHddy11TymTr8ks4oewgmVd8FwQvabSTLKO9/JsCp3p4qA89av783NeeO5zXvUV30Fgq9u3m19wjxSomZkZFdmWlxH0WT9w0tTCW+OlH/x7PTg/teGRGzc9YtP64jnd6saxxYO3qNnkw/2zP3beWKc/0avu5LSTBjC8guGeBXRqklx2sPmaXEFRRFQVWq06lNJtwVtfnmynTjXZHIlKEG2dN8F0LSPIcFwzilL3M6REnCjwIuFkTA1KR6rlfFTLJySSs8DEo7DBBOKXYz5N1sGqDMIh0y8Ijf8qOEYmEj0SyOK2qbAc8nTvkw9z3f/ZWy+beYVc+Ls7HBF3l28nJZBj+L3P7v9/f6Lc97Yfre68fUzzuseG+fmODQ8y0IO9DRNdWTGLOgQfMuwbOakJJYVHF3fPwWMmIaqUfagGFV4bAUWKgMcGILo7ds/q1K+IoEGpy2Zlr2R5WSaFtoGfKYNQESYDRReyDjHNhNRZVp3YuO+x77x98PKf/+WLdFvmR1/0bWQA+96c3f6JnyyWX5cWFlNROsUN+21hMebYwcJCojBoLFsH8S6SZyiUgHgpRNEcVJoY3qNjjovT3EUNY9nGIGrT4F6wUocT42D14HCSaW2nTi5N+W4Y40o25VhaA/eCkEELVAxV2k06qolQEmx866eu+Zefexl82yxMtmwNsuMqucfx73r9Y57Yu/7lw3IpWHFQMWc+L2pH9dDq1oN39qVxd4t1S72eWVoehMFiImNIGrROm3vTSYemM54E70AzwW2Wbx3fOn05aV1pHV+s9fYDaU08V41A6+D4yvKtdT5XPGq9dPFGOfD3W9576W+6LPhOOSzD9y3LAOyabRKB3SdfLrtmNsfzzn9FteFTH93fXzoxTS9eH4ab9vG52xbD1MLVcbrq4os3xRsPLtLZfzPju/bwVbnV79ywsGfRuvU16bRTVA5cw/iBAyTrm4V6RGsN0V3W1vN5pE34SCJic/PFDbeec/Jjn/rSO2U7duzYGnbNbNbuM4dsx9xnv2BmZgTg0HeHfc+j/+aqqy78wIOn597/q7Vdd5130wLdqeJAlXSuw1IdY26u0e+i1hEPlNYl6AJSzRGrOarBAd28eFAdnDzl4E3XfvyxP/qO2y7c5SLuR9N7f9vA7pMvO0zudr647/qtGdiK79p1D75k+9bwsstecaTs2LE1yEUXXZLbsRGR3Sdfdthx/y3/I7mdW/8fyUhGMpKRjGQkIxnJSEYykpGMZCQjGclIRjKSkYxkJCMZyUhGMpKRjGQkIxnJSEYykpGMZCQjGclIRvLAlf8PxyxO7wTzoXoAAAAASUVORK5CYII=";
+
+    function renderEmojiToken(token, sizePx = 28) {
+      if (token === 'custom:gold_bars') {
+        return `<img src="${GOLD_BARS_DATA_URI}" alt="Gold Bars" style="width:${sizePx}px;height:${sizePx}px;object-fit:contain;vertical-align:middle;display:inline-block" />`;
+      }
+      return `<span style="font-size:${sizePx}px;line-height:1;display:inline-block;vertical-align:middle">${token}</span>`;
+    }
+
     const STICKERS = [
-      { id: 'sticker_loaf', name: '10/10 Loaf', nameAr: 'رغيف قط 10/10', artEmoji: '🍞🐱', caption: '10/10 PURRFECT LOAF', bgHex: '#FF9F68', priceCoins: 0 },
-      { id: 'sticker_zoomies', name: '3AM Zoomies', nameAr: 'ركض الثالثة فجراً', artEmoji: '⚡🐈‍⬛💨', caption: '3:00 AM ZOOMIES!!', bgHex: '#9D7BFF', priceCoins: 0 },
-      { id: 'sticker_boop', name: 'Snoot Boop', nameAr: 'لمسة أنف لطيفة', artEmoji: '👉🐽🐱', caption: 'BOOP THE SNOOT', bgHex: '#FF7EB6', priceCoins: 0 },
-      { id: 'sticker_tuna', name: 'Gib Tuna', nameAr: 'أعطني التونة فوراً', artEmoji: '🐟😿🍽️', caption: 'STARVING FOR 4 MINUTES', bgHex: '#5CE1E6', priceCoins: 0 },
-      { id: 'sticker_bongo', name: 'Bongo Paws', nameAr: 'طبول المخالب', artEmoji: '🐾🥁😺', caption: 'BONGO BONGO MEOW', bgHex: '#FFD166', priceCoins: 50 },
-      { id: 'sticker_laser', name: 'Red Dot Target', nameAr: 'هدف النقطة الحمراء', artEmoji: '🔴👀😼', caption: 'TARGET ACQUIRED', bgHex: '#FF6B6B', priceCoins: 75 },
-      { id: 'sticker_box', name: 'If I Fits I Sits', nameAr: 'عشاق الصناديق', artEmoji: '📦😺✨', caption: 'IF I FITS, I SITS', bgHex: '#43D9AD', priceCoins: 90 },
-      { id: 'sticker_royal', name: 'Emperor Meow', nameAr: 'الإمبراطور مياو', artEmoji: '👑🦁', caption: 'BOW BEFORE THE WHISKERS', bgHex: '#C77DFF', priceCoins: 150 }
+      { id: 'sticker_loaf', name: '10/10 Loaf Pack', nameAr: 'حزمة رغيف قط 10/10', emojis: ['🍞', '🐱', '✨'], caption: '10/10 PURRFECT LOAF', bgHex: '#FF9F68', priceCoins: 0 },
+      { id: 'sticker_zoomies', name: '3AM Zoomies Pack', nameAr: 'حزمة ركض الثالثة فجراً', emojis: ['⚡', '🐈‍⬛', '💨'], caption: '3:00 AM ZOOMIES!!', bgHex: '#9D7BFF', priceCoins: 0 },
+      { id: 'sticker_boop', name: 'Snoot Boop Pack', nameAr: 'حزمة لمسة أنف لطيفة', emojis: ['👉', '🐽', '🐱'], caption: 'BOOP THE SNOOT', bgHex: '#FF7EB6', priceCoins: 0 },
+      { id: 'sticker_tuna', name: 'Gib Tuna Pack', nameAr: 'حزمة أعطني التونة فوراً', emojis: ['🐟', '😿', '🍽️'], caption: 'STARVING FOR 4 MINUTES', bgHex: '#5CE1E6', priceCoins: 0 },
+      { id: 'sticker_bongo', name: 'Bongo Paws Pack', nameAr: 'حزمة طبول المخالب', emojis: ['🐾', '🥁', '😺'], caption: 'BONGO BONGO MEOW', bgHex: '#FFD166', priceCoins: 50 },
+      { id: 'sticker_laser', name: 'Red Dot Target Pack', nameAr: 'حزمة هدف النقطة الحمراء', emojis: ['🔴', '👀', '😼'], caption: 'TARGET ACQUIRED', bgHex: '#FF6B6B', priceCoins: 75 },
+      { id: 'sticker_box', name: 'If I Fits I Sits Pack', nameAr: 'حزمة عشاق الصناديق', emojis: ['📦', '😺', '✨'], caption: 'IF I FITS, I SITS', bgHex: '#43D9AD', priceCoins: 90 },
+      { id: 'sticker_royal', name: 'Emperor Meow Pack', nameAr: 'حزمة الإمبراطور مياو', emojis: ['👑', '🦁', 'custom:gold_bars'], caption: 'BOW BEFORE THE WHISKERS', bgHex: '#C77DFF', priceCoins: 150 }
     ];
 
     const BADGES = [
@@ -1388,9 +1424,9 @@
       render();
     }
 
-    function sendMessage(contentText, stickerId = null) {
+    function sendMessage(contentText, stickerId = null, singleEmoji = null) {
       const trimmed = (contentText || '').trim();
-      if (!trimmed && !stickerId) return;
+      if (!trimmed && !stickerId && !singleEmoji) return;
 
       const key = getActiveChannelKey();
       if (!state.messagesByChannel[key]) state.messagesByChannel[key] = [];
@@ -1406,8 +1442,9 @@
         senderBadge: state.currentUser.equippedBadge,
         content: trimmed,
         stickerId: stickerId,
+        singleEmoji: singleEmoji,
         replyToSenderName: state.replyingTo ? state.replyingTo.senderName : null,
-        replyToPreview: state.replyingTo ? (state.replyingTo.content || '[Cat Sticker]') : null,
+        replyToPreview: state.replyingTo ? (state.replyingTo.content || '[Cat Emoji]') : null,
         reactions: {},
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         isPinned: false
@@ -1516,12 +1553,14 @@
       showToast(`🪙 +${q.rewardCoins} ${t().meowCoins} (${title})!`);
     }
 
-    function unlockOrSendSticker(stickerId, fromChat = false) {
+    function unlockOrSendSticker(stickerId, fromChat = false, chosenEmoji = null) {
       const sticker = STICKERS.find(s => s.id === stickerId);
       if (!sticker) return;
       const owned = state.currentUser.unlockedStickerIds.includes(sticker.id);
       if (owned) {
-        if (fromChat) sendMessage('', sticker.id);
+        if (fromChat) {
+          sendMessage('', sticker.id, chosenEmoji || sticker.emojis[0]);
+        }
         return;
       }
       if (state.currentUser.meowCoins < sticker.priceCoins) {
@@ -1531,7 +1570,7 @@
       state.currentUser.meowCoins -= sticker.priceCoins;
       state.currentUser.unlockedStickerIds.push(sticker.id);
       autoPersistIfEnabled();
-      showToast(`🎉 Unlocked "${state.lang === 'ar' ? sticker.nameAr : sticker.name}"!`);
+      showToast(`🎉 Unlocked "${state.lang === 'ar' ? sticker.nameAr : sticker.name}" (3 Emojis)!`);
     }
 
     function buyOrEquipBadge(badgeTitle, priceCoins) {
@@ -1798,10 +1837,16 @@
                 const owned = state.currentUser.unlockedStickerIds.includes(s.id);
                 const sName = state.lang === 'ar' ? s.nameAr : s.name;
                 return `
-                  <div class="sticker-option" onclick="unlockOrSendSticker('${s.id}', true)">
-                    <div style="font-size:26px">${s.artEmoji}</div>
-                    <div style="font-weight:800;font-size:12px;margin-top:4px">${escapeHtml(sName)}</div>
-                    <div style="font-size:10.5px;margin-top:3px;color:${owned ? 'var(--mint)' : 'var(--gold)'};font-weight:700">
+                  <div class="sticker-option" onclick="${owned ? '' : `unlockOrSendSticker('${s.id}', false)`}">
+                    <div style="font-weight:800;font-size:11.5px;margin-bottom:6px">${escapeHtml(sName)}</div>
+                    <div class="pack-emojis-row">
+                      ${s.emojis.map(em => `
+                        <div class="single-emoji-slot" title="${owned ? L.tapToSend : ''}" onclick="event.stopPropagation(); unlockOrSendSticker('${s.id}', true, '${em}')">
+                          ${renderEmojiToken(em, 24)}
+                        </div>
+                      `).join('')}
+                    </div>
+                    <div style="font-size:10.5px;margin-top:4px;color:${owned ? 'var(--mint)' : 'var(--gold)'};font-weight:700">
                       ${owned ? L.tapToSend : `🔒 🪙 ${s.priceCoins}`}
                     </div>
                   </div>
@@ -1858,8 +1903,10 @@
 
               ${sticker ? `
                 <div class="sticker-card" style="border-color:${sticker.bgHex}">
-                  <div style="font-size:38px">${sticker.artEmoji}</div>
-                  <div style="font-size:11.5px;font-weight:900;color:${sticker.bgHex};margin-top:6px">${escapeHtml(sticker.caption)}</div>
+                  ${m.singleEmoji
+                    ? `<div style="padding:4px 0">${renderEmojiToken(m.singleEmoji, 48)}</div>`
+                    : `<div class="pack-emojis-row">${sticker.emojis.map(em => `<div class="single-emoji-slot" style="cursor:default">${renderEmojiToken(em, 24)}</div>`).join('')}</div>`}
+                  <div style="font-size:11px;font-weight:900;color:${sticker.bgHex};margin-top:6px">${escapeHtml(sticker.caption)}</div>
                 </div>
               ` : ''}
 
@@ -2039,12 +2086,18 @@
               const sName = state.lang === 'ar' ? s.nameAr : s.name;
               return `
                 <div class="shop-card">
-                  <div style="font-size:34px">${s.artEmoji}</div>
                   <div style="font-weight:800;font-size:14px">${escapeHtml(sName)}</div>
+                  <div class="pack-emojis-row">
+                    ${s.emojis.map(em => `
+                      <div class="single-emoji-slot" title="${owned ? L.tapToSend : ''}" onclick="${owned ? `unlockOrSendSticker('${s.id}', false, '${em}')` : ''}">
+                        ${renderEmojiToken(em, 26)}
+                      </div>
+                    `).join('')}
+                  </div>
                   <div style="font-size:10.5px;font-weight:800;color:${s.bgHex}">${escapeHtml(s.caption)}</div>
                   <div style="margin-top:6px">
                     ${owned
-                      ? `<span style="color:var(--mint);font-weight:800;font-size:12px">${L.unlockedWord}</span>`
+                      ? `<span style="color:var(--mint);font-weight:800;font-size:12px">${L.unlockedWord} (3/3)</span>`
                       : `<button class="btn-gold" style="width:100%" onclick="unlockOrSendSticker('${s.id}', false)">${L.unlockBtn(s.priceCoins)}</button>`}
                   </div>
                 </div>
