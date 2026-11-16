@@ -102,9 +102,19 @@ class BadgeShopItem {
 
   static const List<BadgeShopItem> catalog = [
     BadgeShopItem(
+      badgeTitle: '🪙 MeowCoin Collector',
+      description: 'Proud collector of shiny MeowCoins across the Cat Houses.',
+      priceCoins: 20,
+    ),
+    BadgeShopItem(
       badgeTitle: '🐟 Tuna Tycoon',
       description: 'Flaunt your elite taste for sashimi in every chat message.',
       priceCoins: 60,
+    ),
+    BadgeShopItem(
+      badgeTitle: '💰 MeowCoin Hoarder',
+      description: 'Sitting atop a massive dragon-sized pile of golden MeowCoins.',
+      priceCoins: 80,
     ),
     BadgeShopItem(
       badgeTitle: '🧶 Yarn Master',
@@ -120,6 +130,35 @@ class BadgeShopItem {
       badgeTitle: '👑 Royal Whisker',
       description: 'The most prestigious golden crown badge in CatMsg.',
       priceCoins: 200,
+    ),
+  ];
+}
+
+class WhiteboardMarkerItem {
+  final String id;
+  final String name;
+  final String colorHex;
+  final int priceCoins;
+
+  const WhiteboardMarkerItem({
+    required this.id,
+    required this.name,
+    required this.colorHex,
+    required this.priceCoins,
+  });
+
+  static const List<WhiteboardMarkerItem> catalog = [
+    WhiteboardMarkerItem(
+      id: 'marker_white',
+      name: '🤍 Default White Marker',
+      colorHex: '#FFFFFF',
+      priceCoins: 0,
+    ),
+    WhiteboardMarkerItem(
+      id: 'marker_emerald',
+      name: '💚 Emerald Marker',
+      colorHex: '#10B981',
+      priceCoins: 25,
     ),
   ];
 }

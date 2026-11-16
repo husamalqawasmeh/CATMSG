@@ -781,6 +781,130 @@
         z-index: 90;
       }
     }
+
+    /* SIGN-IN PORTAL & ADVANCED SETTINGS & WHITEBOARD */
+    .auth-overlay {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at top, #27223A 0%, #14121D 70%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 300;
+      padding: 18px;
+    }
+
+    .auth-card {
+      background: var(--sidebar-bg);
+      border: 1.5px solid var(--border);
+      border-radius: 22px;
+      width: 100%;
+      max-width: 460px;
+      padding: 26px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65);
+    }
+
+    .auth-tabs {
+      display: flex;
+      gap: 8px;
+      background: var(--rail-bg);
+      padding: 5px;
+      border-radius: 14px;
+      margin: 16px 0;
+    }
+
+    .auth-tab {
+      flex: 1;
+      padding: 9px 12px;
+      border-radius: 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-weight: 800;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .auth-tab.active {
+      background: var(--paw-pink);
+      color: #14121D;
+    }
+
+    .adv-preview-card {
+      background: var(--rail-bg);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    .phone-reward-box {
+      background: rgba(255, 209, 102, 0.09);
+      border: 1.5px solid rgba(255, 209, 102, 0.4);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .whiteboard-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 16px;
+      gap: 12px;
+      overflow: hidden;
+    }
+
+    .whiteboard-toolbar {
+      background: var(--sidebar-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px 16px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .marker-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 13px;
+      border-radius: 12px;
+      border: 1.5px solid var(--border);
+      background: var(--card-bg);
+      color: var(--text-primary);
+      font-weight: 800;
+      font-size: 12.5px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .marker-btn.selected {
+      border-color: var(--paw-pink);
+      box-shadow: 0 0 12px rgba(255, 126, 182, 0.35);
+      transform: translateY(-1px);
+    }
+
+    .marker-swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.4);
+      display: inline-block;
+    }
+
+    .whiteboard-stage {
+      flex: 1;
+      background: #181523;
+      border: 2px solid var(--border);
+      border-radius: 18px;
+      position: relative;
+      overflow: hidden;
+      cursor: crosshair;
+      box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
+    }
   </style>
 </head>
 <body>
@@ -788,6 +912,8 @@
   <input type="file" id="json-restore-input" accept=".json,application/json" style="display:none" onchange="handleImportJsonFile(event)" />
   <script>
     const STORAGE_KEY = 'catmsg_saved_state_v1';
+    const ACCOUNTS_KEY = 'catmsg_accounts_v2';
+    const ACTIVE_USER_KEY = 'catmsg_active_username_v2';
 
     // --- LOCALIZATION DICTIONARY (EN / AR) ---
     const I18N = {
@@ -801,6 +927,16 @@
         questSub: 'Complete cat quests & unlock stickers!',
         catFriends: 'Cat Friends',
         questsAndEmporium: 'Quests & Emporium',
+        whiteboardNav: 'Cat Whiteboard (Fun)',
+        whiteboardTitle: '🎨 Cat Whiteboard — Just for Fun (No Rewards)',
+        whiteboardSub: 'Draw freely with your paws! Purely for fun with zero quest/coin pressure.',
+        whiteMarkerName: '🤍 Default White Marker (Free)',
+        emeraldMarkerName: '💚 Emerald Marker',
+        unlockEmeraldBtn: '🪙 Unlock Emerald Marker (25)',
+        eraserBtn: '🧽 Eraser',
+        undoBtn: '↩️ Undo',
+        clearBoardBtn: '🗑️ Clear Board',
+        stampCatBtn: '🐾 Stamp Cat Doodle',
         directMeows: 'DIRECT MEOWS',
         welcomeTo: (ch) => `Welcome to #${ch}!`,
         dmWith: (name) => `Direct Meow with ${name}`,
@@ -824,7 +960,7 @@
         directMeowBtn: '💬 Direct Meow',
         questsHeaderTitle: 'Cat Quests & MeowCoin Emporium',
         questsHeroTitle: 'Daily Paws & Whisker Quests',
-        questsHeroSub: 'Chat in Cat Houses, react with paws, reply to friends, and send Cat Stickers to earn MeowCoins! Spend your coins below on exclusive stickers and royal badges.',
+        questsHeroSub: 'Chat in Cat Houses, react with paws, reply to friends, and send Cat Stickers to earn MeowCoins! Spend your coins below on exclusive stickers, markers, and royal badges.',
         completedWord: 'Completed',
         activeQuestsSection: '🎯 ACTIVE CAT QUESTS',
         claimedBtn: '✓ Claimed',
@@ -841,12 +977,29 @@
         castleCatsSection: (n) => `🐾 CASTLE CATS — ${n}`,
         statusHeader: 'STATUS',
         aboutCatHeader: 'ABOUT THIS CAT',
-        settingsTitle: '😼 Cat Profile, Language & Data Saving',
+        settingsTitle: '😼 Profile & Advanced Settings',
         languageLabel: '🌐 UI Language / لغة الواجهة',
         displayNameLabel: 'Cat Display Name',
         avatarEmojiLabel: 'Avatar Emoji',
         customStatusLabel: 'Custom Status',
-        ownerBadgeNotice: '👑 OWNER tag is permanently active on your account.',
+        ownerBadgeNotice: '👑 OWNER tag is permanently active on your Owner account.',
+        advancedSettingsHeader: '🛠️ ADVANCED SETTINGS',
+        profilePreviewLabel: '🪪 Live Profile Preview',
+        phoneOptionalLabel: '📱 Phone Number (Optional — +50 🪙 MeowCoins Bonus)',
+        phonePlaceholder: 'Optional: e.g. +1 555-234-5678',
+        phoneClaimedNotice: (p) => `✓ Phone linked (${p}) — +50 🪙 MeowCoins reward claimed!`,
+        phoneUnclaimedNotice: '🎁 Add an optional phone number to your account to receive +50 MeowCoins!',
+        linkPhoneBtn: '📱 Add Phone (+50 🪙)',
+        signInTitle: '🐾 Welcome to CatMsg (PurrCord)',
+        signInSub: 'Sign in to your Cat Account or create a new kitty profile! Newer users start with all quests at 0 progress.',
+        signInTab: '🔑 Sign In',
+        signUpTab: '✨ New Cat Sign Up',
+        usernameLabel: 'Username',
+        passwordLabel: 'Password',
+        signInBtn: '🔑 Sign In to CatMsg',
+        signUpBtn: '✨ Create New Cat Account',
+        quickOwnerBtn: '👑 Quick Sign In: Captain Purr (Owner)',
+        signOutBtn: '🚪 Sign Out / Switch Account',
         cancelBtn: 'Cancel',
         saveBtn: 'Save Profile & Settings',
         createServerTitle: '🏰 Create a New Cat House',
@@ -857,14 +1010,6 @@
         noPinnedMessages: 'No pinned messages in this channel yet!',
         closeBtn: 'Close',
         savePillText: '💾 Saved',
-        dataSavingSectionTitle: '💾 USER DATA SAVING & CLOUD BACKUP',
-        autoSaveLabel: 'Auto-Save User Data (Browser + Cloud)',
-        lastSavedText: (t) => `✓ Last saved: ${t}`,
-        saveNowBtn: '💾 Save Data Now',
-        cloudRestoreBtn: '☁️ Load Cloud Save',
-        exportJsonBtn: '📥 Export Backup (.json)',
-        importJsonBtn: '📤 Restore Backup (.json)',
-        resetDataBtn: '🔄 Reset to Defaults',
         presenceLabels: {
           Purring: 'Purring (Online)',
           Catnapping: 'Catnapping (Idle)',
@@ -882,6 +1027,16 @@
         questSub: 'أكمل مهام القطط وافتح الملصقات الملكية!',
         catFriends: 'أصدقاء القطط',
         questsAndEmporium: 'المهام ومتجر مياو',
+        whiteboardNav: 'السبورة البيضاء (ترفيه)',
+        whiteboardTitle: '🎨 سبورة القطط البيضاء — للترفيه فقط (بدون مكافآت)',
+        whiteboardSub: 'ارسم بحرية مع أصدقائك القطط! لعبة ترفيهية ممتعة بدون مهام أو جوائز.',
+        whiteMarkerName: '🤍 قلم أبيض افتراضي (مجاني)',
+        emeraldMarkerName: '💚 قلم زمردي (Emerald)',
+        unlockEmeraldBtn: '🪙 فتح القلم الزمردي (25)',
+        eraserBtn: '🧽 ممحاة',
+        undoBtn: '↩️ تراجع',
+        clearBoardBtn: '🗑️ مسح السبورة',
+        stampCatBtn: '🐾 ختم رسمة قطة',
         directMeows: 'الرسائل الخاصة',
         welcomeTo: (ch) => `مرحباً بك في #${ch}!`,
         dmWith: (name) => `محادثة خاصة مع ${name}`,
@@ -905,7 +1060,7 @@
         directMeowBtn: '💬 رسالة خاصة',
         questsHeaderTitle: 'مهام القطط ومتجر عملات مياو',
         questsHeroTitle: 'المهام اليومية ومكافآت المخالب',
-        questsHeroSub: 'تحدث في بيوت القطط، وتفاعل بالمخالب، ورد على الأصدقاء، وأرسل الملصقات لتربح عملات مياو! أنفق عملاتك بالأسفل لفتح الملصقات والشارات الملكية.',
+        questsHeroSub: 'تحدث في بيوت القطط، وتفاعل بالمخالب، ورد على الأصدقاء، وأرسل الملصقات لتربح عملات مياو! أنفق عملاتك بالأسفل لفتح الملصقات والأقلام والشارات الملكية.',
         completedWord: 'مكتملة',
         activeQuestsSection: '🎯 مهام القطط النشطة',
         claimedBtn: '✓ تم الاستلام',
@@ -922,12 +1077,29 @@
         castleCatsSection: (n) => `🐾 قطط القلعة — ${n}`,
         statusHeader: 'الحالة الحالية',
         aboutCatHeader: 'نبذة عن القطة',
-        settingsTitle: '😼 إعدادات الحساب واللغة وحفظ البيانات',
+        settingsTitle: '😼 الملف الشخصي والإعدادات المتقدمة',
         languageLabel: '🌐 لغة الواجهة / UI Language',
         displayNameLabel: 'الاسم المعروض',
         avatarEmojiLabel: 'إيموجي القطة',
         customStatusLabel: 'الحالة المخصصة',
-        ownerBadgeNotice: '👑 شارة المالك (OWNER) مفعّلة دائماً على حسابك.',
+        ownerBadgeNotice: '👑 شارة المالك (OWNER) مفعّلة دائماً على حساب المالك.',
+        advancedSettingsHeader: '🛠️ الإعدادات المتقدمة (Advanced Settings)',
+        profilePreviewLabel: '🪪 معاينة الملف الشخصي المباشرة',
+        phoneOptionalLabel: '📱 رقم الهاتف (اختياري — مكافأة +50 🪙 عملة مياو)',
+        phonePlaceholder: 'اختياري: مثال +966 50 123 4567',
+        phoneClaimedNotice: (p) => `✓ تم ربط رقم الهاتف (${p}) — تم استلام مكافأة +50 🪙 عملة مياو!`,
+        phoneUnclaimedNotice: '🎁 أضف رقم هاتفك (اختياري) إلى حسابك لتحصل فوراً على +50 عملة مياو!',
+        linkPhoneBtn: '📱 ربط الهاتف (+50 🪙)',
+        signInTitle: '🐾 مرحباً بك في CatMsg (PurrCord)',
+        signInSub: 'سجّل الدخول إلى حسابك أو أنشئ حساب قطة جديد! الحسابات الجديدة تبدأ تقدم المهام من الصفر (0).',
+        signInTab: '🔑 تسجيل الدخول',
+        signUpTab: '✨ إنشاء حساب جديد',
+        usernameLabel: 'اسم المستخدم',
+        passwordLabel: 'كلمة المرور',
+        signInBtn: '🔑 دخول إلى CatMsg',
+        signUpBtn: '✨ إنشاء حساب قطة جديد',
+        quickOwnerBtn: '👑 دخول سريع: Captain Purr (المالك)',
+        signOutBtn: '🚪 تسجيل الخروج / تبديل الحساب',
         cancelBtn: 'إلغاء',
         saveBtn: 'حفظ الملف والإعدادات',
         createServerTitle: '🏰 إنشاء بيت قطط جديد',
@@ -938,14 +1110,6 @@
         noPinnedMessages: 'لا توجد رسائل مثبتة في هذه القناة بعد!',
         closeBtn: 'إغلاق',
         savePillText: '💾 محفوظ',
-        dataSavingSectionTitle: '💾 حفظ بيانات المستخدم والنسخ الاحتياطي',
-        autoSaveLabel: 'الحفظ التلقائي للبيانات (في المتصفح والسحابة)',
-        lastSavedText: (t) => `✓ آخر حفظ: ${t}`,
-        saveNowBtn: '💾 حفظ البيانات الآن',
-        cloudRestoreBtn: '☁️ استعادة من السحابة',
-        exportJsonBtn: '📥 تصدير نسخة (.json)',
-        importJsonBtn: '📤 استيراد نسخة (.json)',
-        resetDataBtn: '🔄 إعادة ضبط المصنع',
         presenceLabels: {
           Purring: 'يموء (متصل)',
           Catnapping: 'قيلولة (خامل)',
@@ -1045,20 +1209,40 @@
       { id: 'sticker_bongo', name: 'Bongo Paws Pack', nameAr: 'حزمة طبول المخالب', emojis: ['🐾', '🥁', '😺'], caption: 'BONGO BONGO MEOW', bgHex: '#FFD166', priceCoins: 50 },
       { id: 'sticker_laser', name: 'Red Dot Target Pack', nameAr: 'حزمة هدف النقطة الحمراء', emojis: ['🔴', '👀', '😼'], caption: 'TARGET ACQUIRED', bgHex: '#FF6B6B', priceCoins: 75 },
       { id: 'sticker_box', name: 'If I Fits I Sits Pack', nameAr: 'حزمة عشاق الصناديق', emojis: ['📦', '😺', '✨'], caption: 'IF I FITS, I SITS', bgHex: '#43D9AD', priceCoins: 90 },
-      { id: 'sticker_royal', name: 'Emperor Meow Pack', nameAr: 'حزمة الإمبراطور مياو', emojis: ['👑', '🦁', 'custom:gold_bars'], caption: 'BOW BEFORE THE WHISKERS', bgHex: '#C77DFF', priceCoins: 150 }
+      { id: 'sticker_royal', name: 'Emperor Meow Pack', nameAr: 'حزمة الإمبراطور مياو', emojis: ['👑', '🦁', 'custom:gold_bars'], caption: 'BOW BEFORE THE WHISKERS', bgHex: '#C77DFF', priceCoins: 120 }
     ];
 
     const BADGES = [
+      { badgeTitle: '🪙 MeowCoin Collector', description: 'Proud collector of shiny MeowCoins across the Cat Houses.', descriptionAr: 'جامع فخور لعملات مياو اللامعة في بيوت القطط.', priceCoins: 20 },
       { badgeTitle: '🐟 Tuna Tycoon', description: 'Flaunt your elite taste for sashimi in every chat message.', descriptionAr: 'استعرض ذوقك الرفيع في التونة والساشيمي في كل رسالة.', priceCoins: 60 },
+      { badgeTitle: '💰 MeowCoin Hoarder', description: 'Sitting atop a massive dragon-sized pile of golden MeowCoins.', descriptionAr: 'يجلس فوق جبل ضخم من عملات مياو الذهبية.', priceCoins: 80 },
       { badgeTitle: '🧶 Yarn Master', description: 'Awarded to cats who never get tangled in threads.', descriptionAr: 'تُمنح للقطط المحترفة في اللعب بكرات الصوف.', priceCoins: 80 },
       { badgeTitle: '🌙 Midnight Zoomer', description: 'Certified speedster at 3:00 AM across the hallway.', descriptionAr: 'عدّاء معتمد في الممرات عند الساعة الثالثة فجراً.', priceCoins: 110 },
       { badgeTitle: '👑 Royal Whisker', description: 'The most prestigious golden crown badge in CatMsg.', descriptionAr: 'أرقى شارة ملكية ذهبية في عالم CatMsg.', priceCoins: 200 }
     ];
 
+    const WHITEBOARD_MARKERS = [
+      { id: 'marker_white', name: '🤍 Default White Marker', nameAr: '🤍 قلم أبيض افتراضي', colorHex: '#FFFFFF', priceCoins: 0 },
+      { id: 'marker_emerald', name: '💚 Emerald Marker', nameAr: '💚 قلم زمردي (Emerald)', colorHex: '#10B981', priceCoins: 25 }
+    ];
+
     const REACTION_PALETTE = ['🐾', '😻', '🐟', '🧶', '🥛', '😾', '⚡', '👑'];
+
+    function createZeroProgressQuests() {
+      return [
+        { id: 'q_msg', title: 'Vocal Meower', titleAr: 'مواء مسموع', description: 'Send 3 messages in any Cat House channel or DM.', descriptionAr: 'أرسل 3 رسائل في أي قناة أو محادثة خاصة.', iconEmoji: '🗣️', category: 'Daily Paws', categoryAr: 'مهام يومية', actionType: 'sendMessages', targetCount: 3, currentProgress: 0, rewardCoins: 50, isClaimed: false },
+        { id: 'q_react', title: 'Paws of Approval', titleAr: 'بصمة المخالب', description: 'React to 3 messages using Cat Reactions (🐾, 😻, 🐟...).', descriptionAr: 'تفاعل مع 3 رسائل باستخدام رموز القطط (🐾، 😻، 🐟...).', iconEmoji: '🐾', category: 'Daily Paws', categoryAr: 'مهام يومية', actionType: 'addReactions', targetCount: 3, currentProgress: 0, rewardCoins: 45, isClaimed: false },
+        { id: 'q_sticker', title: 'Expressive Whiskers', titleAr: 'شوارب معبّرة', description: 'Send 2 custom Cat Stickers in chat.', descriptionAr: 'أرسل ملصقين من ملصقات القطط في الدردشة.', iconEmoji: '🏷️', category: 'Social Whiskers', categoryAr: 'مهام اجتماعية', actionType: 'sendSticker', targetCount: 2, currentProgress: 0, rewardCoins: 65, isClaimed: false },
+        { id: 'q_reply', title: 'Polite Purr', titleAr: 'خرخرة مهذبة', description: 'Reply directly to another cat\'s message.', descriptionAr: 'قم بالرد المباشر على رسالة قطة أخرى.', iconEmoji: '↩️', category: 'Social Whiskers', categoryAr: 'مهام اجتماعية', actionType: 'replyMessage', targetCount: 1, currentProgress: 0, rewardCoins: 50, isClaimed: false },
+        { id: 'q_dm', title: 'Friendly Snoot Boop', titleAr: 'رسالة صداقة لطيفة', description: 'Send a Direct Meow (DM) to one of your Cat Friends.', descriptionAr: 'أرسل رسالة خاصة (DM) إلى أحد أصدقائك من القطط.', iconEmoji: '💌', category: 'Social Whiskers', categoryAr: 'مهام اجتماعية', actionType: 'sendDm', targetCount: 1, currentProgress: 0, rewardCoins: 60, isClaimed: false },
+        { id: 'q_explore', title: 'Curious Territory Explorer', titleAr: 'مستكشف القلعة الفضولي', description: 'Visit 4 different channels across the Cat Houses.', descriptionAr: 'قم بزيارة 4 قنوات مختلفة عبر بيوت القطط.', iconEmoji: '🧭', category: 'Legend Milestones', categoryAr: 'إنجازات أسطورية', actionType: 'visitChannels', targetCount: 4, currentProgress: 0, rewardCoins: 75, isClaimed: false }
+      ];
+    }
 
     const state = {
       lang: localStorage.getItem('catmsg_lang') || 'en',
+      isSignedIn: true,
+      authTab: 'signin',
       autoSaveEnabled: true,
       lastSavedAt: 'Just now',
       navMode: 'server',
@@ -1075,6 +1259,22 @@
       modal: null,
       visitedChannels: new Set(['chan_general_meows']),
 
+      // Whiteboard state (Just for Fun, No Rewards)
+      activeMarkerId: 'marker_white',
+      whiteboardTool: 'pen', // 'pen' | 'eraser'
+      whiteboardBrushSize: 5,
+      whiteboardStrokes: [
+        {
+          color: '#FFFFFF',
+          size: 4,
+          points: [
+            { x: 140, y: 150 }, { x: 155, y: 110 }, { x: 175, y: 140 },
+            { x: 225, y: 140 }, { x: 245, y: 110 }, { x: 260, y: 150 },
+            { x: 265, y: 205 }, { x: 200, y: 230 }, { x: 135, y: 205 }, { x: 140, y: 150 }
+          ]
+        }
+      ],
+
       currentUser: {
         id: 'user_captain',
         username: 'captain_purr',
@@ -1087,10 +1287,13 @@
         roleTitle: 'Owner',
         roleColor: '#FFD166',
         isOwner: true,
+        phoneNumber: '',
+        phoneRewardClaimed: false,
         bio: 'Founder & Supreme Owner of The Grand Cat Castle. Will trade headbutts for premium salmon.',
         meowCoins: 250,
         unlockedStickerIds: ['sticker_loaf', 'sticker_zoomies', 'sticker_boop', 'sticker_tuna'],
         unlockedBadges: ['👑 Supreme Loaf', '🐾 Day One Paws'],
+        unlockedMarkers: ['marker_white'],
         equippedBadge: '👑 Supreme Loaf',
         friendIds: ['user_mochi', 'user_pounce', 'user_duchess', 'user_mittens', 'user_shadow']
       },
@@ -1242,7 +1445,7 @@
             senderRoleColor: '#FFD166',
             senderIsOwner: true,
             senderBadge: '👑 Supreme Loaf',
-            content: 'Welcome to The Grand Cat Castle! 🏰🐾 As Server Owner, I have enabled Daily MeowCoin Quests, Arabic UI support (العربية), and User Data Saving (💾) in Settings ⚙️!',
+            content: 'Welcome to The Grand Cat Castle! 🏰🐾 As Server Owner, I have enabled Sign-In/Sign-Up, Advanced Settings (Live Profile Preview + Optional Phone +50 🪙 bonus), the Discord-style Cat Whiteboard 🎨, and new MeowCoin Collector/Hoarder badges!',
             reactions: { '👑': ['user_mochi', 'user_pounce', 'user_duchess', 'user_mittens'], '🐾': ['user_shadow'] },
             time: '6:35 PM',
             isPinned: true
@@ -1254,7 +1457,7 @@
             senderAvatar: '🦁',
             senderRoleColor: '#FF7EB6',
             senderBadge: '🛡️ Treat Guardian',
-            content: 'All hail our Castle Owner @Captain Purr! 👑🦁 Check the Quests & MeowCoins (🪙) tab to claim rewards for chatting, reacting, and sending stickers!',
+            content: 'All hail our Castle Owner @Captain Purr! 👑🦁 Check the Quests & MeowCoins (🪙) tab or try the new 🎨 Cat Whiteboard activity!',
             reactions: { '🐾': ['user_captain', 'user_mochi', 'user_shadow'] },
             time: '6:40 PM',
             isPinned: false
@@ -1304,20 +1507,32 @@
         ]
       },
 
-      quests: [
-        { id: 'q_msg', title: 'Vocal Meower', titleAr: 'مواء مسموع', description: 'Send 3 messages in any Cat House channel or DM.', descriptionAr: 'أرسل 3 رسائل في أي قناة أو محادثة خاصة.', iconEmoji: '🗣️', category: 'Daily Paws', categoryAr: 'مهام يومية', actionType: 'sendMessages', targetCount: 3, currentProgress: 1, rewardCoins: 50, isClaimed: false },
-        { id: 'q_react', title: 'Paws of Approval', titleAr: 'بصمة المخالب', description: 'React to 3 messages using Cat Reactions (🐾, 😻, 🐟...).', descriptionAr: 'تفاعل مع 3 رسائل باستخدام رموز القطط (🐾، 😻، 🐟...).', iconEmoji: '🐾', category: 'Daily Paws', categoryAr: 'مهام يومية', actionType: 'addReactions', targetCount: 3, currentProgress: 2, rewardCoins: 45, isClaimed: false },
-        { id: 'q_sticker', title: 'Expressive Whiskers', titleAr: 'شوارب معبّرة', description: 'Send 2 custom Cat Stickers in chat.', descriptionAr: 'أرسل ملصقين من ملصقات القطط في الدردشة.', iconEmoji: '🏷️', category: 'Social Whiskers', categoryAr: 'مهام اجتماعية', actionType: 'sendSticker', targetCount: 2, currentProgress: 0, rewardCoins: 65, isClaimed: false },
-        { id: 'q_reply', title: 'Polite Purr', titleAr: 'خرخرة مهذبة', description: 'Reply directly to another cat\'s message.', descriptionAr: 'قم بالرد المباشر على رسالة قطة أخرى.', iconEmoji: '↩️', category: 'Social Whiskers', categoryAr: 'مهام اجتماعية', actionType: 'replyMessage', targetCount: 1, currentProgress: 0, rewardCoins: 50, isClaimed: false },
-        { id: 'q_dm', title: 'Friendly Snoot Boop', titleAr: 'رسالة صداقة لطيفة', description: 'Send a Direct Meow (DM) to one of your Cat Friends.', descriptionAr: 'أرسل رسالة خاصة (DM) إلى أحد أصدقائك من القطط.', iconEmoji: '💌', category: 'Social Whiskers', categoryAr: 'مهام اجتماعية', actionType: 'sendDm', targetCount: 1, currentProgress: 0, rewardCoins: 60, isClaimed: false },
-        { id: 'q_explore', title: 'Curious Territory Explorer', titleAr: 'مستكشف القلعة الفضولي', description: 'Visit 4 different channels across the Cat Houses.', descriptionAr: 'قم بزيارة 4 قنوات مختلفة عبر بيوت القطط.', iconEmoji: '🧭', category: 'Legend Milestones', categoryAr: 'إنجازات أسطورية', actionType: 'visitChannels', targetCount: 4, currentProgress: 1, rewardCoins: 75, isClaimed: false }
-      ]
+      quests: createZeroProgressQuests()
     };
 
-    // --- AUTOMATIC USER DATA PERSISTENCE ENGINE ---
+    // --- SIGN-IN ACCOUNTS & AUTOMATIC USER DATA PERSISTENCE ENGINE ---
+    function getStoredAccounts() {
+      try {
+        const raw = localStorage.getItem(ACCOUNTS_KEY);
+        if (raw) return JSON.parse(raw);
+      } catch (e) {}
+      return {};
+    }
+
+    function saveStoredAccounts(accountsObj) {
+      try {
+        localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accountsObj));
+      } catch (e) {}
+    }
+
+    function getUserStorageKey(username) {
+      const clean = (username || 'captain_purr').toLowerCase().trim();
+      return clean === 'captain_purr' ? STORAGE_KEY : `catmsg_user_${clean}_v2`;
+    }
+
     function buildSerializableSnapshot() {
       return {
-        version: 1,
+        version: 2,
         savedAt: new Date().toISOString(),
         lang: state.lang,
         currentUser: state.currentUser,
@@ -1325,6 +1540,7 @@
         servers: state.servers,
         messagesByChannel: state.messagesByChannel,
         quests: state.quests,
+        whiteboardStrokes: state.whiteboardStrokes,
         visitedChannels: Array.from(state.visitedChannels)
       };
     }
@@ -1332,20 +1548,46 @@
     function applySnapshot(snap) {
       if (!snap || typeof snap !== 'object') return false;
       if (snap.lang) state.lang = snap.lang;
-      if (snap.currentUser) state.currentUser = { ...state.currentUser, ...snap.currentUser, isOwner: true };
+      if (snap.currentUser) {
+        const isCapt = (snap.currentUser.username || '').toLowerCase() === 'captain_purr';
+        state.currentUser = {
+          phoneNumber: '',
+          phoneRewardClaimed: false,
+          unlockedMarkers: ['marker_white'],
+          ...state.currentUser,
+          ...snap.currentUser,
+          isOwner: isCapt ? true : !!snap.currentUser.isOwner
+        };
+        if (!Array.isArray(state.currentUser.unlockedMarkers) || state.currentUser.unlockedMarkers.length === 0) {
+          state.currentUser.unlockedMarkers = ['marker_white'];
+        }
+      }
       if (snap.users) state.users = snap.users;
       if (Array.isArray(snap.servers) && snap.servers.length > 0) state.servers = snap.servers;
       if (snap.messagesByChannel) state.messagesByChannel = snap.messagesByChannel;
-      if (Array.isArray(snap.quests) && snap.quests.length > 0) state.quests = snap.quests;
+      if (Array.isArray(snap.quests) && snap.quests.length > 0) {
+        // If migrating from v1 where progress was pre-seeded (1 and 2) and nothing was claimed yet, reset to 0
+        if (!snap.version) {
+          const fresh = createZeroProgressQuests();
+          state.quests = fresh;
+        } else {
+          state.quests = snap.quests;
+        }
+      }
+      if (Array.isArray(snap.whiteboardStrokes) && snap.whiteboardStrokes.length > 0) {
+        state.whiteboardStrokes = snap.whiteboardStrokes;
+      }
       if (Array.isArray(snap.visitedChannels)) state.visitedChannels = new Set(snap.visitedChannels);
       document.documentElement.lang = state.lang;
       document.documentElement.dir = state.lang === 'ar' ? 'rtl' : 'ltr';
       return true;
     }
 
-    function loadSavedUserData() {
+    function loadSavedUserData(targetUsername = null) {
+      const activeUser = (targetUsername || localStorage.getItem(ACTIVE_USER_KEY) || 'captain_purr').toLowerCase();
+      const storageKey = getUserStorageKey(activeUser);
       try {
-        const raw = localStorage.getItem(STORAGE_KEY);
+        const raw = localStorage.getItem(storageKey);
         if (raw) {
           applySnapshot(JSON.parse(raw));
         }
@@ -1353,14 +1595,12 @@
         console.warn('Could not load saved user data:', e);
       }
 
-      // Also check cloud edge storage silently in the background
-      const key = (state.currentUser.username || 'captain_purr').toLowerCase();
-      fetch(`/api/userdata?key=${encodeURIComponent(key)}`)
+      fetch(`/api/userdata?key=${encodeURIComponent(activeUser)}`)
         .then(r => r.json())
         .then(data => {
-          if (!localStorage.getItem(STORAGE_KEY) && data && data.found && data.snapshot) {
+          if (!localStorage.getItem(storageKey) && data && data.found && data.snapshot) {
             applySnapshot(data.snapshot);
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(data.snapshot));
+            localStorage.setItem(storageKey, JSON.stringify(data.snapshot));
             render();
           }
         })
@@ -1370,10 +1610,12 @@
     function autoPersistIfEnabled() {
       try {
         const snap = buildSerializableSnapshot();
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(snap));
+        const key = (state.currentUser.username || 'captain_purr').toLowerCase();
+        const storageKey = getUserStorageKey(key);
+        localStorage.setItem(storageKey, JSON.stringify(snap));
+        localStorage.setItem(ACTIVE_USER_KEY, key);
         localStorage.setItem('catmsg_lang', state.lang);
 
-        const key = (state.currentUser.username || 'captain_purr').toLowerCase();
         fetch(`/api/userdata?key=${encodeURIComponent(key)}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -1386,6 +1628,162 @@
 
     // Hydrate saved user data on startup
     loadSavedUserData();
+
+    // --- SIGN IN / SIGN UP / SIGN OUT FUNCTIONS ---
+    function openSignInModal() {
+      state.isSignedIn = false;
+      state.authTab = 'signin';
+      state.modal = null;
+      render();
+    }
+
+    function quickOwnerLogin() {
+      state.currentUser = {
+        id: 'user_captain',
+        username: 'captain_purr',
+        displayName: 'Captain Purr',
+        avatarEmoji: '😼',
+        avatarColorHex: '#FF7EB6',
+        presence: 'Purring',
+        presenceColor: '#43B581',
+        customStatus: 'Castle Owner & MeowCoin Hunter 🔴👑',
+        roleTitle: 'Owner',
+        roleColor: '#FFD166',
+        isOwner: true,
+        phoneNumber: state.currentUser.phoneNumber || '',
+        phoneRewardClaimed: !!state.currentUser.phoneRewardClaimed,
+        bio: 'Founder & Supreme Owner of The Grand Cat Castle. Will trade headbutts for premium salmon.',
+        meowCoins: state.currentUser.username === 'captain_purr' ? state.currentUser.meowCoins : 250,
+        unlockedStickerIds: ['sticker_loaf', 'sticker_zoomies', 'sticker_boop', 'sticker_tuna'],
+        unlockedBadges: ['👑 Supreme Loaf', '🐾 Day One Paws'],
+        unlockedMarkers: ['marker_white'],
+        equippedBadge: '👑 Supreme Loaf',
+        friendIds: ['user_mochi', 'user_pounce', 'user_duchess', 'user_mittens', 'user_shadow']
+      };
+      loadSavedUserData('captain_purr');
+      state.isSignedIn = true;
+      localStorage.setItem(ACTIVE_USER_KEY, 'captain_purr');
+      autoPersistIfEnabled();
+      showToast(state.lang === 'ar' ? '👑 مرحباً بعودتك يا قائد القلعة Captain Purr!' : '👑 Welcome back, Castle Owner Captain Purr!');
+    }
+
+    function handleSignInSubmit() {
+      const uEl = document.getElementById('auth-username');
+      const pEl = document.getElementById('auth-password');
+      const username = (uEl ? uEl.value : '').trim().toLowerCase().replace(/\s+/g, '_');
+      const password = (pEl ? pEl.value : '').trim();
+      if (!username) {
+        showToast(state.lang === 'ar' ? '😾 يرجى إدخال اسم المستخدم!' : '😾 Please enter your username!');
+        return;
+      }
+      if (username === 'captain_purr' || username === 'captainpurr' || username === 'owner') {
+        quickOwnerLogin();
+        return;
+      }
+      const accounts = getStoredAccounts();
+      const acc = accounts[username];
+      if (acc && acc.password && password && acc.password !== password) {
+        showToast(state.lang === 'ar' ? '😾 كلمة المرور غير صحيحة!' : '😾 Incorrect password!');
+        return;
+      }
+      if (acc && acc.snapshot) {
+        applySnapshot(acc.snapshot);
+      } else {
+        // Sign in as existing or fresh cat profile with 0 quest progress
+        state.currentUser = {
+          id: 'user_' + username,
+          username: username,
+          displayName: acc ? acc.displayName : username,
+          avatarEmoji: acc ? acc.avatarEmoji : '🐱',
+          avatarColorHex: '#43D9AD',
+          presence: 'Purring',
+          presenceColor: '#43B581',
+          customStatus: 'Meowing in CatMsg! 🐾',
+          roleTitle: 'Cat Member',
+          roleColor: '#43D9AD',
+          isOwner: false,
+          phoneNumber: '',
+          phoneRewardClaimed: false,
+          bio: 'A friendly cat exploring The Grand Cat Castle.',
+          meowCoins: 50,
+          unlockedStickerIds: ['sticker_loaf', 'sticker_zoomies', 'sticker_boop', 'sticker_tuna'],
+          unlockedBadges: ['🐾 Day One Paws'],
+          unlockedMarkers: ['marker_white'],
+          equippedBadge: '🐾 Day One Paws',
+          friendIds: ['user_mochi', 'user_pounce', 'user_duchess', 'user_mittens', 'user_shadow']
+        };
+        state.quests = createZeroProgressQuests();
+        state.visitedChannels = new Set();
+        loadSavedUserData(username);
+      }
+      state.isSignedIn = true;
+      localStorage.setItem(ACTIVE_USER_KEY, username);
+      autoPersistIfEnabled();
+      showToast(state.lang === 'ar' ? `🐾 تم تسجيل الدخول باسم @${username}!` : `🐾 Signed in as @${username}!`);
+    }
+
+    function handleSignUpSubmit() {
+      const uEl = document.getElementById('signup-username');
+      const dEl = document.getElementById('signup-display');
+      const eEl = document.getElementById('signup-emoji');
+      const pEl = document.getElementById('signup-password');
+
+      const rawUser = (uEl ? uEl.value : '').trim();
+      const displayName = (dEl && dEl.value.trim()) ? dEl.value.trim() : rawUser;
+      const emoji = (eEl && eEl.value.trim()) ? eEl.value.trim() : '😺';
+      const password = (pEl ? pEl.value : '').trim();
+
+      if (!rawUser) {
+        showToast(state.lang === 'ar' ? '😾 اختر اسم مستخدم للقطة الجديدة!' : '😾 Please choose a username for your new cat!');
+        return;
+      }
+      const username = rawUser.toLowerCase().replace(/\s+/g, '_');
+
+      // Newer users always start with ALL quest progress at 0!
+      state.currentUser = {
+        id: 'user_' + Date.now(),
+        username: username,
+        displayName: displayName,
+        avatarEmoji: emoji,
+        avatarColorHex: '#5CE1E6',
+        presence: 'Purring',
+        presenceColor: '#43B581',
+        customStatus: 'New kitty in the Castle! 🐾',
+        roleTitle: 'Kitten',
+        roleColor: '#5CE1E6',
+        isOwner: false,
+        phoneNumber: '',
+        phoneRewardClaimed: false,
+        bio: 'Brand new CatMsg member starting fresh quests from zero!',
+        meowCoins: 50,
+        unlockedStickerIds: ['sticker_loaf', 'sticker_zoomies', 'sticker_boop', 'sticker_tuna'],
+        unlockedBadges: ['🐾 New Kitty'],
+        unlockedMarkers: ['marker_white'],
+        equippedBadge: '🐾 New Kitty',
+        friendIds: ['user_mochi', 'user_pounce', 'user_duchess', 'user_mittens', 'user_shadow']
+      };
+      state.quests = createZeroProgressQuests();
+      state.visitedChannels = new Set();
+
+      const accounts = getStoredAccounts();
+      accounts[username] = {
+        username,
+        displayName,
+        avatarEmoji: emoji,
+        password,
+        snapshot: buildSerializableSnapshot()
+      };
+      saveStoredAccounts(accounts);
+
+      state.isSignedIn = true;
+      localStorage.setItem(ACTIVE_USER_KEY, username);
+      autoPersistIfEnabled();
+      showToast(
+        state.lang === 'ar'
+          ? `🎉 مرحباً @${username}! تم إنشاء حسابك وتبدأ جميع المهام من 0!`
+          : `🎉 Welcome @${username}! Account created with all quest progress starting at 0!`
+      );
+    }
 
     function t() {
       return I18N[state.lang] || I18N.en;
@@ -1497,6 +1895,40 @@
       render();
     }
 
+    function openWhiteboard() {
+      state.navMode = 'whiteboard';
+      state.mobileSidebarOpen = false;
+      render();
+      setTimeout(initWhiteboardCanvas, 30);
+    }
+
+    function selectOrUnlockMarker(markerId) {
+      const marker = WHITEBOARD_MARKERS.find(m => m.id === markerId);
+      if (!marker) return;
+      if (!Array.isArray(state.currentUser.unlockedMarkers)) {
+        state.currentUser.unlockedMarkers = ['marker_white'];
+      }
+      const owned = state.currentUser.unlockedMarkers.includes(marker.id) || marker.priceCoins === 0;
+      if (owned) {
+        state.activeMarkerId = marker.id;
+        state.whiteboardTool = 'pen';
+        render();
+        setTimeout(initWhiteboardCanvas, 20);
+        return;
+      }
+      if (state.currentUser.meowCoins < marker.priceCoins) {
+        showToast(state.lang === 'ar' ? `😾 تحتاج إلى ${marker.priceCoins} عملة مياو لفتح القلم الزمردي!` : `😾 Need ${marker.priceCoins} MeowCoins to unlock ${marker.name}!`);
+        return;
+      }
+      state.currentUser.meowCoins -= marker.priceCoins;
+      state.currentUser.unlockedMarkers.push(marker.id);
+      state.activeMarkerId = marker.id;
+      state.whiteboardTool = 'pen';
+      autoPersistIfEnabled();
+      showToast(state.lang === 'ar' ? '💚 تم فتح القلم الزمردي (Emerald Marker) بنجاح!' : '💚 Unlocked Emerald Marker for 25 MeowCoins!');
+      setTimeout(initWhiteboardCanvas, 20);
+    }
+
     function sendMessage(contentText, stickerId = null, singleEmoji = null) {
       const trimmed = (contentText || '').trim();
       if (!trimmed && !stickerId && !singleEmoji) return;
@@ -1511,7 +1943,7 @@
         senderName: state.currentUser.displayName,
         senderAvatar: state.currentUser.avatarEmoji,
         senderRoleColor: state.currentUser.roleColor,
-        senderIsOwner: true,
+        senderIsOwner: !!state.currentUser.isOwner,
         senderBadge: state.currentUser.equippedBadge,
         content: trimmed,
         stickerId: stickerId,
@@ -1553,16 +1985,16 @@
         if (!responder) return;
 
         const repliesEn = [
-          `Pawsitively agreed, Owner @${state.currentUser.displayName}! 👑🐾 Let's celebrate with extra tuna!`,
-          `Mrrrow! *vibrates at 45Hz purr frequency* 😺🎶 Your Royal Owner orders are our command!`,
+          `Pawsitively agreed, @${state.currentUser.displayName}! 👑🐾 Let's celebrate with extra tuna!`,
+          `Mrrrow! *vibrates at 45Hz purr frequency* 😺🎶 Your orders are our command!`,
           `DID SOMEBODY SAY TUNA?! 🐟👀 I sprinted from the windowsill in 0.4 seconds!`,
-          `10/10 take, Boss! Awarding you maximum purrs for the evening 🍞👑`
+          `10/10 take! Awarding you maximum purrs for the evening 🍞👑`
         ];
         const repliesAr = [
-          `نتفق معك تماماً أيها المالك @${state.currentUser.displayName}! 👑🐾 لنحتفل بوجبة تونة فاخرة!`,
-          `مياااو! *خرخرة عالية التردد* 😺🎶 أوامرك الملكية مطاعة في القلعة!`,
+          `نتفق معك تماماً @${state.currentUser.displayName}! 👑🐾 لنحتفل بوجبة تونة فاخرة!`,
+          `مياااو! *خرخرة عالية التردد* 😺🎶 أوامرك مطاعة في القلعة!`,
           `هل ذكر أحدكم التونة؟! 🐟👀 لقد ركضت من النافذة في 0.4 ثانية!`,
-          `كلام حكيم 10/10 أيها القائد! 🍞👑 لا تنسَ تفقد مهام عملات مياو!`
+          `كلام حكيم 10/10! 🍞👑 لا تنسَ تفقد مهام عملات مياو!`
         ];
         const pool = state.lang === 'ar' ? repliesAr : repliesEn;
 
@@ -1694,8 +2126,69 @@
         .replace(/>/g, '&gt;');
     }
 
+    function renderAuthPortal() {
+      const L = t();
+      return `
+        <div class="auth-overlay">
+          <div class="auth-card">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="font-size:32px">🏰😼</div>
+              <div class="lang-pill" onclick="toggleLanguageQuick()">🌐 ${state.lang === 'ar' ? 'English' : 'العربية'}</div>
+            </div>
+            <div style="font-weight:900;font-size:21px;margin-top:8px">${L.signInTitle}</div>
+            <div style="color:var(--text-secondary);font-size:13px;margin-top:4px;line-height:1.45">${L.signInSub}</div>
+
+            <div class="auth-tabs">
+              <button class="auth-tab ${state.authTab === 'signin' ? 'active' : ''}" onclick="state.authTab='signin';render()">${L.signInTab}</button>
+              <button class="auth-tab ${state.authTab === 'signup' ? 'active' : ''}" onclick="state.authTab='signup';render()">${L.signUpTab}</button>
+            </div>
+
+            ${state.authTab === 'signin' ? `
+              <div style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:4px">${L.usernameLabel}</div>
+              <input id="auth-username" class="composer-input" style="width:100%;margin-bottom:10px" placeholder="e.g. captain_purr" value="captain_purr" />
+
+              <div style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:4px">${L.passwordLabel}</div>
+              <input id="auth-password" type="password" class="composer-input" style="width:100%;margin-bottom:14px" placeholder="••••••••" value="meow123" onkeydown="if(event.key==='Enter'){handleSignInSubmit()}" />
+
+              <button class="btn-primary" style="width:100%;justify-content:center;padding:12px" onclick="handleSignInSubmit()">
+                ${L.signInBtn}
+              </button>
+
+              <button class="btn-gold" style="width:100%;margin-top:10px;padding:11px" onclick="quickOwnerLogin()">
+                ${L.quickOwnerBtn}
+              </button>
+            ` : `
+              <div style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:4px">${L.usernameLabel}</div>
+              <input id="signup-username" class="composer-input" style="width:100%;margin-bottom:10px" placeholder="e.g. whisker_knight" />
+
+              <div style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:4px">${L.displayNameLabel}</div>
+              <input id="signup-display" class="composer-input" style="width:100%;margin-bottom:10px" placeholder="e.g. Whisker Knight" />
+
+              <div style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:4px">${L.avatarEmojiLabel}</div>
+              <input id="signup-emoji" class="composer-input" style="width:100%;margin-bottom:10px" value="😺" placeholder="😺, 🐱, 🦁, 🐈‍⬛" />
+
+              <div style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:4px">${L.passwordLabel}</div>
+              <input id="signup-password" type="password" class="composer-input" style="width:100%;margin-bottom:14px" placeholder="Create password..." onkeydown="if(event.key==='Enter'){handleSignUpSubmit()}" />
+
+              <button class="btn-primary" style="width:100%;justify-content:center;padding:12px" onclick="handleSignUpSubmit()">
+                ${L.signUpBtn}
+              </button>
+            `}
+          </div>
+        </div>
+      `;
+    }
+
     function render() {
       const L = t();
+      if (!state.isSignedIn) {
+        document.getElementById('app').innerHTML = `
+          ${renderAuthPortal()}
+          ${state.toast ? `<div class="toast-box">${escapeHtml(state.toast)}</div>` : ''}
+        `;
+        return;
+      }
+
       const claimableCount = state.quests.filter(q => q.currentProgress >= q.targetCount && !q.isClaimed).length;
       const completedCount = state.quests.filter(q => q.currentProgress >= q.targetCount).length;
       const srv = getCurrentServer();
@@ -1719,6 +2212,11 @@
               </div>
             </div>
 
+            <div class="rail-btn-wrap ${state.navMode === 'whiteboard' ? 'active' : ''}" onclick="openWhiteboard()" title="${L.whiteboardNav}">
+              <div class="rail-pill" style="background: var(--mint)"></div>
+              <div class="rail-btn">🎨</div>
+            </div>
+
             <div class="rail-divider"></div>
 
             ${state.servers.map(s => `
@@ -1736,6 +2234,10 @@
 
             <div class="rail-btn-wrap" onclick="state.modal='editProfile';render()" title="${L.settingsTitle}">
               <div class="rail-btn" style="font-size:19px">⚙️</div>
+            </div>
+
+            <div class="rail-btn-wrap" onclick="openSignInModal()" title="${L.signOutBtn}">
+              <div class="rail-btn" style="font-size:18px">🔑</div>
             </div>
           </div>
 
@@ -1770,41 +2272,54 @@
               <div style="flex:1;min-width:0;cursor:pointer" onclick="state.modal='editProfile';render()">
                 <div style="display:flex;align-items:center;gap:5px">
                   <span style="font-weight:800;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--gold)">${escapeHtml(state.currentUser.displayName)}</span>
-                  <span class="owner-tag">${L.ownerTag}</span>
+                  ${state.currentUser.isOwner ? `<span class="owner-tag">${L.ownerTag}</span>` : ''}
                 </div>
                 <div style="font-size:11px;color:${state.currentUser.presenceColor};font-weight:700;margin-top:2px">
                   ${L.presenceLabels[state.currentUser.presence] || state.currentUser.presence}
                 </div>
               </div>
               <button class="icon-btn" title="${L.settingsTitle}" onclick="state.modal='editProfile';render()">⚙️</button>
+              <button class="icon-btn" title="${L.signOutBtn}" onclick="openSignInModal()">🔑</button>
             </div>
           </div>
 
           <!-- 3. MAIN CENTER CONTENT -->
           <div class="main-view">
-            ${state.navMode === 'quests'
-              ? renderQuestsAndShopView()
-              : (state.navMode === 'dms' && state.dmSubView === 'friends'
-                  ? renderFriendsDashboard()
-                  : renderChatView(ch))}
+            ${state.navMode === 'whiteboard'
+              ? renderWhiteboardView()
+              : (state.navMode === 'quests'
+                  ? renderQuestsAndShopView()
+                  : (state.navMode === 'dms' && state.dmSubView === 'friends'
+                      ? renderFriendsDashboard()
+                      : renderChatView(ch)))}
           </div>
 
           <!-- 4. MEMBER / DOSSIER SIDEBAR -->
-          ${state.navMode !== 'quests' ? renderRightSidebar() : ''}
+          ${(state.navMode !== 'quests' && state.navMode !== 'whiteboard') ? renderRightSidebar() : ''}
         </div>
 
         ${state.toast ? `<div class="toast-box">${escapeHtml(state.toast)}</div>` : ''}
         ${state.modal ? renderModal() : ''}
       `;
+
+      if (state.navMode === 'whiteboard') {
+        setTimeout(initWhiteboardCanvas, 20);
+      }
     }
 
     function renderServerChannels(srv) {
-      return srv.categories.map(cat => `
+      const L = t();
+      return `
+        <div class="chan-item ${state.navMode === 'whiteboard' ? 'active' : ''}" onclick="openWhiteboard()" style="border:1px dashed rgba(67,217,173,0.4);margin-bottom:6px">
+          <span>🎨</span>
+          <span style="color:var(--mint);font-weight:800">${L.whiteboardNav}</span>
+        </div>
+      ` + srv.categories.map(cat => `
         <div class="cat-header">
           <span>${escapeHtml(cat.name)}</span>
         </div>
         ${cat.channels.map(c => `
-          <div class="chan-item ${state.selectedChannelId === c.id ? 'active' : ''}" onclick="selectChannel('${c.id}')">
+          <div class="chan-item ${state.navMode === 'server' && state.selectedChannelId === c.id ? 'active' : ''}" onclick="selectChannel('${c.id}')">
             <span>${c.prefix}</span>
             <span>${escapeHtml(c.name)}</span>
           </div>
@@ -1824,6 +2339,10 @@
           <span>🪙</span>
           <span>${L.questsAndEmporium}</span>
         </div>
+        <div class="chan-item ${state.navMode === 'whiteboard' ? 'active' : ''}" onclick="openWhiteboard()">
+          <span>🎨</span>
+          <span style="color:var(--mint);font-weight:800">${L.whiteboardNav}</span>
+        </div>
         <div class="cat-header" style="margin-top:12px">
           <span>${L.directMeows}</span>
         </div>
@@ -1840,6 +2359,181 @@
           </div>
         `).join('')}
       `;
+    }
+
+    function renderWhiteboardView() {
+      const L = t();
+      const unlockedMarkers = state.currentUser.unlockedMarkers || ['marker_white'];
+      const emeraldOwned = unlockedMarkers.includes('marker_emerald');
+
+      return `
+        <div class="top-bar">
+          <button class="icon-btn" onclick="state.mobileSidebarOpen=!state.mobileSidebarOpen;render()">☰</button>
+          <span style="font-size:20px">🎨</span>
+          <span style="font-weight:800;font-size:15.5px">${L.whiteboardTitle}</span>
+          <span class="badge-tag" style="color:var(--mint);border-color:rgba(67,217,173,0.45)">No Rewards • Fun Activity</span>
+          <div style="flex:1"></div>
+          <div class="lang-pill" onclick="toggleLanguageQuick()">🌐 ${state.lang === 'ar' ? 'English' : 'العربية'}</div>
+          <div class="coin-pill" onclick="openQuests()">🪙 ${state.currentUser.meowCoins}</div>
+        </div>
+
+        <div class="whiteboard-wrap">
+          <div class="whiteboard-toolbar">
+            <!-- Free Default White Marker -->
+            <button class="marker-btn ${state.whiteboardTool === 'pen' && state.activeMarkerId === 'marker_white' ? 'selected' : ''}" onclick="selectOrUnlockMarker('marker_white')">
+              <span class="marker-swatch" style="background:#FFFFFF"></span>
+              <span>${L.whiteMarkerName}</span>
+            </button>
+
+            <!-- Emerald Marker (25 MeowCoins) -->
+            ${emeraldOwned ? `
+              <button class="marker-btn ${state.whiteboardTool === 'pen' && state.activeMarkerId === 'marker_emerald' ? 'selected' : ''}" onclick="selectOrUnlockMarker('marker_emerald')">
+                <span class="marker-swatch" style="background:#10B981"></span>
+                <span style="color:#10B981">${L.emeraldMarkerName} (✓)</span>
+              </button>
+            ` : `
+              <button class="btn-gold" onclick="selectOrUnlockMarker('marker_emerald')">
+                <span class="marker-swatch" style="background:#10B981;vertical-align:middle;margin-inline-end:4px"></span>
+                ${L.unlockEmeraldBtn}
+              </button>
+            `}
+
+            <button class="marker-btn ${state.whiteboardTool === 'eraser' ? 'selected' : ''}" onclick="state.whiteboardTool='eraser';render()">
+              ${L.eraserBtn}
+            </button>
+
+            <div style="display:flex;align-items:center;gap:6px;margin-inline-start:6px">
+              <span style="font-size:11.5px;color:var(--text-secondary);font-weight:700">Size:</span>
+              ${[3, 6, 11].map(sz => `
+                <button class="btn-outline" style="padding:5px 9px;border-color:${state.whiteboardBrushSize === sz ? 'var(--paw-pink)' : 'var(--border)'}" onclick="state.whiteboardBrushSize=${sz};render()">
+                  ${sz}px
+                </button>
+              `).join('')}
+            </div>
+
+            <div style="flex:1"></div>
+
+            <button class="btn-outline" onclick="stampCatOnWhiteboard()">${L.stampCatBtn}</button>
+            <button class="btn-outline" onclick="undoWhiteboardStroke()">${L.undoBtn}</button>
+            <button class="btn-outline" style="color:var(--coral)" onclick="clearWhiteboard()">${L.clearBoardBtn}</button>
+          </div>
+
+          <div class="whiteboard-stage" id="whiteboard-stage">
+            <canvas id="cat-whiteboard-canvas" style="width:100%;height:100%;display:block;touch-action:none"></canvas>
+            <div style="position:absolute;bottom:12px;inset-inline-start:16px;pointer-events:none;font-size:12px;color:var(--text-muted)">
+              ${L.whiteboardSub}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    let isDrawingWhiteboard = false;
+    let currentStroke = null;
+
+    function initWhiteboardCanvas() {
+      const canvas = document.getElementById('cat-whiteboard-canvas');
+      const stage = document.getElementById('whiteboard-stage');
+      if (!canvas || !stage) return;
+
+      const rect = stage.getBoundingClientRect();
+      canvas.width = Math.max(600, Math.floor(rect.width));
+      canvas.height = Math.max(360, Math.floor(rect.height));
+
+      redrawWhiteboardCanvas(canvas);
+
+      canvas.onpointerdown = (e) => {
+        isDrawingWhiteboard = true;
+        const r = canvas.getBoundingClientRect();
+        const x = e.clientX - r.left;
+        const y = e.clientY - r.top;
+        const markerObj = WHITEBOARD_MARKERS.find(m => m.id === state.activeMarkerId) || WHITEBOARD_MARKERS[0];
+        const strokeColor = state.whiteboardTool === 'eraser' ? '#181523' : markerObj.colorHex;
+        const strokeSize = state.whiteboardTool === 'eraser' ? 22 : state.whiteboardBrushSize;
+        currentStroke = { color: strokeColor, size: strokeSize, points: [{ x, y }] };
+        state.whiteboardStrokes.push(currentStroke);
+        redrawWhiteboardCanvas(canvas);
+      };
+
+      canvas.onpointermove = (e) => {
+        if (!isDrawingWhiteboard || !currentStroke) return;
+        const r = canvas.getBoundingClientRect();
+        const x = e.clientX - r.left;
+        const y = e.clientY - r.top;
+        currentStroke.points.push({ x, y });
+        redrawWhiteboardCanvas(canvas);
+      };
+
+      const finishStroke = () => {
+        if (isDrawingWhiteboard) {
+          isDrawingWhiteboard = false;
+          currentStroke = null;
+          autoPersistIfEnabled();
+        }
+      };
+      canvas.onpointerup = finishStroke;
+      canvas.onpointerleave = finishStroke;
+    }
+
+    function redrawWhiteboardCanvas(canvas) {
+      if (!canvas) canvas = document.getElementById('cat-whiteboard-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Subtle dot grid
+      ctx.fillStyle = 'rgba(255,255,255,0.06)';
+      for (let gx = 24; gx < canvas.width; gx += 28) {
+        for (let gy = 24; gy < canvas.height; gy += 28) {
+          ctx.fillRect(gx, gy, 2, 2);
+        }
+      }
+
+      for (const st of state.whiteboardStrokes) {
+        if (!st.points || st.points.length === 0) continue;
+        ctx.strokeStyle = st.color || '#FFFFFF';
+        ctx.lineWidth = st.size || 5;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(st.points[0].x, st.points[0].y);
+        for (let i = 1; i < st.points.length; i++) {
+          ctx.lineTo(st.points[i].x, st.points[i].y);
+        }
+        if (st.points.length === 1) {
+          ctx.lineTo(st.points[0].x + 0.5, st.points[0].y + 0.5);
+        }
+        ctx.stroke();
+      }
+    }
+
+    function undoWhiteboardStroke() {
+      state.whiteboardStrokes.pop();
+      autoPersistIfEnabled();
+      redrawWhiteboardCanvas();
+    }
+
+    function clearWhiteboard() {
+      state.whiteboardStrokes = [];
+      autoPersistIfEnabled();
+      redrawWhiteboardCanvas();
+    }
+
+    function stampCatOnWhiteboard() {
+      const markerObj = WHITEBOARD_MARKERS.find(m => m.id === state.activeMarkerId) || WHITEBOARD_MARKERS[0];
+      const cx = 180 + Math.floor(Math.random() * 260);
+      const cy = 120 + Math.floor(Math.random() * 140);
+      state.whiteboardStrokes.push({
+        color: markerObj.colorHex,
+        size: state.whiteboardBrushSize,
+        points: [
+          { x: cx - 45, y: cy - 10 }, { x: cx - 32, y: cy - 48 }, { x: cx - 14, y: cy - 22 },
+          { x: cx + 14, y: cy - 22 }, { x: cx + 32, y: cy - 48 }, { x: cx + 45, y: cy - 10 },
+          { x: cx + 48, y: cy + 32 }, { x: cx, y: cy + 50 }, { x: cx - 48, y: cy + 32 }, { x: cx - 45, y: cy - 10 }
+        ]
+      });
+      autoPersistIfEnabled();
+      redrawWhiteboardCanvas();
     }
 
     function renderChatView(ch) {
@@ -1865,6 +2559,9 @@
                <span style="font-weight:800;font-size:15.5px">${escapeHtml(ch.name)}</span>
                <div class="topic-text">${escapeHtml(ch.topic)}</div>`}
 
+          <div class="lang-pill" onclick="openWhiteboard()" title="${L.whiteboardTitle}" style="border-color:rgba(67,217,173,0.45);color:var(--mint)">
+            🎨 Whiteboard
+          </div>
           <div class="lang-pill" onclick="toggleLanguageQuick()" title="Switch Language / تغيير اللغة">
             🌐 ${state.lang === 'ar' ? 'English' : 'العربية'}
           </div>
@@ -1950,7 +2647,7 @@
       const L = t();
       const sticker = m.stickerId ? STICKERS.find(s => s.id === m.stickerId) : null;
       const reactionEntries = Object.entries(m.reactions || {});
-      const isOwnerMsg = m.senderIsOwner || m.senderId === state.currentUser.id;
+      const isOwnerMsg = m.senderIsOwner || (m.senderId === 'user_captain');
 
       return `
         <div class="msg-item ${m.isPinned ? 'pinned' : ''}">
@@ -2016,6 +2713,7 @@
           <span style="font-size:20px">🐾</span>
           <span style="font-weight:800;font-size:16px">${L.catFriends} (${friends.length})</span>
           <div style="flex:1"></div>
+          <div class="lang-pill" onclick="openWhiteboard()" style="color:var(--mint)">🎨 Whiteboard</div>
           <div class="lang-pill" onclick="toggleLanguageQuick()">🌐 ${state.lang === 'ar' ? 'English' : 'العربية'}</div>
           <div class="coin-pill" onclick="openQuests()">🪙 ${state.currentUser.meowCoins}</div>
         </div>
@@ -2081,6 +2779,7 @@
       const L = t();
       const completed = state.quests.filter(q => q.currentProgress >= q.targetCount).length;
       const pct = Math.round((completed / state.quests.length) * 100);
+      const unlockedMarkers = state.currentUser.unlockedMarkers || ['marker_white'];
 
       return `
         <div class="top-bar">
@@ -2088,6 +2787,7 @@
           <span style="font-size:20px">🪙</span>
           <span style="font-weight:800;font-size:16px">${L.questsHeaderTitle}</span>
           <div style="flex:1"></div>
+          <div class="lang-pill" onclick="openWhiteboard()" style="color:var(--mint)">🎨 Whiteboard</div>
           <div class="lang-pill" onclick="toggleLanguageQuick()">🌐 ${state.lang === 'ar' ? 'English' : 'العربية'}</div>
           <div class="coin-pill">🪙 ${state.currentUser.meowCoins} ${L.meowCoins}</div>
         </div>
@@ -2179,6 +2879,29 @@
           </div>
 
           <div style="font-weight:900;font-size:13px;color:var(--text-secondary);letter-spacing:0.8px;margin:28px 0 12px">
+            🎨 WHITEBOARD MARKERS (USE IN THE DISCORD-STYLE CAT WHITEBOARD)
+          </div>
+
+          ${WHITEBOARD_MARKERS.map(m => {
+            const owned = unlockedMarkers.includes(m.id) || m.priceCoins === 0;
+            const mName = state.lang === 'ar' ? m.nameAr : m.name;
+            return `
+              <div class="quest-card" style="justify-content:space-between">
+                <div style="display:flex;align-items:center;gap:12px">
+                  <span class="marker-swatch" style="width:22px;height:22px;background:${m.colorHex}"></span>
+                  <div>
+                    <span style="font-weight:800;font-size:14px">${escapeHtml(mName)}</span>
+                    <div style="color:var(--text-secondary);font-size:12.5px;margin-top:3px">Draw on the 🎨 Cat Whiteboard (Just for fun, no rewards).</div>
+                  </div>
+                </div>
+                <button class="btn-gold" onclick="selectOrUnlockMarker('${m.id}');openWhiteboard()">
+                  ${owned ? '🎨 Use in Whiteboard' : L.unlockBtn(m.priceCoins)}
+                </button>
+              </div>
+            `;
+          }).join('')}
+
+          <div style="font-weight:900;font-size:13px;color:var(--text-secondary);letter-spacing:0.8px;margin:28px 0 12px">
             ${L.royalBadgesSection}
           </div>
 
@@ -2248,7 +2971,7 @@
                   <span style="font-weight:800;font-size:13px;color:var(--gold);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
                     ${escapeHtml(state.currentUser.displayName)}
                   </span>
-                  <span class="owner-tag">${L.ownerTag}</span>
+                  ${state.currentUser.isOwner ? `<span class="owner-tag">${L.ownerTag}</span>` : ''}
                 </div>
                 <div style="font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
                   ${escapeHtml(state.currentUser.customStatus)}
@@ -2276,6 +2999,41 @@
           </div>
         </div>
       `;
+    }
+
+    function updateLiveProfilePreview() {
+      const nEl = document.getElementById('prof-name');
+      const eEl = document.getElementById('prof-emoji');
+      const sEl = document.getElementById('prof-status');
+      const prevName = document.getElementById('preview-disp-name');
+      const prevEmoji = document.getElementById('preview-avatar-emoji');
+      const prevStatus = document.getElementById('preview-custom-status');
+      if (prevName && nEl) prevName.textContent = nEl.value || state.currentUser.displayName;
+      if (prevEmoji && eEl) prevEmoji.textContent = eEl.value || state.currentUser.avatarEmoji;
+      if (prevStatus && sEl) prevStatus.textContent = sEl.value || state.currentUser.customStatus;
+    }
+
+    function linkPhoneNumberForReward() {
+      const pEl = document.getElementById('prof-phone');
+      const rawPhone = (pEl ? pEl.value : '').trim();
+      if (!rawPhone || rawPhone.length < 5) {
+        showToast(state.lang === 'ar' ? '😾 يرجى إدخال رقم هاتف صحيح!' : '😾 Please enter a valid phone number!');
+        return;
+      }
+      state.currentUser.phoneNumber = rawPhone;
+      if (!state.currentUser.phoneRewardClaimed) {
+        state.currentUser.phoneRewardClaimed = true;
+        state.currentUser.meowCoins += 50;
+        autoPersistIfEnabled();
+        showToast(
+          state.lang === 'ar'
+            ? '📱🪙 تم ربط رقم الهاتف وحصلت على +50 عملة مياو!'
+            : '📱🪙 Phone number added! +50 MeowCoins credited to your account!'
+        );
+      } else {
+        autoPersistIfEnabled();
+        showToast(state.lang === 'ar' ? '📱 تم تحديث رقم الهاتف!' : '📱 Phone number updated!');
+      }
     }
 
     function renderModal() {
@@ -2313,13 +3071,13 @@
       if (state.modal === 'editProfile') {
         return `
           <div class="modal-backdrop" onclick="if(event.target===this){state.modal=null;render()}">
-            <div class="modal-card">
-              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+            <div class="modal-card" style="max-width:540px">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
                 <span style="font-weight:800;font-size:18px">${L.settingsTitle}</span>
-                <span class="owner-tag">${L.ownerTag}</span>
+                ${state.currentUser.isOwner ? `<span class="owner-tag">${L.ownerTag}</span>` : ''}
               </div>
 
-              <div style="font-size:12px;font-weight:800;color:var(--text-secondary);margin-bottom:8px">${L.languageLabel}</div>
+              <div style="font-size:12px;font-weight:800;color:var(--text-secondary);margin-bottom:6px">${L.languageLabel}</div>
               <div class="lang-selector-row">
                 <button class="lang-option-btn ${state.lang === 'en' ? 'selected' : ''}" onclick="setLanguage('en')">
                   🇬🇧 English (LTR)
@@ -2329,22 +3087,66 @@
                 </button>
               </div>
 
-              <div style="background:rgba(255,209,102,0.12);border:1px solid rgba(255,209,102,0.4);padding:8px 12px;border-radius:10px;font-size:12px;color:var(--gold);font-weight:700;margin-bottom:14px">
-                ${L.ownerBadgeNotice}
+              <div style="display:grid;grid-template-columns:1fr 90px;gap:10px;margin-bottom:10px">
+                <div>
+                  <div style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:4px">${L.displayNameLabel}</div>
+                  <input id="prof-name" class="composer-input" style="width:100%" value="${escapeHtml(state.currentUser.displayName)}" oninput="updateLiveProfilePreview()" />
+                </div>
+                <div>
+                  <div style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:4px">${L.avatarEmojiLabel}</div>
+                  <input id="prof-emoji" class="composer-input" style="width:100%;text-align:center" value="${escapeHtml(state.currentUser.avatarEmoji)}" oninput="updateLiveProfilePreview()" />
+                </div>
               </div>
 
-              <div style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:4px">${L.displayNameLabel}</div>
-              <input id="prof-name" class="composer-input" style="width:100%;margin-bottom:10px" value="${escapeHtml(state.currentUser.displayName)}" />
-
-              <div style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:4px">${L.avatarEmojiLabel}</div>
-              <input id="prof-emoji" class="composer-input" style="width:100%;margin-bottom:10px" value="${escapeHtml(state.currentUser.avatarEmoji)}" />
-
               <div style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:4px">${L.customStatusLabel}</div>
-              <input id="prof-status" class="composer-input" style="width:100%;margin-bottom:16px" value="${escapeHtml(state.currentUser.customStatus)}" />
+              <input id="prof-status" class="composer-input" style="width:100%;margin-bottom:14px" value="${escapeHtml(state.currentUser.customStatus)}" oninput="updateLiveProfilePreview()" />
 
-              <div style="display:flex;justify-content:flex-end;gap:8px">
-                <button class="icon-btn" onclick="state.modal=null;render()">${L.cancelBtn}</button>
-                <button class="btn-primary" onclick="saveProfile()">${L.saveBtn}</button>
+              <!-- ADVANCED SETTINGS: ONLY PROFILE PREVIEW & OPTIONAL PHONE NUMBER (+50 MEOWCOINS) -->
+              <div style="font-weight:900;font-size:12px;color:var(--paw-pink);letter-spacing:0.8px;margin-bottom:8px">
+                ${L.advancedSettingsHeader}
+              </div>
+
+              <div style="font-size:11.5px;font-weight:800;color:var(--text-secondary);margin-bottom:6px">${L.profilePreviewLabel}</div>
+              <div class="adv-preview-card">
+                <div style="height:48px;background:linear-gradient(135deg, ${state.currentUser.avatarColorHex || '#FF7EB6'}, var(--purrple))"></div>
+                <div style="padding:0 14px 14px">
+                  <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-top:-22px">
+                    <div class="avatar-wrap" style="width:48px;height:48px;font-size:25px;border:3px solid var(--rail-bg);background:var(--card-bg)">
+                      <span id="preview-avatar-emoji">${escapeHtml(state.currentUser.avatarEmoji)}</span>
+                      <div class="status-dot" style="background:${state.currentUser.presenceColor}"></div>
+                    </div>
+                    <div style="display:flex;gap:6px;flex-wrap:wrap">
+                      ${state.currentUser.isOwner ? `<span class="owner-tag">${L.ownerTag}</span>` : ''}
+                      ${state.currentUser.equippedBadge ? `<span class="badge-tag">${escapeHtml(state.currentUser.equippedBadge)}</span>` : ''}
+                    </div>
+                  </div>
+                  <div style="margin-top:8px;font-weight:900;font-size:15px;color:var(--gold)" id="preview-disp-name">${escapeHtml(state.currentUser.displayName)}</div>
+                  <div style="font-size:11.5px;color:var(--text-muted)">@${escapeHtml(state.currentUser.username)} ${state.currentUser.phoneNumber ? `• 📱 ${escapeHtml(state.currentUser.phoneNumber)}` : ''}</div>
+                  <div style="margin-top:6px;font-size:12.5px;color:var(--text-secondary)" id="preview-custom-status">${escapeHtml(state.currentUser.customStatus)}</div>
+                </div>
+              </div>
+
+              <div class="phone-reward-box">
+                <div style="font-size:12px;font-weight:800;color:var(--gold);margin-bottom:4px">${L.phoneOptionalLabel}</div>
+                <div style="font-size:11.5px;color:var(--text-secondary);margin-bottom:8px">
+                  ${state.currentUser.phoneRewardClaimed
+                    ? L.phoneClaimedNotice(escapeHtml(state.currentUser.phoneNumber))
+                    : L.phoneUnclaimedNotice}
+                </div>
+                <div style="display:flex;gap:8px">
+                  <input id="prof-phone" class="composer-input" style="padding:9px 12px" placeholder="${L.phonePlaceholder}" value="${escapeHtml(state.currentUser.phoneNumber || '')}" />
+                  <button class="btn-gold" onclick="linkPhoneNumberForReward()">
+                    ${state.currentUser.phoneRewardClaimed ? '📱 Update' : L.linkPhoneBtn}
+                  </button>
+                </div>
+              </div>
+
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:12px">
+                <button class="btn-outline" onclick="openSignInModal()">${L.signOutBtn}</button>
+                <div style="display:flex;gap:8px">
+                  <button class="icon-btn" onclick="state.modal=null;render()">${L.cancelBtn}</button>
+                  <button class="btn-primary" onclick="saveProfile()">${L.saveBtn}</button>
+                </div>
               </div>
             </div>
           </div>
@@ -2402,7 +3204,7 @@
           senderName: state.currentUser.displayName,
           senderAvatar: state.currentUser.avatarEmoji,
           senderRoleColor: state.currentUser.roleColor,
-          senderIsOwner: true,
+          senderIsOwner: !!state.currentUser.isOwner,
           senderBadge: state.currentUser.equippedBadge,
           content: `Welcome everykitty to ${name} ${emoji}! Grab a cardboard box and make yourselves at home! 🐾✨`,
           reactions: { '🐾': [state.currentUser.id] },
@@ -2438,12 +3240,26 @@
       const name = document.getElementById('prof-name').value.trim();
       const emoji = document.getElementById('prof-emoji').value.trim();
       const status = document.getElementById('prof-status').value.trim();
+      const phoneEl = document.getElementById('prof-phone');
+      const phone = phoneEl ? phoneEl.value.trim() : '';
+
       if (name) state.currentUser.displayName = name;
       if (emoji) state.currentUser.avatarEmoji = emoji;
       if (status) state.currentUser.customStatus = status;
+
+      let phoneBonusMsg = '';
+      if (phone && phone.length >= 5) {
+        state.currentUser.phoneNumber = phone;
+        if (!state.currentUser.phoneRewardClaimed) {
+          state.currentUser.phoneRewardClaimed = true;
+          state.currentUser.meowCoins += 50;
+          phoneBonusMsg = state.lang === 'ar' ? ' (+50 🪙 مكافأة رقم الهاتف!)' : ' (+50 🪙 Phone Bonus!)';
+        }
+      }
+
       state.modal = null;
       autoPersistIfEnabled();
-      showToast(state.lang === 'ar' ? '🐾 تم تحديث إعدادات حساب القطة!' : '🐾 Cat Profile & Settings updated!');
+      showToast((state.lang === 'ar' ? '🐾 تم تحديث إعدادات حساب القطة!' : '🐾 Cat Profile & Settings updated!') + phoneBonusMsg);
     }
 
     render();

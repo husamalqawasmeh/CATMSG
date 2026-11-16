@@ -142,9 +142,12 @@ class CatUser {
   final String customStatus;
   final CatRole role;
   final String bio;
+  final String phoneNumber;
+  final bool phoneRewardClaimed;
   final int meowCoins;
   final List<String> unlockedStickerIds;
   final List<String> unlockedBadges;
+  final List<String> unlockedMarkers;
   final String? equippedBadge;
   final List<String> friendIds;
   final bool isBot;
@@ -159,6 +162,8 @@ class CatUser {
     this.customStatus = 'Loafing on a warm keyboard ⌨️🐾',
     this.role = CatRole.kitten,
     this.bio = 'Just a cozy cat looking for tuna and warm cardboard boxes.',
+    this.phoneNumber = '',
+    this.phoneRewardClaimed = false,
     this.meowCoins = 120,
     this.unlockedStickerIds = const [
       'sticker_loaf',
@@ -167,6 +172,7 @@ class CatUser {
       'sticker_tuna',
     ],
     this.unlockedBadges = const ['🐾 Day One Paws'],
+    this.unlockedMarkers = const ['marker_white'],
     this.equippedBadge = '🐾 Day One Paws',
     this.friendIds = const [],
     this.isBot = false,
@@ -181,9 +187,12 @@ class CatUser {
     String? customStatus,
     CatRole? role,
     String? bio,
+    String? phoneNumber,
+    bool? phoneRewardClaimed,
     int? meowCoins,
     List<String>? unlockedStickerIds,
     List<String>? unlockedBadges,
+    List<String>? unlockedMarkers,
     String? equippedBadge,
     List<String>? friendIds,
   }) {
@@ -197,9 +206,12 @@ class CatUser {
       customStatus: customStatus ?? this.customStatus,
       role: role ?? this.role,
       bio: bio ?? this.bio,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      phoneRewardClaimed: phoneRewardClaimed ?? this.phoneRewardClaimed,
       meowCoins: meowCoins ?? this.meowCoins,
       unlockedStickerIds: unlockedStickerIds ?? this.unlockedStickerIds,
       unlockedBadges: unlockedBadges ?? this.unlockedBadges,
+      unlockedMarkers: unlockedMarkers ?? this.unlockedMarkers,
       equippedBadge: equippedBadge ?? this.equippedBadge,
       friendIds: friendIds ?? this.friendIds,
       isBot: isBot,

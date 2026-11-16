@@ -88,7 +88,7 @@ class CatSticker {
       artEmoji: '👑🦁🪙',
       caption: 'BOW BEFORE THE WHISKERS',
       bgHex: '#C77DFF',
-      priceCoins: 150,
+      priceCoins: 120,
     ),
   ];
 

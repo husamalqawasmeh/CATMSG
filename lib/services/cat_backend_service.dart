@@ -1356,7 +1356,7 @@ class CatBackendService extends ChangeNotifier {
       ),
     ];
 
-    // Seed Quests
+    // Seed Quests (all quest progress starts at 0 for newer users)
     _quests = const [
       CatQuest(
         id: 'quest_vocal_meower',
@@ -1366,7 +1366,7 @@ class CatBackendService extends ChangeNotifier {
         category: 'Daily Paws',
         actionType: QuestActionType.sendMessages,
         targetCount: 3,
-        currentProgress: 1,
+        currentProgress: 0,
         rewardCoins: 50,
       ),
       CatQuest(
@@ -1377,7 +1377,7 @@ class CatBackendService extends ChangeNotifier {
         category: 'Daily Paws',
         actionType: QuestActionType.addReactions,
         targetCount: 3,
-        currentProgress: 1,
+        currentProgress: 0,
         rewardCoins: 45,
       ),
       CatQuest(
@@ -1421,7 +1421,7 @@ class CatBackendService extends ChangeNotifier {
         category: 'Legend Milestones',
         actionType: QuestActionType.visitChannels,
         targetCount: 4,
-        currentProgress: 1,
+        currentProgress: 0,
         rewardCoins: 75,
       ),
     ];
