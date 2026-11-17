@@ -902,8 +902,36 @@
       border-radius: 18px;
       position: relative;
       overflow: hidden;
-      cursor: crosshair;
+      cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><line x1='12' y1='2' x2='12' y2='22' stroke='%23FFFFFF' stroke-width='2.2'/><line x1='2' y1='12' x2='22' y2='12' stroke='%23FFFFFF' stroke-width='2.2'/><circle cx='12' cy='12' r='3' fill='none' stroke='%23FFFFFF' stroke-width='1.8'/></svg>") 12 12, crosshair;
       box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .whiteboard-stage.cursor-emerald,
+    .whiteboard-stage.cursor-emerald canvas {
+      cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><line x1='12' y1='2' x2='12' y2='22' stroke='%2310B981' stroke-width='2.4'/><line x1='2' y1='12' x2='22' y2='12' stroke='%2310B981' stroke-width='2.4'/><circle cx='12' cy='12' r='3.2' fill='none' stroke='%2310B981' stroke-width='2'/></svg>") 12 12, crosshair !important;
+    }
+
+    .whiteboard-stage.cursor-white,
+    .whiteboard-stage.cursor-white canvas {
+      cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><line x1='12' y1='2' x2='12' y2='22' stroke='%23FFFFFF' stroke-width='2.2'/><line x1='2' y1='12' x2='22' y2='12' stroke='%23FFFFFF' stroke-width='2.2'/><circle cx='12' cy='12' r='3' fill='none' stroke='%23FFFFFF' stroke-width='1.8'/></svg>") 12 12, crosshair !important;
+    }
+
+    .premium-card {
+      background: linear-gradient(135deg, rgba(199, 125, 255, 0.16), rgba(255, 209, 102, 0.14));
+      border: 1.5px solid rgba(255, 209, 102, 0.55);
+      border-radius: 18px;
+      padding: 18px;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 26px rgba(199, 125, 255, 0.15);
+    }
+
+    .codes-card {
+      background: var(--card-bg);
+      border: 1.5px dashed rgba(92, 225, 230, 0.45);
+      border-radius: 16px;
+      padding: 16px;
+      margin-top: 18px;
+      margin-bottom: 18px;
     }
   </style>
 </head>
@@ -914,6 +942,8 @@
     const STORAGE_KEY = 'catmsg_saved_state_v1';
     const ACCOUNTS_KEY = 'catmsg_accounts_v2';
     const ACTIVE_USER_KEY = 'catmsg_active_username_v2';
+    const OWNER_LOGGED_IN_ONCE_KEY = 'catmsg_owner_logged_in_once_v1';
+    const OWNER_EMAIL = 'meowbuilderkitten@gmail.com';
 
     // --- LOCALIZATION DICTIONARY (EN / AR) ---
     const I18N = {
@@ -1000,6 +1030,23 @@
         signUpBtn: '✨ Create New Cat Account',
         quickOwnerBtn: '👑 Quick Sign In: Captain Purr (Owner)',
         signOutBtn: '🚪 Sign Out / Switch Account',
+        oncePerAccountTag: '🔒 Once Per Account',
+        allQuestsBonusTitle: '🏆 All Starter Quests Completion Bonus (+150 🪙)',
+        allQuestsBonusDesc: 'Complete all 6 starter quests once on your account to unlock a massive +150 MeowCoins bonus!',
+        claimAllQuestsBonusBtn: '🪙 Claim +150 Bonus!',
+        allQuestsBonusClaimedText: '✓ +150 🪙 All-Quests Bonus Claimed!',
+        futureQuestsHeader: '🌟 MORE CAT QUESTS (FOR ALL USERS — COMING SOON)',
+        futureQuestsDesc: 'Stay tuned! Additional repeatable and expansion quests for all CatMsg members (not just new users) will be added here.',
+        codesSectionHeader: '🎟️ SECRET CAT CODES (REDEEM FOR REWARDS)',
+        codesSectionSub: 'Have a promo or secret reward code? Enter it below! (More codes will be released later)',
+        codeInputPlaceholder: 'Enter secret code...',
+        redeemCodeBtn: '🎟️ Redeem Code',
+        premiumNavBtn: '💎 CatMsg Premium',
+        premiumCardTitle: '💎 CatMsg Premium Subscription',
+        premiumCardDesc: 'Unlock the ultimate VIP CatMsg experience: Diamond Profile Tag, Golden Name Shimmer, Priority Castle Perks, and Exclusive Privileges.',
+        premiumDealRule: '🔒 EXCLUSIVE ACCESS: CatMsg Premium is ONLY obtainable by making a direct deal with the Owner at:',
+        copyEmailBtn: '📋 Copy Email',
+        emailDealBtn: '✉️ Email Owner to Make a Deal',
         cancelBtn: 'Cancel',
         saveBtn: 'Save Profile & Settings',
         createServerTitle: '🏰 Create a New Cat House',
@@ -1062,7 +1109,7 @@
         questsHeroTitle: 'المهام اليومية ومكافآت المخالب',
         questsHeroSub: 'تحدث في بيوت القطط، وتفاعل بالمخالب، ورد على الأصدقاء، وأرسل الملصقات لتربح عملات مياو! أنفق عملاتك بالأسفل لفتح الملصقات والأقلام والشارات الملكية.',
         completedWord: 'مكتملة',
-        activeQuestsSection: '🎯 مهام القطط النشطة',
+        activeQuestsSection: '🎯 مهام القطط الأساسية (مرة واحدة لكل حساب)',
         claimedBtn: '✓ تم الاستلام',
         claimBtn: (c) => `🪙 استلم +${c}`,
         emporiumStickersSection: '🛍️ متجر عملات مياو — فتح ملصقات القطط',
@@ -1100,6 +1147,23 @@
         signUpBtn: '✨ إنشاء حساب قطة جديد',
         quickOwnerBtn: '👑 دخول سريع: Captain Purr (المالك)',
         signOutBtn: '🚪 تسجيل الخروج / تبديل الحساب',
+        oncePerAccountTag: '🔒 مرة واحدة لكل حساب',
+        allQuestsBonusTitle: '🏆 مكافأة إكمال جميع المهام الأساسية (+150 🪙)',
+        allQuestsBonusDesc: 'أكمل جميع المهام الـ 6 الأساسية مرة واحدة في حسابك لتحصل على مكافأة إضافية كبرى قدرها +150 عملة مياو!',
+        claimAllQuestsBonusBtn: '🪙 استلم مكافأة +150!',
+        allQuestsBonusClaimedText: '✓ تم استلام مكافأة +150 🪙 لإكمال جميع المهام!',
+        futureQuestsHeader: '🌟 مهام إضافية قادمة (لجميع المستخدمين — قريباً)',
+        futureQuestsDesc: 'ترقبوا! سيتم إضافة مهام جديدة لجميع أعضاء CatMsg (وليس فقط للمستخدمين الجدد) قريباً.',
+        codesSectionHeader: '🎟️ قسم الأكواد السرية (استبدال المكافآت)',
+        codesSectionSub: 'هل لديك كود مكافأة سري؟ أدخله بالأسفل! (سيتم طرح الأكواد لاحقاً)',
+        codeInputPlaceholder: 'أدخل الكود السري هنا...',
+        redeemCodeBtn: '🎟️ تفعيل الكود',
+        premiumNavBtn: '💎 اشتراك CatMsg المميز',
+        premiumCardTitle: '💎 اشتراك CatMsg المميز (PurrPremium)',
+        premiumCardDesc: 'احصل على مزايا VIP الحصرية في CatMsg: شارة الماس الفاخرة، لمعان الاسم الذهبي، ومزايا ملكية خاصة.',
+        premiumDealRule: '🔒 حصرياً: لا يمكن الحصول على اشتراك CatMsg المميز إلا عبر الاتفاق المباشر مع المالك عبر البريد الإلكتروني:',
+        copyEmailBtn: '📋 نسخ الإيميل',
+        emailDealBtn: '✉️ راسل المالك للاتفاق',
         cancelBtn: 'إلغاء',
         saveBtn: 'حفظ الملف والإعدادات',
         createServerTitle: '🏰 إنشاء بيت قطط جديد',
@@ -1522,6 +1586,21 @@
     function saveStoredAccounts(accountsObj) {
       try {
         localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accountsObj));
+        fetch('/api/userdata?key=__accounts_registry__', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(accountsObj)
+        }).catch(() => {});
+      } catch (e) {}
+    }
+
+    function hasOwnerLoggedInOnce() {
+      return localStorage.getItem(OWNER_LOGGED_IN_ONCE_KEY) === 'true';
+    }
+
+    function markOwnerLoggedInOnce() {
+      try {
+        localStorage.setItem(OWNER_LOGGED_IN_ONCE_KEY, 'true');
       } catch (e) {}
     }
 
@@ -1532,7 +1611,7 @@
 
     function buildSerializableSnapshot() {
       return {
-        version: 2,
+        version: 3,
         savedAt: new Date().toISOString(),
         lang: state.lang,
         currentUser: state.currentUser,
@@ -1553,6 +1632,9 @@
         state.currentUser = {
           phoneNumber: '',
           phoneRewardClaimed: false,
+          allQuestsBonusClaimed: false,
+          redeemedCodes: [],
+          isPremium: false,
           unlockedMarkers: ['marker_white'],
           ...state.currentUser,
           ...snap.currentUser,
@@ -1561,15 +1643,16 @@
         if (!Array.isArray(state.currentUser.unlockedMarkers) || state.currentUser.unlockedMarkers.length === 0) {
           state.currentUser.unlockedMarkers = ['marker_white'];
         }
+        if (!Array.isArray(state.currentUser.redeemedCodes)) {
+          state.currentUser.redeemedCodes = [];
+        }
       }
       if (snap.users) state.users = snap.users;
       if (Array.isArray(snap.servers) && snap.servers.length > 0) state.servers = snap.servers;
       if (snap.messagesByChannel) state.messagesByChannel = snap.messagesByChannel;
       if (Array.isArray(snap.quests) && snap.quests.length > 0) {
-        // If migrating from v1 where progress was pre-seeded (1 and 2) and nothing was claimed yet, reset to 0
         if (!snap.version) {
-          const fresh = createZeroProgressQuests();
-          state.quests = fresh;
+          state.quests = createZeroProgressQuests();
         } else {
           state.quests = snap.quests;
         }
@@ -1586,10 +1669,16 @@
     function loadSavedUserData(targetUsername = null) {
       const activeUser = (targetUsername || localStorage.getItem(ACTIVE_USER_KEY) || 'captain_purr').toLowerCase();
       const storageKey = getUserStorageKey(activeUser);
+      let loadedLocal = false;
       try {
         const raw = localStorage.getItem(storageKey);
         if (raw) {
-          applySnapshot(JSON.parse(raw));
+          loadedLocal = applySnapshot(JSON.parse(raw));
+        } else {
+          const accounts = getStoredAccounts();
+          if (accounts[activeUser] && accounts[activeUser].snapshot) {
+            loadedLocal = applySnapshot(accounts[activeUser].snapshot);
+          }
         }
       } catch (e) {
         console.warn('Could not load saved user data:', e);
@@ -1598,7 +1687,7 @@
       fetch(`/api/userdata?key=${encodeURIComponent(activeUser)}`)
         .then(r => r.json())
         .then(data => {
-          if (!localStorage.getItem(storageKey) && data && data.found && data.snapshot) {
+          if (!loadedLocal && data && data.found && data.snapshot) {
             applySnapshot(data.snapshot);
             localStorage.setItem(storageKey, JSON.stringify(data.snapshot));
             render();
@@ -1616,6 +1705,20 @@
         localStorage.setItem(ACTIVE_USER_KEY, key);
         localStorage.setItem('catmsg_lang', state.lang);
 
+        // Also update the global accounts registry so usernames and their progress are always remembered automatically
+        const accounts = getStoredAccounts();
+        const existingAcc = accounts[key] || {};
+        accounts[key] = {
+          ...existingAcc,
+          username: key,
+          displayName: state.currentUser.displayName,
+          avatarEmoji: state.currentUser.avatarEmoji,
+          isOwner: !!state.currentUser.isOwner,
+          lastSavedAt: snap.savedAt,
+          snapshot: snap
+        };
+        saveStoredAccounts(accounts);
+
         fetch(`/api/userdata?key=${encodeURIComponent(key)}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -1626,11 +1729,21 @@
       }
     }
 
+    window.addEventListener('beforeunload', () => {
+      autoPersistIfEnabled();
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        autoPersistIfEnabled();
+      }
+    });
+
     // Hydrate saved user data on startup
     loadSavedUserData();
 
     // --- SIGN IN / SIGN UP / SIGN OUT FUNCTIONS ---
     function openSignInModal() {
+      autoPersistIfEnabled();
       state.isSignedIn = false;
       state.authTab = 'signin';
       state.modal = null;
@@ -1638,33 +1751,63 @@
     }
 
     function quickOwnerLogin() {
-      state.currentUser = {
-        id: 'user_captain',
-        username: 'captain_purr',
-        displayName: 'Captain Purr',
-        avatarEmoji: '😼',
-        avatarColorHex: '#FF7EB6',
-        presence: 'Purring',
-        presenceColor: '#43B581',
-        customStatus: 'Castle Owner & MeowCoin Hunter 🔴👑',
-        roleTitle: 'Owner',
-        roleColor: '#FFD166',
-        isOwner: true,
-        phoneNumber: state.currentUser.phoneNumber || '',
-        phoneRewardClaimed: !!state.currentUser.phoneRewardClaimed,
-        bio: 'Founder & Supreme Owner of The Grand Cat Castle. Will trade headbutts for premium salmon.',
-        meowCoins: state.currentUser.username === 'captain_purr' ? state.currentUser.meowCoins : 250,
-        unlockedStickerIds: ['sticker_loaf', 'sticker_zoomies', 'sticker_boop', 'sticker_tuna'],
-        unlockedBadges: ['👑 Supreme Loaf', '🐾 Day One Paws'],
-        unlockedMarkers: ['marker_white'],
-        equippedBadge: '👑 Supreme Loaf',
-        friendIds: ['user_mochi', 'user_pounce', 'user_duchess', 'user_mittens', 'user_shadow']
-      };
-      loadSavedUserData('captain_purr');
+      markOwnerLoggedInOnce();
+      const accounts = getStoredAccounts();
+      const savedCapt = accounts['captain_purr'] && accounts['captain_purr'].snapshot;
+      if (savedCapt) {
+        applySnapshot(savedCapt);
+      } else {
+        state.currentUser = {
+          id: 'user_captain',
+          username: 'captain_purr',
+          displayName: 'Captain Purr',
+          avatarEmoji: '😼',
+          avatarColorHex: '#FF7EB6',
+          presence: 'Purring',
+          presenceColor: '#43B581',
+          customStatus: 'Castle Owner & MeowCoin Hunter 🔴👑',
+          roleTitle: 'Owner',
+          roleColor: '#FFD166',
+          isOwner: true,
+          phoneNumber: state.currentUser.phoneNumber || '',
+          phoneRewardClaimed: !!state.currentUser.phoneRewardClaimed,
+          allQuestsBonusClaimed: !!state.currentUser.allQuestsBonusClaimed,
+          redeemedCodes: state.currentUser.redeemedCodes || [],
+          isPremium: true,
+          bio: 'Founder & Supreme Owner of The Grand Cat Castle. Will trade headbutts for premium salmon.',
+          meowCoins: state.currentUser.username === 'captain_purr' ? state.currentUser.meowCoins : 250,
+          unlockedStickerIds: ['sticker_loaf', 'sticker_zoomies', 'sticker_boop', 'sticker_tuna'],
+          unlockedBadges: ['👑 Supreme Loaf', '🐾 Day One Paws'],
+          unlockedMarkers: ['marker_white'],
+          equippedBadge: '👑 Supreme Loaf',
+          friendIds: ['user_mochi', 'user_pounce', 'user_duchess', 'user_mittens', 'user_shadow']
+        };
+        loadSavedUserData('captain_purr');
+      }
       state.isSignedIn = true;
       localStorage.setItem(ACTIVE_USER_KEY, 'captain_purr');
       autoPersistIfEnabled();
       showToast(state.lang === 'ar' ? '👑 مرحباً بعودتك يا قائد القلعة Captain Purr!' : '👑 Welcome back, Castle Owner Captain Purr!');
+    }
+
+    function loginRememberedAccount(username) {
+      const clean = (username || '').toLowerCase().trim();
+      if (!clean) return;
+      if (clean === 'captain_purr') {
+        quickOwnerLogin();
+        return;
+      }
+      const accounts = getStoredAccounts();
+      const acc = accounts[clean];
+      if (acc && acc.snapshot) {
+        applySnapshot(acc.snapshot);
+      } else {
+        loadSavedUserData(clean);
+      }
+      state.isSignedIn = true;
+      localStorage.setItem(ACTIVE_USER_KEY, clean);
+      autoPersistIfEnabled();
+      showToast(state.lang === 'ar' ? `🐾 مرحباً بعودتك @${clean}! تم استرجاع تقدمك تلقائياً.` : `🐾 Welcome back @${clean}! Your progress was restored automatically.`);
     }
 
     function handleSignInSubmit() {
@@ -1677,6 +1820,7 @@
         return;
       }
       if (username === 'captain_purr' || username === 'captainpurr' || username === 'owner') {
+        markOwnerLoggedInOnce();
         quickOwnerLogin();
         return;
       }
@@ -1689,32 +1833,40 @@
       if (acc && acc.snapshot) {
         applySnapshot(acc.snapshot);
       } else {
-        // Sign in as existing or fresh cat profile with 0 quest progress
-        state.currentUser = {
-          id: 'user_' + username,
-          username: username,
-          displayName: acc ? acc.displayName : username,
-          avatarEmoji: acc ? acc.avatarEmoji : '🐱',
-          avatarColorHex: '#43D9AD',
-          presence: 'Purring',
-          presenceColor: '#43B581',
-          customStatus: 'Meowing in CatMsg! 🐾',
-          roleTitle: 'Cat Member',
-          roleColor: '#43D9AD',
-          isOwner: false,
-          phoneNumber: '',
-          phoneRewardClaimed: false,
-          bio: 'A friendly cat exploring The Grand Cat Castle.',
-          meowCoins: 50,
-          unlockedStickerIds: ['sticker_loaf', 'sticker_zoomies', 'sticker_boop', 'sticker_tuna'],
-          unlockedBadges: ['🐾 Day One Paws'],
-          unlockedMarkers: ['marker_white'],
-          equippedBadge: '🐾 Day One Paws',
-          friendIds: ['user_mochi', 'user_pounce', 'user_duchess', 'user_mittens', 'user_shadow']
-        };
-        state.quests = createZeroProgressQuests();
-        state.visitedChannels = new Set();
-        loadSavedUserData(username);
+        const savedRaw = localStorage.getItem(getUserStorageKey(username));
+        if (savedRaw) {
+          applySnapshot(JSON.parse(savedRaw));
+        } else {
+          // Brand new username login starts with 0 quest progress
+          state.currentUser = {
+            id: 'user_' + username,
+            username: username,
+            displayName: acc ? acc.displayName : username,
+            avatarEmoji: acc ? acc.avatarEmoji : '🐱',
+            avatarColorHex: '#43D9AD',
+            presence: 'Purring',
+            presenceColor: '#43B581',
+            customStatus: 'Meowing in CatMsg! 🐾',
+            roleTitle: 'Cat Member',
+            roleColor: '#43D9AD',
+            isOwner: false,
+            phoneNumber: '',
+            phoneRewardClaimed: false,
+            allQuestsBonusClaimed: false,
+            redeemedCodes: [],
+            isPremium: false,
+            bio: 'A friendly cat exploring The Grand Cat Castle.',
+            meowCoins: 50,
+            unlockedStickerIds: ['sticker_loaf', 'sticker_zoomies', 'sticker_boop', 'sticker_tuna'],
+            unlockedBadges: ['🐾 Day One Paws'],
+            unlockedMarkers: ['marker_white'],
+            equippedBadge: '🐾 Day One Paws',
+            friendIds: ['user_mochi', 'user_pounce', 'user_duchess', 'user_mittens', 'user_shadow']
+          };
+          state.quests = createZeroProgressQuests();
+          state.visitedChannels = new Set();
+          loadSavedUserData(username);
+        }
       }
       state.isSignedIn = true;
       localStorage.setItem(ACTIVE_USER_KEY, username);
@@ -1754,6 +1906,9 @@
         isOwner: false,
         phoneNumber: '',
         phoneRewardClaimed: false,
+        allQuestsBonusClaimed: false,
+        redeemedCodes: [],
+        isPremium: false,
         bio: 'Brand new CatMsg member starting fresh quests from zero!',
         meowCoins: 50,
         unlockedStickerIds: ['sticker_loaf', 'sticker_zoomies', 'sticker_boop', 'sticker_tuna'],
@@ -1780,8 +1935,8 @@
       autoPersistIfEnabled();
       showToast(
         state.lang === 'ar'
-          ? `🎉 مرحباً @${username}! تم إنشاء حسابك وتبدأ جميع المهام من 0!`
-          : `🎉 Welcome @${username}! Account created with all quest progress starting at 0!`
+          ? `🎉 مرحباً @${username}! تم إنشاء حسابك وحفظه تلقائياً وتبدأ جميع المهام من 0!`
+          : `🎉 Welcome @${username}! Account saved automatically with all quest progress starting at 0!`
       );
     }
 
@@ -1838,7 +1993,8 @@
     function incrementQuest(actionType, delta = 1) {
       let newlyDone = null;
       for (const q of state.quests) {
-        if (q.actionType === actionType && q.currentProgress < q.targetCount) {
+        // Quests are strictly Once Per Account
+        if (!q.isClaimed && q.actionType === actionType && q.currentProgress < q.targetCount) {
           q.currentProgress = Math.min(q.targetCount, q.currentProgress + delta);
           if (q.currentProgress >= q.targetCount) {
             newlyDone = state.lang === 'ar' ? q.titleAr : q.title;
@@ -1847,12 +2003,66 @@
       }
       autoPersistIfEnabled();
       if (newlyDone) {
-        showToast(
-          state.lang === 'ar'
-            ? `🎉 اكتملت المهمة: "${newlyDone}"! افتح 🪙 المهام لاستلام عملات مياو!`
-            : `🎉 Quest Complete: "${newlyDone}"! Click 🪙 Quests to claim your MeowCoins!`
-        );
+        const allDone = state.quests.every(q => q.currentProgress >= q.targetCount);
+        if (allDone && !state.currentUser.allQuestsBonusClaimed) {
+          showToast(
+            state.lang === 'ar'
+              ? `🏆 اكتملت جميع المهام! افتح 🪙 المهام لاستلام مكافأة المهمة + مكافأة +150 🪙 الإضافية!`
+              : `🏆 All Quests Complete! Open 🪙 Quests to claim your quest reward + the +150 🪙 All-Quests Bonus!`
+          );
+        } else {
+          showToast(
+            state.lang === 'ar'
+              ? `🎉 اكتملت المهمة: "${newlyDone}"! افتح 🪙 المهام لاستلام عملات مياو!`
+              : `🎉 Quest Complete: "${newlyDone}"! Click 🪙 Quests to claim your MeowCoins!`
+          );
+        }
       }
+    }
+
+    function claimAllQuestsBonus() {
+      const allCompleted = state.quests.every(q => q.currentProgress >= q.targetCount);
+      if (!allCompleted || state.currentUser.allQuestsBonusClaimed) return;
+      state.currentUser.allQuestsBonusClaimed = true;
+      state.currentUser.meowCoins += 150;
+      autoPersistIfEnabled();
+      showToast(
+        state.lang === 'ar'
+          ? '🏆🪙 تهانينا! تم استلام مكافأة إكمال جميع المهام الأساسية (+150 عملة مياو)!'
+          : '🏆🪙 Congratulations! Claimed +150 MeowCoins All-Quests Completion Bonus!'
+      );
+    }
+
+    function redeemPromoCode() {
+      const el = document.getElementById('promo-code-input');
+      const raw = (el ? el.value : '').trim().toUpperCase();
+      if (!raw) {
+        showToast(state.lang === 'ar' ? '😾 يرجى إدخال الكود أولاً!' : '😾 Please enter a code first!');
+        return;
+      }
+      if (!Array.isArray(state.currentUser.redeemedCodes)) {
+        state.currentUser.redeemedCodes = [];
+      }
+      if (state.currentUser.redeemedCodes.includes(raw)) {
+        showToast(state.lang === 'ar' ? '😾 تم استخدام هذا الكود مسبقاً في حسابك!' : '😾 You already redeemed this code on your account!');
+        return;
+      }
+      showToast(
+        state.lang === 'ar'
+          ? `🎟️ الكود "${raw}" غير نشط حالياً — ترقبوا طرح الأكواد السرية قريباً!`
+          : `🎟️ Code "${raw}" is not active yet — stay tuned for upcoming secret codes!`
+      );
+    }
+
+    function copyOwnerEmail() {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(OWNER_EMAIL).catch(() => {});
+      }
+      showToast(
+        state.lang === 'ar'
+          ? `📋 تم نسخ إيميل المالك: ${OWNER_EMAIL}`
+          : `📋 Copied Owner email: ${OWNER_EMAIL}`
+      );
     }
 
     function selectServer(serverId) {
@@ -1870,6 +2080,8 @@
       if (!state.visitedChannels.has(channelId)) {
         state.visitedChannels.add(channelId);
         incrementQuest('visitChannels', 1);
+      } else {
+        autoPersistIfEnabled();
       }
       render();
     }
@@ -1912,6 +2124,7 @@
       if (owned) {
         state.activeMarkerId = marker.id;
         state.whiteboardTool = 'pen';
+        autoPersistIfEnabled();
         render();
         setTimeout(initWhiteboardCanvas, 20);
         return;
@@ -2128,6 +2341,11 @@
 
     function renderAuthPortal() {
       const L = t();
+      const ownerLoggedOnce = hasOwnerLoggedInOnce();
+      const accounts = getStoredAccounts();
+      const rememberedUsers = Object.values(accounts).filter(a => a && a.username && a.username !== 'captain_purr');
+      const lastUser = localStorage.getItem(ACTIVE_USER_KEY) || '';
+
       return `
         <div class="auth-overlay">
           <div class="auth-card">
@@ -2145,18 +2363,34 @@
 
             ${state.authTab === 'signin' ? `
               <div style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:4px">${L.usernameLabel}</div>
-              <input id="auth-username" class="composer-input" style="width:100%;margin-bottom:10px" placeholder="e.g. captain_purr" value="captain_purr" />
+              <input id="auth-username" class="composer-input" style="width:100%;margin-bottom:10px" placeholder="Enter your username..." value="${escapeHtml(lastUser)}" />
 
               <div style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:4px">${L.passwordLabel}</div>
-              <input id="auth-password" type="password" class="composer-input" style="width:100%;margin-bottom:14px" placeholder="••••••••" value="meow123" onkeydown="if(event.key==='Enter'){handleSignInSubmit()}" />
+              <input id="auth-password" type="password" class="composer-input" style="width:100%;margin-bottom:14px" placeholder="••••••••" onkeydown="if(event.key==='Enter'){handleSignInSubmit()}" />
 
               <button class="btn-primary" style="width:100%;justify-content:center;padding:12px" onclick="handleSignInSubmit()">
                 ${L.signInBtn}
               </button>
 
-              <button class="btn-gold" style="width:100%;margin-top:10px;padding:11px" onclick="quickOwnerLogin()">
-                ${L.quickOwnerBtn}
-              </button>
+              ${ownerLoggedOnce ? `
+                <button class="btn-gold" style="width:100%;margin-top:10px;padding:11px" onclick="quickOwnerLogin()">
+                  ${L.quickOwnerBtn}
+                </button>
+              ` : ''}
+
+              ${rememberedUsers.length > 0 ? `
+                <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:10px">
+                  <div style="font-size:11px;font-weight:800;color:var(--text-muted);margin-bottom:6px">💾 SAVED ACCOUNTS ON THIS DEVICE</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:6px">
+                    ${rememberedUsers.map(u => `
+                      <button class="btn-outline" style="padding:6px 10px;font-size:11.5px" onclick="loginRememberedAccount('${escapeHtml(u.username)}')">
+                        <span>${escapeHtml(u.avatarEmoji || '🐱')}</span>
+                        <span>@${escapeHtml(u.username)}</span>
+                      </button>
+                    `).join('')}
+                  </div>
+                </div>
+              ` : ''}
             ` : `
               <div style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:4px">${L.usernameLabel}</div>
               <input id="signup-username" class="composer-input" style="width:100%;margin-bottom:10px" placeholder="e.g. whisker_knight" />
@@ -2215,6 +2449,11 @@
             <div class="rail-btn-wrap ${state.navMode === 'whiteboard' ? 'active' : ''}" onclick="openWhiteboard()" title="${L.whiteboardNav}">
               <div class="rail-pill" style="background: var(--mint)"></div>
               <div class="rail-btn">🎨</div>
+            </div>
+
+            <div class="rail-btn-wrap" onclick="state.modal='premium';render()" title="${L.premiumNavBtn}">
+              <div class="rail-pill" style="background: #C77DFF"></div>
+              <div class="rail-btn" style="background:linear-gradient(135deg,#C77DFF,#FFD166);color:#14121D">💎</div>
             </div>
 
             <div class="rail-divider"></div>
@@ -2310,9 +2549,13 @@
     function renderServerChannels(srv) {
       const L = t();
       return `
-        <div class="chan-item ${state.navMode === 'whiteboard' ? 'active' : ''}" onclick="openWhiteboard()" style="border:1px dashed rgba(67,217,173,0.4);margin-bottom:6px">
+        <div class="chan-item ${state.navMode === 'whiteboard' ? 'active' : ''}" onclick="openWhiteboard()" style="border:1px dashed rgba(67,217,173,0.4);margin-bottom:4px">
           <span>🎨</span>
           <span style="color:var(--mint);font-weight:800">${L.whiteboardNav}</span>
+        </div>
+        <div class="chan-item" onclick="state.modal='premium';render()" style="border:1px dashed rgba(255,209,102,0.45);margin-bottom:6px">
+          <span>💎</span>
+          <span style="color:var(--gold);font-weight:800">${L.premiumNavBtn}</span>
         </div>
       ` + srv.categories.map(cat => `
         <div class="cat-header">
@@ -2343,6 +2586,10 @@
           <span>🎨</span>
           <span style="color:var(--mint);font-weight:800">${L.whiteboardNav}</span>
         </div>
+        <div class="chan-item" onclick="state.modal='premium';render()">
+          <span>💎</span>
+          <span style="color:var(--gold);font-weight:800">${L.premiumNavBtn}</span>
+        </div>
         <div class="cat-header" style="margin-top:12px">
           <span>${L.directMeows}</span>
         </div>
@@ -2365,6 +2612,8 @@
       const L = t();
       const unlockedMarkers = state.currentUser.unlockedMarkers || ['marker_white'];
       const emeraldOwned = unlockedMarkers.includes('marker_emerald');
+      const isEmeraldEquipped = state.whiteboardTool === 'pen' && state.activeMarkerId === 'marker_emerald';
+      const cursorClass = isEmeraldEquipped ? 'cursor-emerald' : 'cursor-white';
 
       return `
         <div class="top-bar">
@@ -2387,7 +2636,7 @@
 
             <!-- Emerald Marker (25 MeowCoins) -->
             ${emeraldOwned ? `
-              <button class="marker-btn ${state.whiteboardTool === 'pen' && state.activeMarkerId === 'marker_emerald' ? 'selected' : ''}" onclick="selectOrUnlockMarker('marker_emerald')">
+              <button class="marker-btn ${isEmeraldEquipped ? 'selected' : ''}" style="${isEmeraldEquipped ? 'border-color:#10B981;box-shadow:0 0 12px rgba(16,185,129,0.45)' : ''}" onclick="selectOrUnlockMarker('marker_emerald')">
                 <span class="marker-swatch" style="background:#10B981"></span>
                 <span style="color:#10B981">${L.emeraldMarkerName} (✓)</span>
               </button>
@@ -2418,7 +2667,7 @@
             <button class="btn-outline" style="color:var(--coral)" onclick="clearWhiteboard()">${L.clearBoardBtn}</button>
           </div>
 
-          <div class="whiteboard-stage" id="whiteboard-stage">
+          <div class="whiteboard-stage ${cursorClass}" id="whiteboard-stage">
             <canvas id="cat-whiteboard-canvas" style="width:100%;height:100%;display:block;touch-action:none"></canvas>
             <div style="position:absolute;bottom:12px;inset-inline-start:16px;pointer-events:none;font-size:12px;color:var(--text-muted)">
               ${L.whiteboardSub}
@@ -2481,7 +2730,6 @@
       const ctx = canvas.getContext('2d');
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Subtle dot grid
       ctx.fillStyle = 'rgba(255,255,255,0.06)';
       for (let gx = 24; gx < canvas.width; gx += 28) {
         for (let gy = 24; gy < canvas.height; gy += 28) {
@@ -2559,6 +2807,9 @@
                <span style="font-weight:800;font-size:15.5px">${escapeHtml(ch.name)}</span>
                <div class="topic-text">${escapeHtml(ch.topic)}</div>`}
 
+          <div class="lang-pill" onclick="state.modal='premium';render()" title="${L.premiumCardTitle}" style="border-color:rgba(255,209,102,0.55);color:var(--gold)">
+            💎 Premium
+          </div>
           <div class="lang-pill" onclick="openWhiteboard()" title="${L.whiteboardTitle}" style="border-color:rgba(67,217,173,0.45);color:var(--mint)">
             🎨 Whiteboard
           </div>
@@ -2713,6 +2964,7 @@
           <span style="font-size:20px">🐾</span>
           <span style="font-weight:800;font-size:16px">${L.catFriends} (${friends.length})</span>
           <div style="flex:1"></div>
+          <div class="lang-pill" onclick="state.modal='premium';render()" style="color:var(--gold)">💎 Premium</div>
           <div class="lang-pill" onclick="openWhiteboard()" style="color:var(--mint)">🎨 Whiteboard</div>
           <div class="lang-pill" onclick="toggleLanguageQuick()">🌐 ${state.lang === 'ar' ? 'English' : 'العربية'}</div>
           <div class="coin-pill" onclick="openQuests()">🪙 ${state.currentUser.meowCoins}</div>
@@ -2778,6 +3030,7 @@
     function renderQuestsAndShopView() {
       const L = t();
       const completed = state.quests.filter(q => q.currentProgress >= q.targetCount).length;
+      const allCompleted = completed === state.quests.length;
       const pct = Math.round((completed / state.quests.length) * 100);
       const unlockedMarkers = state.currentUser.unlockedMarkers || ['marker_white'];
 
@@ -2787,24 +3040,57 @@
           <span style="font-size:20px">🪙</span>
           <span style="font-weight:800;font-size:16px">${L.questsHeaderTitle}</span>
           <div style="flex:1"></div>
+          <div class="lang-pill" onclick="state.modal='premium';render()" style="color:var(--gold)">💎 Premium</div>
           <div class="lang-pill" onclick="openWhiteboard()" style="color:var(--mint)">🎨 Whiteboard</div>
           <div class="lang-pill" onclick="toggleLanguageQuick()">🌐 ${state.lang === 'ar' ? 'English' : 'العربية'}</div>
           <div class="coin-pill">🪙 ${state.currentUser.meowCoins} ${L.meowCoins}</div>
         </div>
 
         <div class="messages-scroll">
-          <div class="welcome-card" style="border-color:rgba(255,209,102,0.45)">
+          <!-- CATMSG PREMIUM SUBSCRIPTION DEAL CARD -->
+          <div class="premium-card">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+              <div style="flex:1;min-width:240px">
+                <div style="display:flex;align-items:center;gap:8px">
+                  <span style="font-weight:900;font-size:18px;color:var(--gold)">${L.premiumCardTitle}</span>
+                  <span class="owner-tag" style="background:linear-gradient(135deg,#C77DFF,#FFD166)">VIP DEAL ONLY</span>
+                </div>
+                <div style="color:var(--text-secondary);font-size:13px;margin-top:5px;line-height:1.45">${L.premiumCardDesc}</div>
+                <div style="color:var(--text-primary);font-size:12.5px;font-weight:800;margin-top:8px">
+                  ${L.premiumDealRule}
+                  <span style="color:var(--gold);text-decoration:underline;margin-inline-start:4px">${OWNER_EMAIL}</span>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <a href="mailto:${OWNER_EMAIL}?subject=CatMsg%20Premium%20Subscription%20Deal" class="btn-gold" style="text-decoration:none;text-align:center">
+                  ${L.emailDealBtn}
+                </a>
+                <button class="btn-outline" onclick="copyOwnerEmail()">${L.copyEmailBtn}</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ALL-QUESTS +150 MEOWCOIN BONUS BANNER -->
+          <div class="welcome-card" style="border-color:rgba(255,209,102,0.55)">
             <div style="font-size:40px">🏆🐱</div>
             <div style="flex:1">
-              <div style="font-weight:900;font-size:19px">${L.questsHeroTitle}</div>
-              <div style="color:var(--text-secondary);font-size:13px;margin-top:4px">
-                ${L.questsHeroSub}
+              <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+                <div style="font-weight:900;font-size:18px;color:var(--gold)">${L.allQuestsBonusTitle}</div>
+                <span class="badge-tag">${L.oncePerAccountTag}</span>
               </div>
-              <div style="display:flex;align-items:center;gap:12px;margin-top:10px">
+              <div style="color:var(--text-secondary);font-size:13px;margin-top:4px">
+                ${L.allQuestsBonusDesc}
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;margin-top:10px;flex-wrap:wrap">
                 <div class="progress-track">
                   <div class="progress-fill" style="width:${pct}%;background:var(--gold)"></div>
                 </div>
                 <span style="color:var(--gold);font-weight:800;font-size:12.5px">${completed} / ${state.quests.length} ${L.completedWord}</span>
+                ${state.currentUser.allQuestsBonusClaimed
+                  ? `<span style="color:var(--mint);font-weight:900;font-size:13px">${L.allQuestsBonusClaimedText}</span>`
+                  : (allCompleted
+                      ? `<button class="btn-gold" onclick="claimAllQuestsBonus()">${L.claimAllQuestsBonusBtn}</button>`
+                      : `<span class="coin-pill">🔒 +150 🪙 (${completed}/${state.quests.length})</span>`)}
               </div>
             </div>
           </div>
@@ -2826,9 +3112,10 @@
                   ${q.iconEmoji}
                 </div>
                 <div style="flex:1">
-                  <div style="display:flex;align-items:center;gap:8px">
+                  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
                     <span style="font-weight:800;font-size:15px">${escapeHtml(qTitle)}</span>
                     <span class="badge-tag">${escapeHtml(qCat)}</span>
+                    <span class="badge-tag" style="color:var(--gold);border-color:rgba(255,209,102,0.4)">${L.oncePerAccountTag}</span>
                   </div>
                   <div style="color:var(--text-secondary);font-size:12.5px;margin-top:4px">${escapeHtml(qDesc)}</div>
                   <div style="display:flex;align-items:center;gap:10px;margin-top:8px">
@@ -2848,6 +3135,28 @@
               </div>
             `;
           }).join('')}
+
+          <!-- UPCOMING QUESTS FOR ALL USERS (TO BE ADDED LATER) -->
+          <div style="font-weight:900;font-size:13px;color:var(--text-secondary);letter-spacing:0.8px;margin:22px 0 8px">
+            ${L.futureQuestsHeader}
+          </div>
+          <div class="quest-card" style="border-style:dashed;border-color:rgba(157,123,255,0.45)">
+            <div style="font-size:28px">🚀🐾</div>
+            <div style="flex:1">
+              <div style="font-weight:800;font-size:14.5px;color:var(--purrple)">${L.futureQuestsHeader}</div>
+              <div style="color:var(--text-secondary);font-size:12.5px;margin-top:4px">${L.futureQuestsDesc}</div>
+            </div>
+          </div>
+
+          <!-- SECRET CODES SECTION FOR LATER -->
+          <div class="codes-card">
+            <div style="font-weight:900;font-size:14px;color:var(--yarn-blue)">${L.codesSectionHeader}</div>
+            <div style="color:var(--text-secondary);font-size:12.5px;margin-top:4px;margin-bottom:10px">${L.codesSectionSub}</div>
+            <div style="display:flex;gap:8px">
+              <input id="promo-code-input" class="composer-input" placeholder="${L.codeInputPlaceholder}" onkeydown="if(event.key==='Enter'){redeemPromoCode()}" />
+              <button class="btn-primary" onclick="redeemPromoCode()">${L.redeemCodeBtn}</button>
+            </div>
+          </div>
 
           <div style="font-weight:900;font-size:13px;color:var(--text-secondary);letter-spacing:0.8px;margin:26px 0 8px">
             ${L.emporiumStickersSection}
@@ -3038,6 +3347,36 @@
 
     function renderModal() {
       const L = t();
+      if (state.modal === 'premium') {
+        return `
+          <div class="modal-backdrop" onclick="if(event.target===this){state.modal=null;render()}">
+            <div class="modal-card" style="max-width:500px;border-color:var(--gold)">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+                <span style="font-weight:900;font-size:19px;color:var(--gold)">${L.premiumCardTitle}</span>
+                <span class="owner-tag" style="background:linear-gradient(135deg,#C77DFF,#FFD166)">💎 VIP</span>
+              </div>
+              <div style="color:var(--text-secondary);font-size:13.5px;line-height:1.5;margin-bottom:14px">
+                ${L.premiumCardDesc}
+              </div>
+              <div class="premium-card" style="margin-bottom:14px">
+                <div style="font-weight:800;font-size:13px;color:var(--text-primary);line-height:1.45">
+                  ${L.premiumDealRule}
+                </div>
+                <div style="margin-top:10px;padding:10px 12px;background:var(--rail-bg);border-radius:10px;border:1px solid rgba(255,209,102,0.45);display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">
+                  <span style="font-weight:900;font-size:14px;color:var(--gold)">📧 ${OWNER_EMAIL}</span>
+                  <button class="btn-outline" onclick="copyOwnerEmail()">${L.copyEmailBtn}</button>
+                </div>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+                <a href="mailto:${OWNER_EMAIL}?subject=CatMsg%20Premium%20Subscription%20Deal" class="btn-gold" style="text-decoration:none">
+                  ${L.emailDealBtn}
+                </a>
+                <button class="btn-primary" onclick="state.modal=null;render()">${L.closeBtn}</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
       if (state.modal === 'createServer') {
         return `
           <div class="modal-backdrop" onclick="if(event.target===this){state.modal=null;render()}">

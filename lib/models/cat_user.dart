@@ -144,6 +144,9 @@ class CatUser {
   final String bio;
   final String phoneNumber;
   final bool phoneRewardClaimed;
+  final bool allQuestsBonusClaimed;
+  final List<String> redeemedCodes;
+  final bool isPremium;
   final int meowCoins;
   final List<String> unlockedStickerIds;
   final List<String> unlockedBadges;
@@ -164,6 +167,9 @@ class CatUser {
     this.bio = 'Just a cozy cat looking for tuna and warm cardboard boxes.',
     this.phoneNumber = '',
     this.phoneRewardClaimed = false,
+    this.allQuestsBonusClaimed = false,
+    this.redeemedCodes = const [],
+    this.isPremium = false,
     this.meowCoins = 120,
     this.unlockedStickerIds = const [
       'sticker_loaf',
@@ -189,6 +195,9 @@ class CatUser {
     String? bio,
     String? phoneNumber,
     bool? phoneRewardClaimed,
+    bool? allQuestsBonusClaimed,
+    List<String>? redeemedCodes,
+    bool? isPremium,
     int? meowCoins,
     List<String>? unlockedStickerIds,
     List<String>? unlockedBadges,
@@ -208,6 +217,10 @@ class CatUser {
       bio: bio ?? this.bio,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       phoneRewardClaimed: phoneRewardClaimed ?? this.phoneRewardClaimed,
+      allQuestsBonusClaimed:
+          allQuestsBonusClaimed ?? this.allQuestsBonusClaimed,
+      redeemedCodes: redeemedCodes ?? this.redeemedCodes,
+      isPremium: isPremium ?? this.isPremium,
       meowCoins: meowCoins ?? this.meowCoins,
       unlockedStickerIds: unlockedStickerIds ?? this.unlockedStickerIds,
       unlockedBadges: unlockedBadges ?? this.unlockedBadges,
