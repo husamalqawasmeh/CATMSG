@@ -1028,7 +1028,7 @@
         passwordLabel: 'Password',
         signInBtn: '🔑 Sign In to CatMsg',
         signUpBtn: '✨ Create New Cat Account',
-        quickOwnerBtn: '👑 Quick Sign In: Captain Purr (Owner)',
+        quickOwnerBtn: '👑 Quick Sign In: abood (Owner)',
         signOutBtn: '🚪 Sign Out / Switch Account',
         oncePerAccountTag: '🔒 Once Per Account',
         allQuestsBonusTitle: '🏆 All Starter Quests Completion Bonus (+150 🪙)',
@@ -1145,7 +1145,7 @@
         passwordLabel: 'كلمة المرور',
         signInBtn: '🔑 دخول إلى CatMsg',
         signUpBtn: '✨ إنشاء حساب قطة جديد',
-        quickOwnerBtn: '👑 دخول سريع: Captain Purr (المالك)',
+        quickOwnerBtn: '👑 دخول سريع: abood (المالك)',
         signOutBtn: '🚪 تسجيل الخروج / تبديل الحساب',
         oncePerAccountTag: '🔒 مرة واحدة لكل حساب',
         allQuestsBonusTitle: '🏆 مكافأة إكمال جميع المهام الأساسية (+150 🪙)',
@@ -1341,8 +1341,8 @@
 
       currentUser: {
         id: 'user_captain',
-        username: 'captain_purr',
-        displayName: 'Captain Purr',
+        username: 'abood',
+        displayName: 'abood',
         avatarEmoji: '😼',
         avatarColorHex: '#FF7EB6',
         presence: 'Purring',
@@ -1504,7 +1504,7 @@
           {
             id: 'm0',
             senderId: 'user_captain',
-            senderName: 'Captain Purr',
+            senderName: 'abood',
             senderAvatar: '😼',
             senderRoleColor: '#FFD166',
             senderIsOwner: true,
@@ -1521,7 +1521,7 @@
             senderAvatar: '🦁',
             senderRoleColor: '#FF7EB6',
             senderBadge: '🛡️ Treat Guardian',
-            content: 'All hail our Castle Owner @Captain Purr! 👑🦁 Check the Quests & MeowCoins (🪙) tab or try the new 🎨 Cat Whiteboard activity!',
+            content: 'All hail our Castle Owner @abood! 👑🦁 Check the Quests & MeowCoins (🪙) tab or try the new 🎨 Cat Whiteboard activity!',
             reactions: { '🐾': ['user_captain', 'user_mochi', 'user_shadow'] },
             time: '6:40 PM',
             isPinned: false
@@ -1562,7 +1562,7 @@
             senderAvatar: '😻',
             senderRoleColor: '#FF7EB6',
             senderBadge: '🧶 Yarn Master',
-            content: 'Psst! Boss @Captain Purr! I hid two extra Churu tubes behind the scratching post 🐟🤫 Send me a DM back to complete your "Friendly Snoot Boop" quest!',
+            content: 'Psst! Boss @abood! I hid two extra Churu tubes behind the scratching post 🐟🤫 Send me a DM back to complete your "Friendly Snoot Boop" quest!',
             stickerId: 'sticker_boop',
             reactions: { '😻': ['user_captain'] },
             time: '6:58 PM',
@@ -1605,13 +1605,13 @@
     }
 
     function getUserStorageKey(username) {
-      const clean = (username || 'captain_purr').toLowerCase().trim();
-      return clean === 'captain_purr' ? STORAGE_KEY : `catmsg_user_${clean}_v2`;
+      const clean = (username || 'abood').toLowerCase().trim();
+      return (clean === 'abood' || clean === 'captain_purr') ? STORAGE_KEY : `catmsg_user_${clean}_v2`;
     }
 
     function buildSerializableSnapshot() {
       return {
-        version: 3,
+        version: 4,
         savedAt: new Date().toISOString(),
         lang: state.lang,
         currentUser: state.currentUser,
@@ -1628,7 +1628,12 @@
       if (!snap || typeof snap !== 'object') return false;
       if (snap.lang) state.lang = snap.lang;
       if (snap.currentUser) {
-        const isCapt = (snap.currentUser.username || '').toLowerCase() === 'captain_purr';
+        const rawU = (snap.currentUser.username || '').toLowerCase();
+        const isOwnerUser = rawU === 'abood' || rawU === 'captain_purr' || !!snap.currentUser.isOwner;
+        const migratedUsername = (rawU === 'captain_purr' || !rawU) ? 'abood' : snap.currentUser.username;
+        const rawDisp = snap.currentUser.displayName || '';
+        const migratedDisplayName = (rawDisp === 'Captain Purr' || rawDisp === 'captain_purr' || !rawDisp) ? 'abood' : rawDisp;
+
         state.currentUser = {
           phoneNumber: '',
           phoneRewardClaimed: false,
@@ -1638,7 +1643,9 @@
           unlockedMarkers: ['marker_white'],
           ...state.currentUser,
           ...snap.currentUser,
-          isOwner: isCapt ? true : !!snap.currentUser.isOwner
+          username: migratedUsername,
+          displayName: migratedDisplayName,
+          isOwner: isOwnerUser
         };
         if (!Array.isArray(state.currentUser.unlockedMarkers) || state.currentUser.unlockedMarkers.length === 0) {
           state.currentUser.unlockedMarkers = ['marker_white'];
@@ -1649,7 +1656,16 @@
       }
       if (snap.users) state.users = snap.users;
       if (Array.isArray(snap.servers) && snap.servers.length > 0) state.servers = snap.servers;
-      if (snap.messagesByChannel) state.messagesByChannel = snap.messagesByChannel;
+      if (snap.messagesByChannel) {
+        state.messagesByChannel = snap.messagesByChannel;
+        if (Array.isArray(state.messagesByChannel.chan_general_meows)) {
+          for (const m of state.messagesByChannel.chan_general_meows) {
+            if (m.senderId === 'user_captain' && m.senderName === 'Captain Purr') {
+              m.senderName = 'abood';
+            }
+          }
+        }
+      }
       if (Array.isArray(snap.quests) && snap.quests.length > 0) {
         if (!snap.version) {
           state.quests = createZeroProgressQuests();
@@ -1667,7 +1683,11 @@
     }
 
     function loadSavedUserData(targetUsername = null) {
-      const activeUser = (targetUsername || localStorage.getItem(ACTIVE_USER_KEY) || 'captain_purr').toLowerCase();
+      let activeUser = (targetUsername || localStorage.getItem(ACTIVE_USER_KEY) || 'abood').toLowerCase();
+      if (activeUser === 'captain_purr') {
+        activeUser = 'abood';
+        localStorage.setItem(ACTIVE_USER_KEY, 'abood');
+      }
       const storageKey = getUserStorageKey(activeUser);
       let loadedLocal = false;
       try {
@@ -1676,8 +1696,9 @@
           loadedLocal = applySnapshot(JSON.parse(raw));
         } else {
           const accounts = getStoredAccounts();
-          if (accounts[activeUser] && accounts[activeUser].snapshot) {
-            loadedLocal = applySnapshot(accounts[activeUser].snapshot);
+          const accEntry = accounts[activeUser] || (activeUser === 'abood' ? accounts['captain_purr'] : null);
+          if (accEntry && accEntry.snapshot) {
+            loadedLocal = applySnapshot(accEntry.snapshot);
           }
         }
       } catch (e) {
@@ -1699,7 +1720,7 @@
     function autoPersistIfEnabled() {
       try {
         const snap = buildSerializableSnapshot();
-        const key = (state.currentUser.username || 'captain_purr').toLowerCase();
+        const key = (state.currentUser.username || 'abood').toLowerCase();
         const storageKey = getUserStorageKey(key);
         localStorage.setItem(storageKey, JSON.stringify(snap));
         localStorage.setItem(ACTIVE_USER_KEY, key);
@@ -1707,6 +1728,9 @@
 
         // Also update the global accounts registry so usernames and their progress are always remembered automatically
         const accounts = getStoredAccounts();
+        if (key === 'abood' && accounts['captain_purr']) {
+          delete accounts['captain_purr'];
+        }
         const existingAcc = accounts[key] || {};
         accounts[key] = {
           ...existingAcc,
@@ -1753,14 +1777,17 @@
     function quickOwnerLogin() {
       markOwnerLoggedInOnce();
       const accounts = getStoredAccounts();
-      const savedCapt = accounts['captain_purr'] && accounts['captain_purr'].snapshot;
-      if (savedCapt) {
-        applySnapshot(savedCapt);
+      const savedOwner = (accounts['abood'] && accounts['abood'].snapshot) || (accounts['captain_purr'] && accounts['captain_purr'].snapshot);
+      if (savedOwner) {
+        applySnapshot(savedOwner);
+        state.currentUser.username = 'abood';
+        state.currentUser.displayName = 'abood';
+        state.currentUser.isOwner = true;
       } else {
         state.currentUser = {
           id: 'user_captain',
-          username: 'captain_purr',
-          displayName: 'Captain Purr',
+          username: 'abood',
+          displayName: 'abood',
           avatarEmoji: '😼',
           avatarColorHex: '#FF7EB6',
           presence: 'Purring',
@@ -1775,25 +1802,25 @@
           redeemedCodes: state.currentUser.redeemedCodes || [],
           isPremium: true,
           bio: 'Founder & Supreme Owner of The Grand Cat Castle. Will trade headbutts for premium salmon.',
-          meowCoins: state.currentUser.username === 'captain_purr' ? state.currentUser.meowCoins : 250,
+          meowCoins: state.currentUser.username === 'abood' ? state.currentUser.meowCoins : 250,
           unlockedStickerIds: ['sticker_loaf', 'sticker_zoomies', 'sticker_boop', 'sticker_tuna'],
           unlockedBadges: ['👑 Supreme Loaf', '🐾 Day One Paws'],
           unlockedMarkers: ['marker_white'],
           equippedBadge: '👑 Supreme Loaf',
           friendIds: ['user_mochi', 'user_pounce', 'user_duchess', 'user_mittens', 'user_shadow']
         };
-        loadSavedUserData('captain_purr');
+        loadSavedUserData('abood');
       }
       state.isSignedIn = true;
-      localStorage.setItem(ACTIVE_USER_KEY, 'captain_purr');
+      localStorage.setItem(ACTIVE_USER_KEY, 'abood');
       autoPersistIfEnabled();
-      showToast(state.lang === 'ar' ? '👑 مرحباً بعودتك يا قائد القلعة Captain Purr!' : '👑 Welcome back, Castle Owner Captain Purr!');
+      showToast(state.lang === 'ar' ? '👑 مرحباً بعودتك يا قائد القلعة abood!' : '👑 Welcome back, Castle Owner abood!');
     }
 
     function loginRememberedAccount(username) {
       const clean = (username || '').toLowerCase().trim();
       if (!clean) return;
-      if (clean === 'captain_purr') {
+      if (clean === 'abood' || clean === 'captain_purr') {
         quickOwnerLogin();
         return;
       }
@@ -1819,7 +1846,7 @@
         showToast(state.lang === 'ar' ? '😾 يرجى إدخال اسم المستخدم!' : '😾 Please enter your username!');
         return;
       }
-      if (username === 'captain_purr' || username === 'captainpurr' || username === 'owner') {
+      if (username === 'abood' || username === 'captain_purr' || username === 'captainpurr' || username === 'owner') {
         markOwnerLoggedInOnce();
         quickOwnerLogin();
         return;
@@ -2343,7 +2370,7 @@
       const L = t();
       const ownerLoggedOnce = hasOwnerLoggedInOnce();
       const accounts = getStoredAccounts();
-      const rememberedUsers = Object.values(accounts).filter(a => a && a.username && a.username !== 'captain_purr');
+      const rememberedUsers = Object.values(accounts).filter(a => a && a.username && a.username !== 'abood' && a.username !== 'captain_purr');
       const lastUser = localStorage.getItem(ACTIVE_USER_KEY) || '';
 
       return `

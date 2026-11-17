@@ -956,8 +956,8 @@ class CatBackendService extends ChangeNotifier {
   void _seedInitialData() {
     _currentUser = const CatUser(
       id: 'user_captain',
-      username: 'captain_purr',
-      displayName: 'Captain Purr',
+      username: 'abood',
+      displayName: 'abood',
       avatarEmoji: '😼',
       avatarColorHex: '#FF7EB6',
       presence: CatPresence.purring,
@@ -1273,7 +1273,7 @@ class CatBackendService extends ChangeNotifier {
         senderRoleColorHex: '#5CE1E6',
         senderBadge: '🌙 Midnight Zoomer',
         content:
-            'Hey @Captain Purr! Try reacting to this message with a paw `🐾`, replying, or sending a Cat Sticker to earn quick **MeowCoins** (`🪙`)!',
+            'Hey @abood! Try reacting to this message with a paw `🐾`, replying, or sending a Cat Sticker to earn quick **MeowCoins** (`🪙`)!',
         reactions: {
           '⚡': ['user_mochi'],
         },
@@ -1286,7 +1286,7 @@ class CatBackendService extends ChangeNotifier {
         id: 'm_decree_1',
         channelId: 'chan_royal_decrees',
         senderId: 'user_captain',
-        senderName: 'Captain Purr',
+        senderName: 'abood',
         senderAvatar: '😼',
         senderAvatarHex: '#FF7EB6',
         senderRoleColorHex: '#FFD166',
