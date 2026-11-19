@@ -7,5 +7,12 @@
   "theme_color": "#FF7EB6",
   "description": "Cat-themed Discord-style messaging app with Cat Houses, DMs, Cat Stickers, Reactions, Quests, and MeowCoins.",
   "orientation": "portrait-primary",
-  "prefer_related_applications": false
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐱</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
 }
