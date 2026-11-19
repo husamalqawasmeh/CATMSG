@@ -966,6 +966,63 @@
       padding: 12px;
       margin-top: 10px;
     }
+
+    .lifetime-premium-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: linear-gradient(135deg, #5CE1E6, #C77DFF, #FFD166);
+      color: #14121D;
+      font-size: 10px;
+      font-weight: 900;
+      padding: 2px 8px;
+      border-radius: 8px;
+      letter-spacing: 0.4px;
+      box-shadow: 0 2px 10px rgba(199, 125, 255, 0.4);
+    }
+
+    .discord-apps-launcher {
+      background: #1E1B2B;
+      border: 1.5px solid rgba(157, 123, 255, 0.45);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 520px;
+      overflow: hidden;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.72);
+    }
+
+    .discord-apps-banner {
+      background: linear-gradient(135deg, #5865F2 0%, #9D7BFF 60%, #43D9AD 100%);
+      padding: 18px 20px;
+      color: #FFFFFF;
+    }
+
+    .discord-app-tile {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: var(--card-bg);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 14px 16px;
+      cursor: pointer;
+      transition: all 0.16s ease;
+    }
+
+    .discord-app-tile:hover {
+      border-color: var(--mint);
+      background: var(--card-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(67, 217, 173, 0.18);
+    }
+
+    .skeleton-video-card {
+      background: linear-gradient(135deg, rgba(255, 107, 107, 0.14), rgba(157, 123, 255, 0.14));
+      border: 1.5px solid rgba(255, 107, 107, 0.48);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 18px;
+    }
   </style>
 </head>
 <body>
@@ -1073,7 +1130,21 @@
         allQuestsBonusDesc: 'Complete all 6 starter quests once on your account to unlock a massive +150 MeowCoins bonus!',
         claimAllQuestsBonusBtn: '🪙 Claim +150 Bonus!',
         allQuestsBonusClaimedText: '✓ +150 🪙 All-Quests Bonus Claimed!',
+        claimAllReadyBtn: '⚡ Claim All Ready Quests',
         claimAllReadyQuestsBtn: (n) => `⚡ QoL: Claim All Ready Quests (${n})`,
+        lifetimePremiumTag: '💎 LIFETIME PREMIUM',
+        premiumActiveTag: '💎 LIFETIME PREMIUM ACTIVE',
+        premiumDiscountTag: '💎 25% Premium Discount Active',
+        appsBtnLabel: '🧩 Apps',
+        appsLauncherHeader: '🧩 Discord Apps & Activities',
+        appsLauncherSub: 'Launch interactive Activities right inside CatMsg.',
+        appsSearchPlaceholder: 'Search installed Apps & Activities...',
+        launchAppBtn: '🚀 Launch Activity',
+        exitActivityBtn: '✕ Exit Activity',
+        onlyAppInstalledNote: 'Installed Apps (1): Cat Whiteboard',
+        watchSkeletonBtn: '▶️ Watch Skeleton Fan Meme Video',
+        skeletonModalTitle: '💀🪭 Skeleton Fan Meme Video (Watch for +30 🪙 Quest)',
+        skeletonModalSub: 'Watch the Skeleton Fan Meme video right here on the website to complete the Skeleton Fan Meme Quest (+30 MeowCoins once per account)!',
         futureQuestsHeader: '🌟 MORE CAT QUESTS (FOR ALL USERS — COMING SOON)',
         futureQuestsDesc: 'Stay tuned! Additional repeatable and expansion quests for all CatMsg members (not just new users) will be added here.',
         codesSectionHeader: '🎟️ SECRET CAT CODES (REDEEM FOR REWARDS)',
@@ -1201,7 +1272,21 @@
         allQuestsBonusDesc: 'أكمل جميع المهام الـ 6 الأساسية مرة واحدة في حسابك لتحصل على مكافأة إضافية كبرى قدرها +150 عملة مياو!',
         claimAllQuestsBonusBtn: '🪙 استلم مكافأة +150!',
         allQuestsBonusClaimedText: '✓ تم استلام مكافأة +150 🪙 لإكمال جميع المهام!',
+        claimAllReadyBtn: '⚡ استلام جميع المهام الجاهزة',
         claimAllReadyQuestsBtn: (n) => `⚡ استلام جميع المهام الجاهزة بضغطة واحدة (${n})`,
+        lifetimePremiumTag: '💎 بريميوم مدى الحياة',
+        premiumActiveTag: '💎 اشتراك مدى الحياة مفعّل',
+        premiumDiscountTag: '💎 خصم بريميوم 25% مفعّل',
+        appsBtnLabel: '🧩 التطبيقات (Apps)',
+        appsLauncherHeader: '🧩 تطبيقات وأنشطة ديسكورد (Apps & Activities)',
+        appsLauncherSub: 'شغّل الأنشطة والألعاب التفاعلية مباشرة داخل CatMsg.',
+        appsSearchPlaceholder: 'ابحث في التطبيقات المتوفرة...',
+        launchAppBtn: '🚀 تشغيل النشاط',
+        exitActivityBtn: '✕ إغلاق النشاط',
+        onlyAppInstalledNote: 'التطبيقات المتوفرة (1): السبورة البيضاء للقطط',
+        watchSkeletonBtn: '▶️ مشاهدة فيديو ميم الهيكل العظمي والمروحة',
+        skeletonModalTitle: '💀🪭 فيديو ميم الهيكل العظمي والمروحة (مهمة +30 🪙)',
+        skeletonModalSub: 'شاهد فيديو ميم الهيكل العظمي والمروحة هنا داخل الموقع لإكمال المهمة والحصول على +30 عملة مياو (مرة واحدة لكل حساب)!',
         futureQuestsHeader: '🌟 مهام إضافية قادمة (لجميع المستخدمين — قريباً)',
         futureQuestsDesc: 'ترقبوا! سيتم إضافة مهام جديدة لجميع أعضاء CatMsg (وليس فقط للمستخدمين الجدد) قريباً.',
         codesSectionHeader: '🎟️ قسم الأكواد السرية (استبدال المكافآت)',
@@ -1355,8 +1440,21 @@
         { id: 'q_sticker', title: 'Expressive Whiskers', titleAr: 'شوارب معبّرة', description: 'Send 2 custom Cat Stickers in chat.', descriptionAr: 'أرسل ملصقين من ملصقات القطط في الدردشة.', iconEmoji: '🏷️', category: 'Social Whiskers', categoryAr: 'مهام اجتماعية', actionType: 'sendSticker', targetCount: 2, currentProgress: 0, rewardCoins: 65, isClaimed: false },
         { id: 'q_reply', title: 'Polite Purr', titleAr: 'خرخرة مهذبة', description: 'Reply directly to another cat\'s message.', descriptionAr: 'قم بالرد المباشر على رسالة قطة أخرى.', iconEmoji: '↩️', category: 'Social Whiskers', categoryAr: 'مهام اجتماعية', actionType: 'replyMessage', targetCount: 1, currentProgress: 0, rewardCoins: 50, isClaimed: false },
         { id: 'q_dm', title: 'Friendly Snoot Boop', titleAr: 'رسالة صداقة لطيفة', description: 'Send a Direct Meow (DM) to one of your Cat Friends.', descriptionAr: 'أرسل رسالة خاصة (DM) إلى أحد أصدقائك من القطط.', iconEmoji: '💌', category: 'Social Whiskers', categoryAr: 'مهام اجتماعية', actionType: 'sendDm', targetCount: 1, currentProgress: 0, rewardCoins: 60, isClaimed: false },
-        { id: 'q_explore', title: 'Curious Territory Explorer', titleAr: 'مستكشف القلعة الفضولي', description: 'Visit 4 different channels across the Cat Houses.', descriptionAr: 'قم بزيارة 4 قنوات مختلفة عبر بيوت القطط.', iconEmoji: '🧭', category: 'Legend Milestones', categoryAr: 'إنجازات أسطورية', actionType: 'visitChannels', targetCount: 4, currentProgress: 0, rewardCoins: 75, isClaimed: false }
+        { id: 'q_explore', title: 'Curious Territory Explorer', titleAr: 'مستكشف القلعة الفضولي', description: 'Visit 4 different channels across the Cat Houses.', descriptionAr: 'قم بزيارة 4 قنوات مختلفة عبر بيوت القطط.', iconEmoji: '🧭', category: 'Legend Milestones', categoryAr: 'إنجازات أسطورية', actionType: 'visitChannels', targetCount: 4, currentProgress: 0, rewardCoins: 75, isClaimed: false },
+        { id: 'q_skeleton_fan', title: 'Skeleton Fan Meme Watcher', titleAr: 'مشاهد ميم الهيكل العظمي والمروحة', description: 'Watch the Skeleton Fan Meme video right inside the website.', descriptionAr: 'شاهد فيديو ميم الهيكل العظمي والمروحة داخل الموقع.', iconEmoji: '💀', category: 'All Users Special', categoryAr: 'مهمة لجميع المستخدمين', actionType: 'watchSkeletonFan', targetCount: 1, currentProgress: 0, rewardCoins: 30, isClaimed: false }
       ];
+    }
+
+    function ensureAllUsersQuestsMerged(existingQuests) {
+      const defaults = createZeroProgressQuests();
+      if (!Array.isArray(existingQuests) || existingQuests.length === 0) return defaults;
+      const merged = [...existingQuests];
+      for (const defQ of defaults) {
+        if (!merged.some(q => q && q.id === defQ.id)) {
+          merged.push({ ...defQ });
+        }
+      }
+      return merged;
     }
 
     const state = {
@@ -1404,16 +1502,19 @@
         avatarColorHex: '#FF7EB6',
         presence: 'Purring',
         presenceColor: '#43B581',
-        customStatus: 'Castle Owner & MeowCoin Hunter 🔴👑',
+        customStatus: 'Castle Owner & Lifetime Premium VIP 🔴👑💎',
         roleTitle: 'Owner',
         roleColor: '#FFD166',
         isOwner: true,
+        isPremium: true,
+        premiumLifetime: true,
+        premiumPlan: 'Lifetime',
         phoneNumber: '',
         phoneRewardClaimed: false,
         bio: 'Founder & Supreme Owner of The Grand Cat Castle. Will trade headbutts for premium salmon.',
         meowCoins: 250,
         unlockedStickerIds: ['sticker_loaf', 'sticker_zoomies', 'sticker_boop', 'sticker_tuna'],
-        unlockedBadges: ['👑 Supreme Loaf', '🐾 Day One Paws'],
+        unlockedBadges: ['👑 Supreme Loaf', '🐾 Day One Paws', '💎 Lifetime Premium'],
         unlockedMarkers: ['marker_white'],
         equippedBadge: '👑 Supreme Loaf',
         friendIds: ['user_mochi', 'user_pounce', 'user_duchess', 'user_mittens', 'user_shadow']
@@ -1696,14 +1797,20 @@
           phoneRewardClaimed: false,
           allQuestsBonusClaimed: false,
           redeemedCodes: [],
-          isPremium: false,
+          isPremium: isOwnerUser ? true : false,
+          premiumLifetime: isOwnerUser ? true : false,
+          premiumPlan: isOwnerUser ? 'Lifetime' : '',
           unlockedMarkers: ['marker_white'],
           ...state.currentUser,
           ...snap.currentUser,
           username: migratedUsername,
           displayName: migratedDisplayName,
-          isOwner: isOwnerUser
+          isOwner: isOwnerUser,
+          ...(isOwnerUser ? { isPremium: true, premiumLifetime: true, premiumPlan: 'Lifetime' } : {})
         };
+        if (isOwnerUser && Array.isArray(state.currentUser.unlockedBadges) && !state.currentUser.unlockedBadges.includes('💎 Lifetime Premium')) {
+          state.currentUser.unlockedBadges.push('💎 Lifetime Premium');
+        }
         if (!Array.isArray(state.currentUser.unlockedMarkers) || state.currentUser.unlockedMarkers.length === 0) {
           state.currentUser.unlockedMarkers = ['marker_white'];
         }
@@ -1727,8 +1834,10 @@
         if (!snap.version) {
           state.quests = createZeroProgressQuests();
         } else {
-          state.quests = snap.quests;
+          state.quests = ensureAllUsersQuestsMerged(snap.quests);
         }
+      } else {
+        state.quests = ensureAllUsersQuestsMerged(state.quests);
       }
       if (Array.isArray(snap.whiteboardStrokes) && snap.whiteboardStrokes.length > 0) {
         state.whiteboardStrokes = snap.whiteboardStrokes;
@@ -1943,6 +2052,9 @@
         state.currentUser.username = 'abood';
         state.currentUser.displayName = 'abood';
         state.currentUser.isOwner = true;
+        state.currentUser.isPremium = true;
+        state.currentUser.premiumLifetime = true;
+        state.currentUser.premiumPlan = 'Lifetime';
       } else {
         state.currentUser = {
           id: 'user_captain',
@@ -1952,7 +2064,7 @@
           avatarColorHex: '#FF7EB6',
           presence: 'Purring',
           presenceColor: '#43B581',
-          customStatus: 'Castle Owner & MeowCoin Hunter 🔴👑',
+          customStatus: 'Castle Owner & Lifetime Premium VIP 🔴👑💎',
           roleTitle: 'Owner',
           roleColor: '#FFD166',
           isOwner: true,
@@ -1961,20 +2073,23 @@
           allQuestsBonusClaimed: !!state.currentUser.allQuestsBonusClaimed,
           redeemedCodes: state.currentUser.redeemedCodes || [],
           isPremium: true,
+          premiumLifetime: true,
+          premiumPlan: 'Lifetime',
           bio: 'Founder & Supreme Owner of The Grand Cat Castle. Will trade headbutts for premium salmon.',
           meowCoins: state.currentUser.username === 'abood' ? state.currentUser.meowCoins : 250,
           unlockedStickerIds: ['sticker_loaf', 'sticker_zoomies', 'sticker_boop', 'sticker_tuna'],
-          unlockedBadges: ['👑 Supreme Loaf', '🐾 Day One Paws'],
+          unlockedBadges: ['👑 Supreme Loaf', '🐾 Day One Paws', '💎 Lifetime Premium'],
           unlockedMarkers: ['marker_white'],
           equippedBadge: '👑 Supreme Loaf',
           friendIds: ['user_mochi', 'user_pounce', 'user_duchess', 'user_mittens', 'user_shadow']
         };
         loadSavedUserData('abood');
       }
+      state.quests = ensureAllUsersQuestsMerged(state.quests);
       state.isSignedIn = true;
       localStorage.setItem(ACTIVE_USER_KEY, 'abood');
       autoPersistIfEnabled();
-      showToast(state.lang === 'ar' ? '👑 مرحباً بعودتك يا قائد القلعة abood!' : '👑 Welcome back, Castle Owner abood!');
+      showToast(state.lang === 'ar' ? '👑💎 مرحباً بعودتك يا قائد القلعة abood (اشتراك بريميوم مدى الحياة مفعّل)!' : '👑💎 Welcome back, Castle Owner abood (CatMsg Premium Lifetime Active)!');
     }
 
     function loginRememberedAccount(username) {
@@ -2295,10 +2410,273 @@
     }
 
     function openWhiteboard() {
+      state.modal = null;
       state.navMode = 'whiteboard';
       state.mobileSidebarOpen = false;
       render();
       setTimeout(initWhiteboardCanvas, 30);
+    }
+
+    function openDiscordAppsLauncher() {
+      state.modal = 'appsLauncher';
+      state.mobileSidebarOpen = false;
+      render();
+    }
+
+    function exitWhiteboardActivity() {
+      state.navMode = 'server';
+      render();
+    }
+
+    let skeletonAnimFrameId = null;
+    let skeletonAudioTimerId = null;
+    let skeletonStartTime = 0;
+    let skeletonQuestTriggered = false;
+
+    function openSkeletonFanVideoModal() {
+      stopSkeletonFanMemePlayback();
+      state.modal = 'skeletonVideo';
+      render();
+      setTimeout(() => {
+        startSkeletonFanMemePlayback();
+      }, 40);
+    }
+
+    function stopSkeletonFanMemePlayback() {
+      if (skeletonAnimFrameId) {
+        cancelAnimationFrame(skeletonAnimFrameId);
+        skeletonAnimFrameId = null;
+      }
+      if (skeletonAudioTimerId) {
+        clearInterval(skeletonAudioTimerId);
+        skeletonAudioTimerId = null;
+      }
+    }
+
+    function playSkeletonMemeBeatNote(stepIdx) {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        if (!window._skelAudioCtx) window._skelAudioCtx = new AudioCtx();
+        const ctx = window._skelAudioCtx;
+        if (ctx.state === 'suspended') ctx.resume();
+        const notes = [146.83, 174.61, 196.00, 220.00, 196.00, 174.61, 130.81, 146.83];
+        const freq = notes[stepIdx % notes.length];
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = stepIdx % 2 === 0 ? 'sawtooth' : 'square';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(0.06, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.22);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.23);
+      } catch (e) {}
+    }
+
+    function startSkeletonFanMemePlayback() {
+      stopSkeletonFanMemePlayback();
+      skeletonStartTime = performance.now();
+      skeletonQuestTriggered = false;
+      let beatStep = 0;
+      playSkeletonMemeBeatNote(beatStep++);
+      skeletonAudioTimerId = setInterval(() => {
+        const canvas = document.getElementById('skeleton-fan-video-canvas');
+        if (!canvas) {
+          stopSkeletonFanMemePlayback();
+          return;
+        }
+        playSkeletonMemeBeatNote(beatStep++);
+      }, 260);
+
+      const durationMs = 5000;
+      const tick = (now) => {
+        const canvas = document.getElementById('skeleton-fan-video-canvas');
+        if (!canvas) {
+          stopSkeletonFanMemePlayback();
+          return;
+        }
+        const elapsed = now - skeletonStartTime;
+        const pct = Math.min(1, elapsed / durationMs);
+        drawSkeletonFanMemeFrame(canvas, elapsed, pct);
+
+        const progFill = document.getElementById('skeleton-video-prog-fill');
+        const progText = document.getElementById('skeleton-video-prog-text');
+        if (progFill) progFill.style.width = `${Math.round(pct * 100)}%`;
+        if (progText) {
+          const sec = Math.min(5, (elapsed / 1000)).toFixed(1);
+          progText.textContent = `${sec}s / 5.0s`;
+        }
+
+        if (pct >= 1 && !skeletonQuestTriggered) {
+          skeletonQuestTriggered = true;
+          stopSkeletonFanMemePlayback();
+          const q = state.quests.find(x => x.id === 'q_skeleton_fan');
+          const wasIncomplete = q && q.currentProgress < q.targetCount;
+          incrementQuest('watchSkeletonFan', 1);
+          if (!wasIncomplete) {
+            showToast(state.lang === 'ar' ? '💀🪭 تمت مشاهدة فيديو ميم الهيكل العظمي والمروحة!' : '💀🪭 Watched the Skeleton Fan Meme video!');
+          } else {
+            render();
+          }
+          return;
+        }
+        skeletonAnimFrameId = requestAnimationFrame(tick);
+      };
+      skeletonAnimFrameId = requestAnimationFrame(tick);
+    }
+
+    function drawSkeletonFanMemeFrame(canvas, elapsedMs, pct) {
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+      const t = elapsedMs / 1000;
+      const cutIndex = Math.floor(t * 2.2) % 4;
+
+      // Rapid meme camera cuts & background strobe
+      const bgColors = [
+        ['#1A0B1E', '#4A1230'],
+        ['#0F172A', '#1E3A8A'],
+        ['#280909', '#7F1D1D'],
+        ['#18122B', '#443C68']
+      ];
+      const pair = bgColors[cutIndex];
+      const grad = ctx.createLinearGradient(0, 0, w, h);
+      grad.addColorStop(0, pair[0]);
+      grad.addColorStop(1, pair[1]);
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, h);
+
+      ctx.save();
+      // Meme camera zoom & tilt per cut
+      const zoom = 1 + 0.08 * Math.sin(t * 14);
+      const tilt = (cutIndex % 2 === 0 ? 1 : -1) * 0.035 * Math.cos(t * 10);
+      ctx.translate(w / 2, h / 2);
+      ctx.scale(zoom, zoom);
+      ctx.rotate(tilt);
+      ctx.translate(-w / 2, -h / 2);
+
+      // Wind speed lines blowing from fan (left) to skeleton (right)
+      ctx.strokeStyle = 'rgba(92, 225, 230, 0.45)';
+      ctx.lineWidth = 2.5;
+      for (let i = 0; i < 14; i++) {
+        const wy = 45 + ((i * 21 + elapsedMs * 0.25) % (h - 90));
+        const wx = ((elapsedMs * 0.85 + i * 73) % (w - 120)) + 90;
+        ctx.beginPath();
+        ctx.moveTo(wx, wy);
+        ctx.lineTo(wx + 42, wy + Math.sin(t * 12 + i) * 4);
+        ctx.stroke();
+      }
+
+      // Draw Spinning Electric Fan on Left
+      const fanX = 125;
+      const fanY = h / 2 + 15;
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(fanX - 10, fanY + 55, 20, 48);
+      ctx.fillRect(fanX - 36, fanY + 95, 72, 12);
+
+      ctx.save();
+      ctx.translate(fanX, fanY);
+      ctx.rotate(t * 22);
+      for (let b = 0; b < 4; b++) {
+        ctx.rotate(Math.PI / 2);
+        ctx.fillStyle = '#5CE1E6';
+        ctx.beginPath();
+        ctx.ellipse(0, -34, 15, 34, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+
+      ctx.strokeStyle = '#94A3B8';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.arc(fanX, fanY, 64, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.fillStyle = '#FFD166';
+      ctx.beginPath();
+      ctx.arc(fanX, fanY, 12, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Draw Vibing / Roasting Skeleton on Right being blasted by the Fan
+      const skX = 375 + Math.sin(t * 35) * 6;
+      const skY = h / 2 + Math.cos(t * 28) * 5;
+
+      // Skeleton Ribcage
+      ctx.strokeStyle = '#E2E8F0';
+      ctx.lineWidth = 6;
+      ctx.beginPath();
+      ctx.moveTo(skX, skY + 45);
+      ctx.lineTo(skX, skY + 115);
+      ctx.stroke();
+      for (let r = 0; r < 3; r++) {
+        const ry = skY + 62 + r * 16;
+        ctx.beginPath();
+        ctx.arc(skX, ry, 28 - r * 3, 0.2 * Math.PI, 0.8 * Math.PI);
+        ctx.stroke();
+      }
+
+      // Skeleton Skull
+      ctx.fillStyle = '#F8FAFC';
+      ctx.beginPath();
+      ctx.arc(skX, skY - 12, 46, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Chattering Skeleton Jaw
+      const jawOpen = Math.abs(Math.sin(t * 24)) * 14;
+      ctx.fillStyle = '#E2E8F0';
+      ctx.fillRect(skX - 24, skY + 22 + jawOpen, 48, 22);
+
+      // Teeth
+      ctx.fillStyle = '#0F172A';
+      for (let te = -16; te <= 16; te += 8) {
+        ctx.fillRect(skX + te - 2, skY + 22 + jawOpen, 3, 10);
+      }
+
+      // Glowing Meme Eyes
+      ctx.fillStyle = '#0F172A';
+      ctx.beginPath();
+      ctx.arc(skX - 16, skY - 14, 12, 0, Math.PI * 2);
+      ctx.arc(skX + 16, skY - 14, 12, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = cutIndex % 2 === 0 ? '#FF6B6B' : '#FFD166';
+      ctx.beginPath();
+      ctx.arc(skX - 16, skY - 14, 5, 0, Math.PI * 2);
+      ctx.arc(skX + 16, skY - 14, 5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Nose cavity
+      ctx.fillStyle = '#0F172A';
+      ctx.beginPath();
+      ctx.moveTo(skX, skY - 2);
+      ctx.lineTo(skX - 6, skY + 10);
+      ctx.lineTo(skX + 6, skY + 10);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.restore();
+
+      // Meme Impact Captions Top & Bottom
+      const captions = [
+        ['AVERAGE SKELETON FAN MEME', '💀🪭 MAXIMUM FAN VELOCITY'],
+        ['WHEN THE FAN HITS AT 3:00 AM', '💀 *RATTLING INTENSIFIES*'],
+        ['SKELETON FAN ENJOYER', '🪭💨 BONE-CHILLING BREEZE'],
+        ['CERTIFIED SKELETON CLASSIC', '🪙 +30 MEOWCOINS QUEST']
+      ];
+      const cap = captions[cutIndex];
+      ctx.font = '900 18px Nunito, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#000000';
+      ctx.fillText(cap[0], w / 2 + 2, 32);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillText(cap[0], w / 2, 30);
+
+      ctx.font = '900 16px Nunito, sans-serif';
+      ctx.fillStyle = '#000000';
+      ctx.fillText(cap[1], w / 2 + 2, h - 16);
+      ctx.fillStyle = '#FFD166';
+      ctx.fillText(cap[1], w / 2, h - 18);
     }
 
     function getEffectiveCoinPrice(basePrice) {
@@ -2576,7 +2954,7 @@
           <div class="auth-card">
             <div style="display:flex;justify-content:space-between;align-items:center">
               <div style="font-size:36px">🐱</div>
-              <div class="lang-pill" onclick="toggleLanguageQuick()">🌐 ${state.lang === 'ar' ? 'English' : 'العربية'}</div>
+              <span class="badge-tag" style="color:var(--mint);border-color:rgba(67,217,173,0.45)">100% Free Features</span>
             </div>
             <div style="font-weight:900;font-size:21px;margin-top:8px">${L.signInTitle}</div>
             <div style="color:var(--text-secondary);font-size:13px;margin-top:4px;line-height:1.45">${L.signInSub}</div>
@@ -2691,9 +3069,9 @@
               </div>
             </div>
 
-            <div class="rail-btn-wrap ${state.navMode === 'whiteboard' ? 'active' : ''}" onclick="openWhiteboard()" title="${L.whiteboardNav}">
+            <div class="rail-btn-wrap ${state.navMode === 'whiteboard' || state.modal === 'appsLauncher' ? 'active' : ''}" onclick="openDiscordAppsLauncher()" title="${L.appsLauncherHeader}">
               <div class="rail-pill" style="background: var(--mint)"></div>
-              <div class="rail-btn">🎨</div>
+              <div class="rail-btn">🧩</div>
             </div>
 
             <div class="rail-btn-wrap" onclick="state.modal='premium';render()" title="${L.premiumNavBtn}">
@@ -2754,9 +3132,10 @@
                 <div class="status-dot" style="background:${state.currentUser.presenceColor}"></div>
               </div>
               <div style="flex:1;min-width:0;cursor:pointer" onclick="state.modal='editProfile';render()">
-                <div style="display:flex;align-items:center;gap:5px">
+                <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">
                   <span style="font-weight:800;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--gold)">${escapeHtml(state.currentUser.displayName)}</span>
                   ${state.currentUser.isOwner ? `<span class="owner-tag">${L.ownerTag}</span>` : ''}
+                  ${state.currentUser.isPremium ? `<span class="lifetime-premium-tag">💎 ${state.currentUser.premiumLifetime ? 'LIFETIME' : 'VIP'}</span>` : ''}
                 </div>
                 <div style="font-size:11px;color:${state.currentUser.presenceColor};font-weight:700;margin-top:2px">
                   ${L.presenceLabels[state.currentUser.presence] || state.currentUser.presence}
@@ -2794,9 +3173,9 @@
     function renderServerChannels(srv) {
       const L = t();
       return `
-        <div class="chan-item ${state.navMode === 'whiteboard' ? 'active' : ''}" onclick="openWhiteboard()" style="border:1px dashed rgba(67,217,173,0.4);margin-bottom:4px">
-          <span>🎨</span>
-          <span style="color:var(--mint);font-weight:800">${L.whiteboardNav}</span>
+        <div class="chan-item ${state.navMode === 'whiteboard' || state.modal === 'appsLauncher' ? 'active' : ''}" onclick="openDiscordAppsLauncher()" style="border:1px dashed rgba(67,217,173,0.4);margin-bottom:4px">
+          <span>🧩</span>
+          <span style="color:var(--mint);font-weight:800">${L.appsBtnLabel}</span>
         </div>
         <div class="chan-item" onclick="state.modal='premium';render()" style="border:1px dashed rgba(255,209,102,0.45);margin-bottom:6px">
           <span>💎</span>
@@ -2827,9 +3206,9 @@
           <span>🪙</span>
           <span>${L.questsAndEmporium}</span>
         </div>
-        <div class="chan-item ${state.navMode === 'whiteboard' ? 'active' : ''}" onclick="openWhiteboard()">
-          <span>🎨</span>
-          <span style="color:var(--mint);font-weight:800">${L.whiteboardNav}</span>
+        <div class="chan-item ${state.navMode === 'whiteboard' || state.modal === 'appsLauncher' ? 'active' : ''}" onclick="openDiscordAppsLauncher()">
+          <span>🧩</span>
+          <span style="color:var(--mint);font-weight:800">${L.appsBtnLabel}</span>
         </div>
         <div class="chan-item" onclick="state.modal='premium';render()">
           <span>💎</span>
@@ -2865,9 +3244,10 @@
           <button class="icon-btn" onclick="state.mobileSidebarOpen=!state.mobileSidebarOpen;render()">☰</button>
           <span style="font-size:20px">🎨</span>
           <span style="font-weight:800;font-size:15.5px">${L.whiteboardTitle}</span>
-          <span class="badge-tag" style="color:var(--mint);border-color:rgba(67,217,173,0.45)">No Rewards • Fun Activity</span>
+          <span class="badge-tag" style="color:var(--mint);border-color:rgba(67,217,173,0.45)">🧩 Discord App Activity • No Rewards</span>
           <div style="flex:1"></div>
-          <div class="lang-pill" onclick="toggleLanguageQuick()">🌐 ${state.lang === 'ar' ? 'English' : 'العربية'}</div>
+          <div class="lang-pill" onclick="openDiscordAppsLauncher()" style="color:var(--mint);border-color:rgba(67,217,173,0.45)">${L.appsBtnLabel}</div>
+          <button class="btn-outline" style="color:var(--coral);border-color:rgba(255,107,107,0.45);padding:5px 10px" onclick="exitWhiteboardActivity()">${L.exitActivityBtn}</button>
           <div class="coin-pill" onclick="openQuests()">🪙 ${state.currentUser.meowCoins}</div>
         </div>
 
@@ -3055,11 +3435,8 @@
           <div class="lang-pill" onclick="state.modal='premium';render()" title="${L.premiumCardTitle}" style="border-color:rgba(255,209,102,0.55);color:var(--gold)">
             💎 Premium
           </div>
-          <div class="lang-pill" onclick="openWhiteboard()" title="${L.whiteboardTitle}" style="border-color:rgba(67,217,173,0.45);color:var(--mint)">
-            🎨 Whiteboard
-          </div>
-          <div class="lang-pill" onclick="toggleLanguageQuick()" title="Switch Language / تغيير اللغة">
-            🌐 ${state.lang === 'ar' ? 'English' : 'العربية'}
+          <div class="lang-pill" onclick="openDiscordAppsLauncher()" title="${L.appsLauncherHeader}" style="border-color:rgba(67,217,173,0.45);color:var(--mint)">
+            ${L.appsBtnLabel}
           </div>
           <div class="coin-pill" onclick="openQuests()">
             🪙 ${state.currentUser.meowCoins}
@@ -3130,6 +3507,7 @@
         ` : ''}
 
         <div class="composer-bar">
+          <button class="btn-square" title="${L.appsLauncherHeader}" onclick="openDiscordAppsLauncher()">🧩</button>
           <button class="btn-square" title="Cat Stickers" onclick="state.showStickerPicker=!state.showStickerPicker;render()">🏷️</button>
           <input id="chat-input" class="composer-input" placeholder="${isDm && partner ? L.meowAt(escapeHtml(partner.displayName)) : L.meowIn(escapeHtml(ch.name))}" onkeydown="if(event.key==='Enter'){sendMessage(this.value)}" />
           <button class="btn-primary" onclick="sendMessage(document.getElementById('chat-input').value)">
@@ -3210,8 +3588,7 @@
           <span style="font-weight:800;font-size:16px">${L.catFriends} (${friends.length})</span>
           <div style="flex:1"></div>
           <div class="lang-pill" onclick="state.modal='premium';render()" style="color:var(--gold)">💎 Premium</div>
-          <div class="lang-pill" onclick="openWhiteboard()" style="color:var(--mint)">🎨 Whiteboard</div>
-          <div class="lang-pill" onclick="toggleLanguageQuick()">🌐 ${state.lang === 'ar' ? 'English' : 'العربية'}</div>
+          <div class="lang-pill" onclick="openDiscordAppsLauncher()" style="color:var(--mint)">${L.appsBtnLabel}</div>
           <div class="coin-pill" onclick="openQuests()">🪙 ${state.currentUser.meowCoins}</div>
         </div>
         <div class="messages-scroll">
@@ -3278,6 +3655,8 @@
       const allCompleted = completed === state.quests.length;
       const pct = Math.round((completed / state.quests.length) * 100);
       const unlockedMarkers = state.currentUser.unlockedMarkers || ['marker_white'];
+      const skelQuest = state.quests.find(q => q.id === 'q_skeleton_fan');
+      const skelDone = skelQuest && skelQuest.currentProgress >= skelQuest.targetCount;
 
       return `
         <div class="top-bar">
@@ -3286,8 +3665,7 @@
           <span style="font-weight:800;font-size:16px">${L.questsHeaderTitle}</span>
           <div style="flex:1"></div>
           <div class="lang-pill" onclick="state.modal='premium';render()" style="color:var(--gold)">💎 Premium</div>
-          <div class="lang-pill" onclick="openWhiteboard()" style="color:var(--mint)">🎨 Whiteboard</div>
-          <div class="lang-pill" onclick="toggleLanguageQuick()">🌐 ${state.lang === 'ar' ? 'English' : 'العربية'}</div>
+          <div class="lang-pill" onclick="openDiscordAppsLauncher()" style="color:var(--mint)">${L.appsBtnLabel}</div>
           <div class="coin-pill">🪙 ${state.currentUser.meowCoins} ${L.meowCoins}</div>
         </div>
 
@@ -3298,7 +3676,7 @@
               <div style="flex:1;min-width:240px">
                 <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
                   <span style="font-weight:900;font-size:18px;color:var(--gold)">${L.premiumCardTitle}</span>
-                  <span class="owner-tag" style="background:linear-gradient(135deg,#C77DFF,#FFD166)">${state.currentUser.isPremium ? L.premiumActiveTag : 'VIP DEAL ONLY'}</span>
+                  <span class="lifetime-premium-tag">${state.currentUser.isPremium ? L.premiumActiveTag : 'VIP DEAL ONLY'}</span>
                 </div>
                 <div style="color:var(--text-secondary);font-size:13px;margin-top:5px;line-height:1.45">${L.premiumCardDesc}</div>
                 <div style="margin-top:8px;display:flex;flex-direction:column;gap:4px">
@@ -3314,6 +3692,36 @@
                   ${L.emailDealBtn}
                 </a>
                 <button class="btn-outline" onclick="copyOwnerEmail()">${L.copyEmailBtn}</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- SKELETON FAN MEME VIDEO CARD (FOR THE +30 MEOWCOINS ALL-USERS QUEST) -->
+          <div class="skeleton-video-card">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">
+              <div style="display:flex;align-items:center;gap:14px;flex:1;min-width:240px">
+                <div style="width:54px;height:54px;border-radius:16px;background:rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;font-size:28px;border:1.5px solid rgba(255,107,107,0.5)">
+                  💀🪭
+                </div>
+                <div>
+                  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                    <span style="font-weight:900;font-size:16.5px;color:#FF9F68">${L.skeletonModalTitle}</span>
+                    <span class="badge-tag" style="color:var(--gold);border-color:rgba(255,209,102,0.5)">+30 🪙 • ${L.oncePerAccountTag}</span>
+                  </div>
+                  <div style="color:var(--text-secondary);font-size:12.5px;margin-top:4px;line-height:1.42">
+                    ${L.skeletonModalSub}
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <button class="btn-primary" onclick="openSkeletonFanVideoModal()">
+                  ${L.watchSkeletonBtn}
+                </button>
+                ${skelQuest && skelDone && !skelQuest.isClaimed ? `
+                  <button class="btn-gold" onclick="claimQuest('q_skeleton_fan')">
+                    ${L.claimBtn(getEffectiveQuestReward(skelQuest.rewardCoins))}
+                  </button>
+                ` : ''}
               </div>
             </div>
           </div>
@@ -3373,11 +3781,16 @@
                     <span class="badge-tag" style="color:var(--gold);border-color:rgba(255,209,102,0.4)">${L.oncePerAccountTag}</span>
                   </div>
                   <div style="color:var(--text-secondary);font-size:12.5px;margin-top:4px">${escapeHtml(qDesc)}</div>
-                  <div style="display:flex;align-items:center;gap:10px;margin-top:8px">
+                  <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap">
                     <div class="progress-track">
                       <div class="progress-fill" style="width:${ratio}%;background:${done ? 'var(--mint)' : 'var(--paw-pink)'}"></div>
                     </div>
                     <span style="font-size:12px;font-weight:700;color:var(--text-secondary)">${q.currentProgress} / ${q.targetCount}</span>
+                    ${q.id === 'q_skeleton_fan' ? `
+                      <button class="btn-outline" style="padding:4px 10px;font-size:11.5px;color:#FF9F68;border-color:rgba(255,159,104,0.45)" onclick="openSkeletonFanVideoModal()">
+                        ${L.watchSkeletonBtn}
+                      </button>
+                    ` : ''}
                   </div>
                 </div>
                 <div>
@@ -3385,7 +3798,7 @@
                     ? `<span style="color:var(--mint);font-weight:800;font-size:13px">${L.claimedBtn}</span>`
                     : (claimable
                         ? `<button class="btn-gold" onclick="claimQuest('${q.id}')">${L.claimBtn(effReward)}</button>`
-                        : `<span class="coin-pill">🪙 +${effReward}</span>`)}
+                        : `<span class="coin-pill">🪙 +${q.rewardCoins}${state.currentUser.isPremium ? ` (💎 +${effReward})` : ''}</span>`)}
                 </div>
               </div>
             `;
@@ -3537,11 +3950,12 @@
                 <div class="status-dot" style="background:${state.currentUser.presenceColor}"></div>
               </div>
               <div style="min-width:0;flex:1">
-                <div style="display:flex;align-items:center;gap:5px">
+                <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">
                   <span style="font-weight:800;font-size:13px;color:var(--gold);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
                     ${escapeHtml(state.currentUser.displayName)}
                   </span>
                   ${state.currentUser.isOwner ? `<span class="owner-tag">${L.ownerTag}</span>` : ''}
+                  ${state.currentUser.isPremium ? `<span class="lifetime-premium-tag">💎 ${state.currentUser.premiumLifetime ? 'LIFETIME' : 'VIP'}</span>` : ''}
                 </div>
                 <div style="font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
                   ${escapeHtml(state.currentUser.customStatus)}
@@ -3608,13 +4022,114 @@
 
     function renderModal() {
       const L = t();
+      if (state.modal === 'appsLauncher') {
+        return `
+          <div class="modal-backdrop" onclick="if(event.target===this){state.modal=null;render()}">
+            <div class="discord-apps-launcher">
+              <div class="discord-apps-banner">
+                <div style="display:flex;align-items:center;justify-content:space-between">
+                  <div style="display:flex;align-items:center;gap:10px">
+                    <span style="font-size:24px">🧩</span>
+                    <div>
+                      <div style="font-weight:900;font-size:18px">${L.appsLauncherHeader}</div>
+                      <div style="font-size:12px;opacity:0.9">${L.appsLauncherSub}</div>
+                    </div>
+                  </div>
+                  <button class="icon-btn" style="color:#FFFFFF;background:rgba(0,0,0,0.25)" onclick="state.modal=null;render()">✕</button>
+                </div>
+              </div>
+
+              <div style="padding:18px 20px">
+                <div style="font-size:11px;font-weight:900;color:var(--text-secondary);letter-spacing:0.8px;margin-bottom:12px;text-transform:uppercase">
+                  ${L.onlyAppInstalledNote}
+                </div>
+
+                <!-- ONLY APP IN DISCORD APPS LAUNCHER: CAT WHITEBOARD -->
+                <div class="discord-app-tile" onclick="openWhiteboard()">
+                  <div style="width:54px;height:54px;border-radius:16px;background:linear-gradient(135deg,#10B981,#43D9AD);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;box-shadow:0 6px 16px rgba(16,185,129,0.3)">
+                    🎨
+                  </div>
+                  <div style="flex:1;min-width:0">
+                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                      <span style="font-weight:900;font-size:16px;color:var(--text-primary)">${L.whiteboardNav}</span>
+                      <span class="badge-tag" style="color:var(--mint);border-color:rgba(67,217,173,0.45)">Activity</span>
+                    </div>
+                    <div style="color:var(--text-secondary);font-size:12.5px;margin-top:4px;line-height:1.4">
+                      ${L.whiteboardSub}
+                    </div>
+                  </div>
+                  <button class="btn-primary" onclick="event.stopPropagation();openWhiteboard()">
+                    ${L.launchAppBtn}
+                  </button>
+                </div>
+
+                <div style="display:flex;justify-content:flex-end;margin-top:16px">
+                  <button class="btn-outline" onclick="state.modal=null;render()">${L.closeBtn}</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+      if (state.modal === 'skeletonVideo') {
+        const skelQ = state.quests.find(q => q.id === 'q_skeleton_fan');
+        const skelCompleted = skelQ && skelQ.currentProgress >= skelQ.targetCount;
+        const skelClaimed = skelQ && skelQ.isClaimed;
+        const effReward = skelQ ? getEffectiveQuestReward(skelQ.rewardCoins) : 30;
+        return `
+          <div class="modal-backdrop" onclick="if(event.target===this){stopSkeletonFanMemePlayback();state.modal=null;render()}">
+            <div class="modal-card" style="max-width:620px;border-color:#FF6B6B">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px">
+                <span style="font-weight:900;font-size:18px;color:#FF9F68">${L.skeletonModalTitle}</span>
+                <button class="icon-btn" onclick="stopSkeletonFanMemePlayback();state.modal=null;render()">✕</button>
+              </div>
+              <div style="color:var(--text-secondary);font-size:12.5px;line-height:1.45;margin-bottom:12px">
+                ${L.skeletonModalSub}
+              </div>
+
+              <div style="background:#0F172A;border:2px solid rgba(255,107,107,0.5);border-radius:16px;overflow:hidden;position:relative">
+                <canvas id="skeleton-fan-video-canvas" width="560" height="310" style="width:100%;height:auto;display:block"></canvas>
+                <div style="padding:10px 14px;background:rgba(15,23,42,0.92);display:flex;align-items:center;gap:12px">
+                  <button class="btn-outline" style="padding:5px 10px;font-size:12px" onclick="startSkeletonFanMemePlayback()">
+                    🔄 Replay Video
+                  </button>
+                  <div class="progress-track" style="flex:1;max-width:none;height:10px">
+                    <div id="skeleton-video-prog-fill" class="progress-fill" style="width:${skelCompleted ? '100' : '0'}%;background:linear-gradient(90deg,#FF6B6B,#FFD166)"></div>
+                  </div>
+                  <span id="skeleton-video-prog-text" style="font-size:12px;font-weight:800;color:var(--gold)">
+                    ${skelCompleted ? '5.0s / 5.0s ✓' : '0.0s / 5.0s'}
+                  </span>
+                </div>
+              </div>
+
+              <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:14px">
+                <div style="font-size:12.5px;font-weight:800;color:${skelCompleted ? 'var(--mint)' : 'var(--gold)'}">
+                  ${skelClaimed
+                    ? '✓ +30 🪙 Skeleton Fan Meme Quest Reward Claimed!'
+                    : (skelCompleted
+                        ? '🎉 Video Watched (1/1)! Your +30 MeowCoins reward is ready!'
+                        : '⏳ Watching Skeleton Fan Meme video (5 seconds)...')}
+                </div>
+                <div style="display:flex;gap:8px">
+                  ${skelCompleted && !skelClaimed ? `
+                    <button class="btn-gold" onclick="claimQuest('q_skeleton_fan')">
+                      ${L.claimBtn(effReward)}
+                    </button>
+                  ` : ''}
+                  <button class="btn-primary" onclick="stopSkeletonFanMemePlayback();state.modal=null;render()">${L.closeBtn}</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
       if (state.modal === 'premium') {
         return `
           <div class="modal-backdrop" onclick="if(event.target===this){state.modal=null;render()}">
             <div class="modal-card" style="max-width:520px;border-color:var(--gold)">
               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
                 <span style="font-weight:900;font-size:19px;color:var(--gold)">${L.premiumCardTitle}</span>
-                <span class="owner-tag" style="background:linear-gradient(135deg,#C77DFF,#FFD166)">${state.currentUser.isPremium ? L.premiumActiveTag : '💎 VIP'}</span>
+                <span class="lifetime-premium-tag">${state.currentUser.isPremium ? L.premiumActiveTag : '💎 VIP'}</span>
               </div>
               <div style="color:var(--text-secondary);font-size:13.5px;line-height:1.5;margin-bottom:10px">
                 ${L.premiumCardDesc}
@@ -3675,9 +4190,12 @@
         return `
           <div class="modal-backdrop" onclick="if(event.target===this){state.modal=null;render()}">
             <div class="modal-card" style="max-width:540px">
-              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:6px">
                 <span style="font-weight:800;font-size:18px">${L.settingsTitle}</span>
-                ${state.currentUser.isOwner ? `<span class="owner-tag">${L.ownerTag}</span>` : ''}
+                <div style="display:flex;gap:6px;align-items:center">
+                  ${state.currentUser.isOwner ? `<span class="owner-tag">${L.ownerTag}</span>` : ''}
+                  ${state.currentUser.isPremium ? `<span class="lifetime-premium-tag">${L.lifetimePremiumTag}</span>` : ''}
+                </div>
               </div>
 
               <div style="font-size:12px;font-weight:800;color:var(--text-secondary);margin-bottom:6px">${L.languageLabel}</div>
@@ -3720,6 +4238,7 @@
                     </div>
                     <div style="display:flex;gap:6px;flex-wrap:wrap">
                       ${state.currentUser.isOwner ? `<span class="owner-tag">${L.ownerTag}</span>` : ''}
+                      ${state.currentUser.isPremium ? `<span class="lifetime-premium-tag">${L.lifetimePremiumTag}</span>` : ''}
                       ${state.currentUser.equippedBadge ? `<span class="badge-tag">${escapeHtml(state.currentUser.equippedBadge)}</span>` : ''}
                     </div>
                   </div>
