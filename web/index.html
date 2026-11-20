@@ -2266,7 +2266,8 @@
       setTimeout(() => {
         if (state.toast === text) {
           state.toast = null;
-          render();
+          const toastEl = document.querySelector('.toast-box');
+          if (toastEl) toastEl.remove();
         }
       }, 4200);
     }
@@ -3036,22 +3037,48 @@
       `;
     }
 
+    let _lastRenderedViewKey = '';
+
+    function getCurrentViewScrollKey() {
+      return `${state.navMode}:${state.selectedServerId}:${state.selectedChannelId}:${state.dmSubView}:${state.selectedDmUserId}`;
+    }
+
     function render() {
       const L = t();
+      const app = document.getElementById('app');
+
+      // Capture existing scroll offsets before replacing innerHTML so buying items / claiming quests / toasts never jump the screen to the top
+      const currentViewKey = getCurrentViewScrollKey();
+      const sameView = (currentViewKey === _lastRenderedViewKey);
+      const prevMainScrollEl = app ? app.querySelector('.main-view .messages-scroll') : null;
+      const prevChanScrollEl = app ? app.querySelector('.channel-sidebar .sidebar-scroll') : null;
+      const prevMemberScrollEl = app ? app.querySelector('.member-sidebar .sidebar-scroll') : null;
+      const prevStickerStripEl = app ? app.querySelector('.sticker-strip') : null;
+      const prevModalCardEl = app ? app.querySelector('.modal-card') : null;
+
+      const savedMainScrollTop = prevMainScrollEl ? prevMainScrollEl.scrollTop : 0;
+      const savedChanScrollTop = prevChanScrollEl ? prevChanScrollEl.scrollTop : 0;
+      const savedMemberScrollTop = prevMemberScrollEl ? prevMemberScrollEl.scrollTop : 0;
+      const savedStickerScrollLeft = prevStickerStripEl ? prevStickerStripEl.scrollLeft : 0;
+      const savedModalScrollTop = prevModalCardEl ? prevModalCardEl.scrollTop : 0;
+      const savedWindowScrollY = window.scrollY || 0;
+
       if (!state.isSignedIn) {
-        document.getElementById('app').innerHTML = `
+        _lastRenderedViewKey = 'auth_portal';
+        app.innerHTML = `
           ${renderAuthPortal()}
           ${state.toast ? `<div class="toast-box">${escapeHtml(state.toast)}</div>` : ''}
         `;
         return;
       }
 
+      _lastRenderedViewKey = currentViewKey;
+
       const claimableCount = state.quests.filter(q => q.currentProgress >= q.targetCount && !q.isClaimed).length;
       const completedCount = state.quests.filter(q => q.currentProgress >= q.targetCount).length;
       const srv = getCurrentServer();
       const ch = getCurrentChannel();
 
-      const app = document.getElementById('app');
       app.innerHTML = `
         <div class="app-shell">
           <!-- 1. SERVER RAIL -->
@@ -3164,6 +3191,33 @@
         ${state.toast ? `<div class="toast-box">${escapeHtml(state.toast)}</div>` : ''}
         ${state.modal ? renderModal() : ''}
       `;
+
+      // Restore scroll positions synchronously so the screen never jumps to top
+      if (sameView) {
+        const nextMainScrollEl = app.querySelector('.main-view .messages-scroll');
+        if (nextMainScrollEl && savedMainScrollTop > 0) {
+          nextMainScrollEl.scrollTop = savedMainScrollTop;
+        }
+      }
+      const nextChanScrollEl = app.querySelector('.channel-sidebar .sidebar-scroll');
+      if (nextChanScrollEl && savedChanScrollTop > 0) {
+        nextChanScrollEl.scrollTop = savedChanScrollTop;
+      }
+      const nextMemberScrollEl = app.querySelector('.member-sidebar .sidebar-scroll');
+      if (nextMemberScrollEl && savedMemberScrollTop > 0) {
+        nextMemberScrollEl.scrollTop = savedMemberScrollTop;
+      }
+      const nextStickerStripEl = app.querySelector('.sticker-strip');
+      if (nextStickerStripEl && savedStickerScrollLeft > 0) {
+        nextStickerStripEl.scrollLeft = savedStickerScrollLeft;
+      }
+      const nextModalCardEl = app.querySelector('.modal-card');
+      if (nextModalCardEl && savedModalScrollTop > 0) {
+        nextModalCardEl.scrollTop = savedModalScrollTop;
+      }
+      if (savedWindowScrollY > 0) {
+        window.scrollTo(0, savedWindowScrollY);
+      }
 
       if (state.navMode === 'whiteboard') {
         setTimeout(initWhiteboardCanvas, 20);
@@ -3876,7 +3930,7 @@
                     <div style="color:var(--text-secondary);font-size:12.5px;margin-top:3px">Draw on the 🎨 Cat Whiteboard (Just for fun, no rewards).</div>
                   </div>
                 </div>
-                <button class="btn-gold" onclick="selectOrUnlockMarker('${m.id}');openWhiteboard()">
+                <button class="btn-gold" onclick="${owned ? `selectOrUnlockMarker('${m.id}');openWhiteboard()` : `selectOrUnlockMarker('${m.id}')`}">
                   ${owned ? '🎨 Use in Whiteboard' : `${L.unlockBtn(effMarkerPrice)}${state.currentUser.isPremium ? ` (was ${m.priceCoins})` : ''}`}
                 </button>
               </div>
