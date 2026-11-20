@@ -1069,12 +1069,12 @@
         meowBucksRule: '💵 Meow Bucks are ONLY obtainable from Secret Cat Codes and giveaways from Owner @abood\'s Cat CEO Panel!',
         ceoPanelNavBtn: '👑💼 Cat CEO Panel',
         ceoPanelTitle: '👑💼 Cat CEO Panel — Meow Bucks Giveaway & Codes Manager',
-        ceoPanelSub: 'Exclusive Owner Panel for @abood: Give away 💵 Meow Bucks to any CatMsg account or create Secret Codes that reward Meow Bucks!',
+        ceoPanelSub: 'Exclusive Owner Panel for @abood: Give away 💵 Meow Bucks to any CatMsg account or create Secret Codes that reward 🪙 MeowCoins and/or 💵 Meow Bucks!',
         ceoGiveHeader: '💵 GIVE AWAY MEOW BUCKS TO ANY ACCOUNT',
         ceoTargetUserLabel: 'Recipient Username (Click an account below or type username)',
         ceoAmountLabel: 'Meow Bucks Amount (💵)',
         ceoSendGiveawayBtn: '💵 Give Meow Bucks',
-        ceoCodesManagerHeader: '🎟️ CREATE SECRET CODES FOR MEOW BUCKS',
+        ceoCodesManagerHeader: '🎟️ CREATE SECRET CODES (REWARD 🪙 MEOWCOINS & 💵 MEOW BUCKS)',
         ceoCreateCodeBtn: '+ Create Secret Code',
         questsWord: 'Quests',
         questReady: (n) => `🎁 ${n} quest reward(s) ready to claim!`,
@@ -1222,12 +1222,12 @@
         meowBucksRule: '💵 عملة Meow Bucks لا يمكن الحصول عليها إلا من الأكواد السرية أو عبر هدايا المالك @abood من لوحة Cat CEO!',
         ceoPanelNavBtn: '👑💼 لوحة Cat CEO',
         ceoPanelTitle: '👑💼 لوحة Cat CEO — توزيع Meow Bucks وإدارة الأكواد',
-        ceoPanelSub: 'لوحة تحكم حصرية للمالك @abood: أرسل هدايا 💵 Meow Bucks لأي حساب في CatMsg أو أنشئ أكواداً سرية تمنح Meow Bucks!',
+        ceoPanelSub: 'لوحة تحكم حصرية للمالك @abood: أرسل هدايا 💵 Meow Bucks لأي حساب في CatMsg أو أنشئ أكواداً سرية تمنح 🪙 عملات مياو و/أو 💵 Meow Bucks!',
         ceoGiveHeader: '💵 إهداء MEOW BUCKS لأي حساب',
         ceoTargetUserLabel: 'اسم مستخدم المستلم (اختر حساباً بالأسفل أو اكتب الاسم)',
         ceoAmountLabel: 'كمية Meow Bucks (💵)',
         ceoSendGiveawayBtn: '💵 إرسال Meow Bucks',
-        ceoCodesManagerHeader: '🎟️ إنشاء أكواد سرية تمنح MEOW BUCKS',
+        ceoCodesManagerHeader: '🎟️ إنشاء أكواد سرية (تمنح 🪙 عملات مياو و/أو 💵 MEOW BUCKS)',
         ceoCreateCodeBtn: '+ إنشاء كود سري',
         questsWord: 'المهام',
         questReady: (n) => `🎁 لديك ${n} مكافأة مهمة جاهزة للاستلام!`,
@@ -2522,15 +2522,33 @@
       }
       await syncPromoCodesFromCloud();
       const promoEntry = state.promoCodes[raw];
-      if (promoEntry && typeof promoEntry.meowBucks === 'number' && promoEntry.meowBucks > 0) {
+      const rewardCoins = (promoEntry && typeof promoEntry.meowCoins === 'number' && promoEntry.meowCoins > 0) ? promoEntry.meowCoins : 0;
+      const rewardBucks = (promoEntry && typeof promoEntry.meowBucks === 'number' && promoEntry.meowBucks > 0) ? promoEntry.meowBucks : 0;
+
+      if (promoEntry && (rewardCoins > 0 || rewardBucks > 0)) {
         state.currentUser.redeemedCodes.push(raw);
-        state.currentUser.meowBucks = (state.currentUser.meowBucks || 0) + promoEntry.meowBucks;
+        if (rewardCoins > 0) {
+          state.currentUser.meowCoins = (state.currentUser.meowCoins || 0) + rewardCoins;
+        }
+        if (rewardBucks > 0) {
+          state.currentUser.meowBucks = (state.currentUser.meowBucks || 0) + rewardBucks;
+        }
         if (el) el.value = '';
         autoPersistIfEnabled();
+        const partsEn = [];
+        const partsAr = [];
+        if (rewardCoins > 0) {
+          partsEn.push(`+${rewardCoins} 🪙 MeowCoins`);
+          partsAr.push(`+${rewardCoins} 🪙 عملة مياو`);
+        }
+        if (rewardBucks > 0) {
+          partsEn.push(`+${rewardBucks} 💵 Meow Bucks`);
+          partsAr.push(`+${rewardBucks} 💵 Meow Bucks`);
+        }
         showToast(
           state.lang === 'ar'
-            ? `🎟️💵 مبروك! تم تفعيل الكود "${raw}" وحصلت على +${promoEntry.meowBucks} Meow Bucks!`
-            : `🎟️💵 Code "${raw}" redeemed! You received +${promoEntry.meowBucks} Meow Bucks!`
+            ? `🎟️ مبروك! تم تفعيل الكود "${raw}" وحصلت على ${partsAr.join(' و ')}!`
+            : `🎟️ Code "${raw}" redeemed! You received ${partsEn.join(' & ')}!`
         );
         return;
       }
@@ -2629,32 +2647,49 @@
     async function ceoCreatePromoCode() {
       if (!state.currentUser || !state.currentUser.isOwner) return;
       const cEl = document.getElementById('ceo-new-code-name');
+      const coinsEl = document.getElementById('ceo-new-code-coins');
       const bEl = document.getElementById('ceo-new-code-bucks');
       const code = (cEl ? cEl.value : '').trim().toUpperCase().replace(/\s+/g, '');
-      const bucks = parseInt(bEl ? bEl.value : '0', 10);
+      const coins = Math.max(0, parseInt(coinsEl ? coinsEl.value : '0', 10) || 0);
+      const bucks = Math.max(0, parseInt(bEl ? bEl.value : '0', 10) || 0);
 
       if (!code) {
         showToast(state.lang === 'ar' ? '😾 أدخل اسم الكود السري!' : '😾 Please enter a code name!');
         return;
       }
-      if (!bucks || bucks <= 0) {
-        showToast(state.lang === 'ar' ? '😾 أدخل كمية Meow Bucks للكود!' : '😾 Please enter a positive Meow Bucks reward for the code!');
+      if (coins <= 0 && bucks <= 0) {
+        showToast(
+          state.lang === 'ar'
+            ? '😾 أدخل كمية من 🪙 عملات مياو أو 💵 Meow Bucks للكود!'
+            : '😾 Please enter a positive amount of 🪙 MeowCoins and/or 💵 Meow Bucks for the code!'
+        );
         return;
       }
 
       await syncPromoCodesFromCloud();
       state.promoCodes[code] = {
         code,
+        meowCoins: coins,
         meowBucks: bucks,
         createdBy: 'abood',
         createdAt: new Date().toISOString()
       };
       await savePromoCodesToCloud(state.promoCodes);
       if (cEl) cEl.value = '';
+      const rewardLabelsEn = [];
+      const rewardLabelsAr = [];
+      if (coins > 0) {
+        rewardLabelsEn.push(`+${coins} 🪙 MeowCoins`);
+        rewardLabelsAr.push(`+${coins} 🪙 عملة مياو`);
+      }
+      if (bucks > 0) {
+        rewardLabelsEn.push(`+${bucks} 💵 Meow Bucks`);
+        rewardLabelsAr.push(`+${bucks} 💵 Meow Bucks`);
+      }
       showToast(
         state.lang === 'ar'
-          ? `🎟️💵 تم إنشاء الكود السري "${code}" بقيمة +${bucks} Meow Bucks!`
-          : `🎟️💵 Created Secret Code "${code}" rewarding +${bucks} Meow Bucks!`
+          ? `🎟️ تم إنشاء الكود السري "${code}" بقيمة ${rewardLabelsAr.join(' و ')}!`
+          : `🎟️ Created Secret Code "${code}" rewarding ${rewardLabelsEn.join(' & ')}!`
       );
     }
 
@@ -4491,14 +4526,32 @@
                 </button>
               </div>
 
-              <!-- 2. CREATE & MANAGE SECRET CODES FOR MEOW BUCKS -->
+              <!-- 2. CREATE & MANAGE SECRET CODES FOR MEOWCOINS & MEOW BUCKS -->
               <div class="codes-card" style="margin-top:0;margin-bottom:14px">
                 <div style="font-weight:900;font-size:13px;color:var(--yarn-blue);margin-bottom:8px">
                   ${L.ceoCodesManagerHeader}
                 </div>
-                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
-                  <input id="ceo-new-code-name" class="composer-input" style="flex:1;min-width:140px;padding:9px 12px" placeholder="Code name (e.g. ABOODBucks)" />
-                  <input id="ceo-new-code-bucks" type="number" min="1" class="composer-input" style="width:120px;padding:9px 12px" value="50" placeholder="💵 Amount" />
+                <div style="display:grid;grid-template-columns:1fr 125px 125px;gap:8px;margin-bottom:8px">
+                  <div>
+                    <div style="font-size:11px;font-weight:700;color:var(--text-secondary);margin-bottom:3px">Secret Code Name</div>
+                    <input id="ceo-new-code-name" class="composer-input" style="width:100%;padding:9px 12px" placeholder="e.g. MEOWCOINS100" />
+                  </div>
+                  <div>
+                    <div style="font-size:11px;font-weight:700;color:var(--gold);margin-bottom:3px">🪙 MeowCoins</div>
+                    <input id="ceo-new-code-coins" type="number" min="0" class="composer-input" style="width:100%;padding:9px 12px" value="100" placeholder="🪙 Coins" />
+                  </div>
+                  <div>
+                    <div style="font-size:11px;font-weight:700;color:#10B981;margin-bottom:3px">💵 Meow Bucks</div>
+                    <input id="ceo-new-code-bucks" type="number" min="0" class="composer-input" style="width:100%;padding:9px 12px" value="0" placeholder="💵 Bucks" />
+                  </div>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+                  <div style="display:flex;gap:5px;flex-wrap:wrap">
+                    <button class="btn-outline" style="padding:4px 8px;font-size:11px;color:var(--gold)" onclick="document.getElementById('ceo-new-code-coins').value='50';document.getElementById('ceo-new-code-bucks').value='0'">+50 🪙 Only</button>
+                    <button class="btn-outline" style="padding:4px 8px;font-size:11px;color:var(--gold)" onclick="document.getElementById('ceo-new-code-coins').value='150';document.getElementById('ceo-new-code-bucks').value='0'">+150 🪙 Only</button>
+                    <button class="btn-outline" style="padding:4px 8px;font-size:11px;color:#10B981" onclick="document.getElementById('ceo-new-code-coins').value='0';document.getElementById('ceo-new-code-bucks').value='50'">+50 💵 Only</button>
+                    <button class="btn-outline" style="padding:4px 8px;font-size:11px;color:var(--mint)" onclick="document.getElementById('ceo-new-code-coins').value='100';document.getElementById('ceo-new-code-bucks').value='50'">+100 🪙 & +50 💵</button>
+                  </div>
                   <button class="btn-primary" onclick="ceoCreatePromoCode()">
                     ${L.ceoCreateCodeBtn}
                   </button>
@@ -4508,9 +4561,10 @@
                   <div style="display:flex;flex-direction:column;gap:6px;margin-top:8px">
                     ${promoEntries.map(pe => `
                       <div style="display:flex;align-items:center;justify-content:space-between;background:var(--rail-bg);padding:8px 12px;border-radius:10px;border:1px solid var(--border)">
-                        <div>
+                        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
                           <span style="font-weight:900;font-size:13px;color:var(--gold)">🎟️ ${escapeHtml(pe.code)}</span>
-                          <span class="bucks-pill" style="margin-inline-start:8px;padding:2px 8px;font-size:11.5px">+${pe.meowBucks} 💵</span>
+                          ${pe.meowCoins > 0 ? `<span class="coin-pill" style="padding:2px 8px;font-size:11.5px">+${pe.meowCoins} 🪙</span>` : ''}
+                          ${pe.meowBucks > 0 ? `<span class="bucks-pill" style="padding:2px 8px;font-size:11.5px">+${pe.meowBucks} 💵</span>` : ''}
                         </div>
                         <button class="btn-outline" style="color:var(--coral);padding:4px 9px;font-size:11px" onclick="ceoDeletePromoCode('${escapeHtml(pe.code)}')">
                           🗑️ Delete
@@ -4519,7 +4573,7 @@
                     `).join('')}
                   </div>
                 ` : `
-                  <div style="font-size:12px;color:var(--text-muted)">No active Secret Codes yet — create one above to reward 💵 Meow Bucks!</div>
+                  <div style="font-size:12px;color:var(--text-muted)">No active Secret Codes yet — create one above to reward 🪙 MeowCoins and/or 💵 Meow Bucks!</div>
                 `}
               </div>
 
