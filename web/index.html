@@ -1174,7 +1174,12 @@
         appsSearchPlaceholder: 'Search installed Apps & Activities...',
         launchAppBtn: '🚀 Launch Activity',
         exitActivityBtn: '✕ Exit Activity',
-        onlyAppInstalledNote: 'Installed Apps & Activities (1): Cat Whiteboard',
+        onlyAppInstalledNote: 'Apps & Activities (2)',
+        bouncyCatTitle: 'Bouncy Cat',
+        bouncyCatTag: '🚧 In Progress',
+        bouncyCatDesc: 'Bounce your cat across platforms! Currently in progress — coming soon to Apps & Activities.',
+        inProgressBtn: '🚧 In Progress',
+        bouncyCatToast: '🚧🐱 Bouncy Cat is currently in progress! Stay tuned for its launch!',
         watchSkeletonBtn: '▶️ Watch Skeleton Fan Meme Video',
         skeletonModalTitle: '💀🪭 Skeleton Fan Meme Video (Watch for +30 🪙 Quest)',
         skeletonModalSub: 'Watch the Skeleton Fan Meme video right here on the website to complete the Skeleton Fan Meme Quest (+30 MeowCoins once per account)!',
@@ -1327,7 +1332,12 @@
         appsSearchPlaceholder: 'ابحث في التطبيقات والأنشطة المتوفرة...',
         launchAppBtn: '🚀 تشغيل النشاط',
         exitActivityBtn: '✕ إغلاق النشاط',
-        onlyAppInstalledNote: 'التطبيقات والأنشطة المتوفرة (1): السبورة البيضاء للقطط',
+        onlyAppInstalledNote: 'التطبيقات والأنشطة (2)',
+        bouncyCatTitle: 'القط النطاط (Bouncy Cat)',
+        bouncyCatTag: '🚧 قيد التطوير',
+        bouncyCatDesc: 'لعبة قفز القطط عبر المنصات! قيد التطوير حالياً — قادمة قريباً إلى التطبيقات والأنشطة.',
+        inProgressBtn: '🚧 قيد التطوير',
+        bouncyCatToast: '🚧🐱 لعبة Bouncy Cat قيد التطوير حالياً! ترقبوا إطلاقها قريباً!',
         watchSkeletonBtn: '▶️ مشاهدة فيديو ميم الهيكل العظمي والمروحة',
         skeletonModalTitle: '💀🪭 فيديو ميم الهيكل العظمي والمروحة (مهمة +30 🪙)',
         skeletonModalSub: 'شاهد فيديو ميم الهيكل العظمي والمروحة هنا داخل الموقع لإكمال المهمة والحصول على +30 عملة مياو (مرة واحدة لكل حساب)!',
@@ -1509,7 +1519,7 @@
         id: 'user_meow_ai',
         username: 'meow_ai',
         displayName: 'Meow AI',
-        avatarEmoji: '🤖',
+        avatarEmoji: '🐱',
         avatarColorHex: '#5CE1E6',
         presence: 'Purring',
         presenceColor: '#43B581',
@@ -1685,7 +1695,7 @@
             id: 'm1',
             senderId: 'user_meow_ai',
             senderName: 'Meow AI',
-            senderAvatar: '🤖',
+            senderAvatar: '🐱',
             senderRoleColor: '#5CE1E6',
             senderBadge: '🤖 Meow AI',
             content: 'Meow-hello everykitty! 🤖🐾 I am Meow AI, the sole AI agent of CatMsg! Chat with me in any channel or DM, check out the 🪙 Quests & Emporium tab, or launch 🎨 Cat Whiteboard from 🧩 Apps & Activities!',
@@ -1699,7 +1709,7 @@
             id: 'dm1',
             senderId: 'user_meow_ai',
             senderName: 'Meow AI',
-            senderAvatar: '🤖',
+            senderAvatar: '🐱',
             senderRoleColor: '#5CE1E6',
             senderBadge: '🤖 Meow AI',
             content: 'Hello @abood! 🤖🐾 I am Meow AI! Send me a Direct Meow anytime to chat or complete your "Friendly Snoot Boop" quest!',
@@ -1911,10 +1921,10 @@
             for (const m of state.messagesByChannel[chKey]) {
               if (m.senderId === 'user_captain' && m.senderName === 'Captain Purr') {
                 m.senderName = 'abood';
-              } else if (LEGACY_CAT_BOT_IDS.includes(m.senderId)) {
+              } else if (LEGACY_CAT_BOT_IDS.includes(m.senderId) || m.senderId === 'user_meow_ai') {
                 m.senderId = 'user_meow_ai';
                 m.senderName = 'Meow AI';
-                m.senderAvatar = '🤖';
+                m.senderAvatar = '🐱';
                 m.senderRoleColor = '#5CE1E6';
                 m.senderBadge = '🤖 Meow AI';
               }
@@ -1927,7 +1937,7 @@
               id: 'dm1',
               senderId: 'user_meow_ai',
               senderName: 'Meow AI',
-              senderAvatar: '🤖',
+              senderAvatar: '🐱',
               senderRoleColor: '#5CE1E6',
               senderBadge: '🤖 Meow AI',
               content: 'Hello! 🤖🐾 I am Meow AI, the official AI agent of CatMsg! Send me a Direct Meow anytime!',
@@ -4622,6 +4632,25 @@
                   </div>
                   <button class="btn-primary" onclick="event.stopPropagation();openWhiteboard()">
                     ${L.launchAppBtn}
+                  </button>
+                </div>
+
+                <!-- GAME IN PROGRESS: BOUNCY CAT -->
+                <div class="discord-app-tile" style="margin-top:12px;border-style:dashed;border-color:rgba(255,209,102,0.55);opacity:0.92" onclick="showToast(t().bouncyCatToast)">
+                  <div style="width:54px;height:54px;border-radius:16px;background:linear-gradient(135deg,#FF9F68,#FFD166);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;box-shadow:0 6px 16px rgba(255,159,104,0.3)">
+                    🐱
+                  </div>
+                  <div style="flex:1;min-width:0">
+                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                      <span style="font-weight:900;font-size:16px;color:var(--text-primary)">${L.bouncyCatTitle}</span>
+                      <span class="badge-tag" style="color:var(--gold);border-color:rgba(255,209,102,0.55)">${L.bouncyCatTag}</span>
+                    </div>
+                    <div style="color:var(--text-secondary);font-size:12.5px;margin-top:4px;line-height:1.4">
+                      ${L.bouncyCatDesc}
+                    </div>
+                  </div>
+                  <button class="btn-outline" style="color:var(--gold);border-color:rgba(255,209,102,0.55)" onclick="event.stopPropagation();showToast(t().bouncyCatToast)">
+                    ${L.inProgressBtn}
                   </button>
                 </div>
 
