@@ -1023,6 +1023,28 @@
       padding: 16px;
       margin-bottom: 18px;
     }
+
+    .bucks-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.16);
+      border: 1px solid rgba(16, 185, 129, 0.55);
+      color: #10B981;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 5px 11px;
+      border-radius: 14px;
+      cursor: pointer;
+    }
+
+    .ceo-panel-card {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.14), rgba(255, 209, 102, 0.12));
+      border: 1.5px solid rgba(16, 185, 129, 0.55);
+      border-radius: 16px;
+      padding: 15px;
+      margin-bottom: 14px;
+    }
   </style>
 </head>
 <body>
@@ -1043,6 +1065,17 @@
         youTag: '(You)',
         dmsAndHub: '🐾 Direct Meows & Hub',
         meowCoins: 'MeowCoins',
+        meowBucks: 'Meow Bucks',
+        meowBucksRule: '💵 Meow Bucks are ONLY obtainable from Secret Cat Codes and giveaways from Owner @abood\'s Cat CEO Panel!',
+        ceoPanelNavBtn: '👑💼 Cat CEO Panel',
+        ceoPanelTitle: '👑💼 Cat CEO Panel — Meow Bucks Giveaway & Codes Manager',
+        ceoPanelSub: 'Exclusive Owner Panel for @abood: Give away 💵 Meow Bucks to any CatMsg account or create Secret Codes that reward Meow Bucks!',
+        ceoGiveHeader: '💵 GIVE AWAY MEOW BUCKS TO ANY ACCOUNT',
+        ceoTargetUserLabel: 'Recipient Username (Click an account below or type username)',
+        ceoAmountLabel: 'Meow Bucks Amount (💵)',
+        ceoSendGiveawayBtn: '💵 Give Meow Bucks',
+        ceoCodesManagerHeader: '🎟️ CREATE SECRET CODES FOR MEOW BUCKS',
+        ceoCreateCodeBtn: '+ Create Secret Code',
         questsWord: 'Quests',
         questReady: (n) => `🎁 ${n} quest reward(s) ready to claim!`,
         questSub: 'Complete cat quests & unlock stickers!',
@@ -1185,6 +1218,17 @@
         youTag: '(أنت)',
         dmsAndHub: '🐾 الرسائل الخاصة والمركز',
         meowCoins: 'عملات مياو',
+        meowBucks: 'دولارات مياو (Meow Bucks)',
+        meowBucksRule: '💵 عملة Meow Bucks لا يمكن الحصول عليها إلا من الأكواد السرية أو عبر هدايا المالك @abood من لوحة Cat CEO!',
+        ceoPanelNavBtn: '👑💼 لوحة Cat CEO',
+        ceoPanelTitle: '👑💼 لوحة Cat CEO — توزيع Meow Bucks وإدارة الأكواد',
+        ceoPanelSub: 'لوحة تحكم حصرية للمالك @abood: أرسل هدايا 💵 Meow Bucks لأي حساب في CatMsg أو أنشئ أكواداً سرية تمنح Meow Bucks!',
+        ceoGiveHeader: '💵 إهداء MEOW BUCKS لأي حساب',
+        ceoTargetUserLabel: 'اسم مستخدم المستلم (اختر حساباً بالأسفل أو اكتب الاسم)',
+        ceoAmountLabel: 'كمية Meow Bucks (💵)',
+        ceoSendGiveawayBtn: '💵 إرسال Meow Bucks',
+        ceoCodesManagerHeader: '🎟️ إنشاء أكواد سرية تمنح MEOW BUCKS',
+        ceoCreateCodeBtn: '+ إنشاء كود سري',
         questsWord: 'المهام',
         questReady: (n) => `🎁 لديك ${n} مكافأة مهمة جاهزة للاستلام!`,
         questSub: 'أكمل مهام القطط وافتح الملصقات الملكية!',
@@ -1457,6 +1501,38 @@
       return merged;
     }
 
+    const LEGACY_CAT_BOT_IDS = ['user_mochi', 'user_pounce', 'user_duchess', 'user_mittens', 'user_shadow'];
+    const PROMO_CODES_STORAGE_KEY = 'catmsg_promo_codes_v1';
+
+    function getDefaultMeowAiUser() {
+      return {
+        id: 'user_meow_ai',
+        username: 'meow_ai',
+        displayName: 'Meow AI',
+        avatarEmoji: '🤖',
+        avatarColorHex: '#5CE1E6',
+        presence: 'Purring',
+        presenceColor: '#43B581',
+        customStatus: 'Official CatMsg AI Agent 🤖🐾',
+        roleTitle: 'AI Agent',
+        roleColor: '#5CE1E6',
+        equippedBadge: '🤖 Meow AI',
+        bio: 'The single official AI agent of CatMsg! Ask me anything or send a meow anytime.'
+      };
+    }
+
+    function normalizeUsersToMeowAi(usersObj) {
+      const cleaned = { user_meow_ai: getDefaultMeowAiUser() };
+      if (usersObj && typeof usersObj === 'object') {
+        for (const [uid, uVal] of Object.entries(usersObj)) {
+          if (!LEGACY_CAT_BOT_IDS.includes(uid) && uid !== 'user_meow_ai' && uVal && typeof uVal === 'object') {
+            cleaned[uid] = uVal;
+          }
+        }
+      }
+      return cleaned;
+    }
+
     const state = {
       lang: localStorage.getItem('catmsg_lang') || 'en',
       isSignedIn: false,
@@ -1468,7 +1544,7 @@
       dmSubView: 'friends',
       selectedServerId: 'server_castle',
       selectedChannelId: 'chan_general_meows',
-      selectedDmUserId: 'user_mochi',
+      selectedDmUserId: 'user_meow_ai',
       replyingTo: null,
       showStickerPicker: false,
       showSearchBar: false,
@@ -1477,6 +1553,7 @@
       toast: null,
       modal: null,
       visitedChannels: new Set(['chan_general_meows']),
+      promoCodes: {},
 
       // Whiteboard state (Just for Fun, No Rewards)
       activeMarkerId: 'marker_white',
@@ -1513,84 +1590,16 @@
         phoneRewardClaimed: false,
         bio: 'Founder & Supreme Owner of The Grand Cat Castle. Will trade headbutts for premium salmon.',
         meowCoins: 250,
+        meowBucks: 100,
         unlockedStickerIds: ['sticker_loaf', 'sticker_zoomies', 'sticker_boop', 'sticker_tuna'],
         unlockedBadges: ['👑 Supreme Loaf', '🐾 Day One Paws', '💎 Lifetime Premium'],
         unlockedMarkers: ['marker_white'],
         equippedBadge: '👑 Supreme Loaf',
-        friendIds: ['user_mochi', 'user_pounce', 'user_duchess', 'user_mittens', 'user_shadow']
+        friendIds: ['user_meow_ai']
       },
 
       users: {
-        user_mochi: {
-          id: 'user_mochi',
-          username: 'mochi_the_loaf',
-          displayName: 'Mochi the Calico',
-          avatarEmoji: '😻',
-          avatarColorHex: '#FFD166',
-          presence: 'Purring',
-          presenceColor: '#43B581',
-          customStatus: 'Baking biscuits on a fleece blanket 🧶',
-          roleTitle: 'Mod-erater',
-          roleColor: '#FF7EB6',
-          equippedBadge: '🧶 Yarn Master',
-          bio: 'Certified biscuit baker & professional sunbeam finder.'
-        },
-        user_pounce: {
-          id: 'user_pounce',
-          username: 'sir_pounce_alot',
-          displayName: 'Sir Pounce-a-Lot',
-          avatarEmoji: '🦁',
-          avatarColorHex: '#9D7BFF',
-          presence: 'Purring',
-          presenceColor: '#43B581',
-          customStatus: 'Guarding the treat jar 🛡️🐟',
-          roleTitle: 'Mod-erater',
-          roleColor: '#FF7EB6',
-          equippedBadge: '🛡️ Treat Guardian',
-          bio: 'Head of Castle Security. No cucumber shall pass.'
-        },
-        user_duchess: {
-          id: 'user_duchess',
-          username: 'duchess_whiskers',
-          displayName: 'Duchess Whiskers',
-          avatarEmoji: '🐱',
-          avatarColorHex: '#43D9AD',
-          presence: 'Catnapping',
-          presenceColor: '#FAA61A',
-          customStatus: '16-hour beauty catnap in progress 💤',
-          roleTitle: 'Senior Paws',
-          roleColor: '#43D9AD',
-          equippedBadge: '👑 Royal Whisker',
-          bio: 'Persian royalty. Only drinks filtered fountain water.'
-        },
-        user_mittens: {
-          id: 'user_mittens',
-          username: 'prof_mittens',
-          displayName: 'Professor Mittens',
-          avatarEmoji: '🤓',
-          avatarColorHex: '#5CE1E6',
-          presence: 'Hissing',
-          presenceColor: '#F04747',
-          customStatus: 'Calculating laser dot trajectory 📈🔴',
-          roleTitle: 'Senior Paws',
-          roleColor: '#43D9AD',
-          equippedBadge: '🐟 Tuna Tycoon',
-          bio: 'PhD in Gravity Testing (knocking pens off desks since 2021).'
-        },
-        user_shadow: {
-          id: 'user_shadow',
-          username: 'void_zoomer',
-          displayName: 'Shadow the Void',
-          avatarEmoji: '🐈‍⬛',
-          avatarColorHex: '#FF6B6B',
-          presence: 'Purring',
-          presenceColor: '#43B581',
-          customStatus: 'Staring at an empty corner of the ceiling 👀',
-          roleTitle: 'Kitten',
-          roleColor: '#5CE1E6',
-          equippedBadge: '🌙 Midnight Zoomer',
-          bio: 'If you stare into the void, the void meows back for wet food.'
-        }
+        user_meow_ai: getDefaultMeowAiUser()
       },
 
       servers: [
@@ -1667,60 +1676,33 @@
             senderRoleColor: '#FFD166',
             senderIsOwner: true,
             senderBadge: '👑 Supreme Loaf',
-            content: 'Welcome to The Grand Cat Castle! 🏰🐾 As Server Owner, I have enabled Sign-In/Sign-Up, Advanced Settings (Live Profile Preview + Optional Phone +50 🪙 bonus), the Discord-style Cat Whiteboard 🎨, and new MeowCoin Collector/Hoarder badges!',
-            reactions: { '👑': ['user_mochi', 'user_pounce', 'user_duchess', 'user_mittens'], '🐾': ['user_shadow'] },
+            content: 'Welcome to The Grand Cat Castle! 🏰🐾 Meet our official AI agent Meow AI 🤖, earn 🪙 MeowCoins from quests, and look out for 💵 Meow Bucks from Secret Codes and my Cat CEO Panel giveaways!',
+            reactions: { '👑': ['user_meow_ai'], '🐾': ['user_meow_ai'] },
             time: '6:35 PM',
             isPinned: true
           },
           {
             id: 'm1',
-            senderId: 'user_pounce',
-            senderName: 'Sir Pounce-a-Lot',
-            senderAvatar: '🦁',
-            senderRoleColor: '#FF7EB6',
-            senderBadge: '🛡️ Treat Guardian',
-            content: 'All hail our Castle Owner @abood! 👑🦁 Check the Quests & MeowCoins (🪙) tab or try the new 🎨 Cat Whiteboard activity!',
-            reactions: { '🐾': ['user_captain', 'user_mochi', 'user_shadow'] },
+            senderId: 'user_meow_ai',
+            senderName: 'Meow AI',
+            senderAvatar: '🤖',
+            senderRoleColor: '#5CE1E6',
+            senderBadge: '🤖 Meow AI',
+            content: 'Meow-hello everykitty! 🤖🐾 I am Meow AI, the sole AI agent of CatMsg! Chat with me in any channel or DM, check out the 🪙 Quests & Emporium tab, or launch 🎨 Cat Whiteboard from 🧩 Apps & Activities!',
+            reactions: { '🐾': ['user_captain'] },
             time: '6:40 PM',
-            isPinned: false
-          },
-          {
-            id: 'm2',
-            senderId: 'user_mochi',
-            senderName: 'Mochi the Calico',
-            senderAvatar: '😻',
-            senderRoleColor: '#FF7EB6',
-            senderBadge: '🧶 Yarn Master',
-            content: 'Good evening everykitty! I just finished a 4-hour shift of making biscuits on the cashmere throw blanket 🍞✨',
-            stickerId: 'sticker_loaf',
-            reactions: { '😻': ['user_captain', 'user_pounce'], '🧶': ['user_mittens'] },
-            time: '6:52 PM',
-            isPinned: false
-          },
-          {
-            id: 'm3',
-            senderId: 'user_mittens',
-            senderName: 'Professor Mittens',
-            senderAvatar: '🤓',
-            senderRoleColor: '#43D9AD',
-            senderBadge: '🐟 Tuna Tycoon',
-            content: 'According to my calculations, the food bowl is 18% empty — which mathematically equals COMPLETELY EMPTY. I have begun singing the song of my people.',
-            replyToSenderName: 'Mochi the Calico',
-            replyToPreview: 'Good evening everykitty! I just finished a 4-hour shift...',
-            reactions: { '🐟': ['user_captain', 'user_mochi', 'user_shadow', 'user_pounce'] },
-            time: '7:05 PM',
             isPinned: false
           }
         ],
-        dm_user_mochi: [
+        dm_user_meow_ai: [
           {
             id: 'dm1',
-            senderId: 'user_mochi',
-            senderName: 'Mochi the Calico',
-            senderAvatar: '😻',
-            senderRoleColor: '#FF7EB6',
-            senderBadge: '🧶 Yarn Master',
-            content: 'Psst! Boss @abood! I hid two extra Churu tubes behind the scratching post 🐟🤫 Send me a DM back to complete your "Friendly Snoot Boop" quest!',
+            senderId: 'user_meow_ai',
+            senderName: 'Meow AI',
+            senderAvatar: '🤖',
+            senderRoleColor: '#5CE1E6',
+            senderBadge: '🤖 Meow AI',
+            content: 'Hello @abood! 🤖🐾 I am Meow AI! Send me a Direct Meow anytime to chat or complete your "Friendly Snoot Boop" quest!',
             stickerId: 'sticker_boop',
             reactions: { '😻': ['user_captain'] },
             time: '6:58 PM',
@@ -1791,7 +1773,49 @@
       if (!snapB) return snapA;
       const timeA = snapA.savedAt ? Date.parse(snapA.savedAt) || 0 : 0;
       const timeB = snapB.savedAt ? Date.parse(snapB.savedAt) || 0 : 0;
-      return timeB >= timeA ? snapB : snapA;
+      const winner = timeB >= timeA ? snapB : snapA;
+      const bucksA = (snapA.currentUser && typeof snapA.currentUser.meowBucks === 'number') ? snapA.currentUser.meowBucks : 0;
+      const bucksB = (snapB.currentUser && typeof snapB.currentUser.meowBucks === 'number') ? snapB.currentUser.meowBucks : 0;
+      if (winner.currentUser) {
+        winner.currentUser.meowBucks = Math.max(bucksA, bucksB);
+      }
+      return winner;
+    }
+
+    async function syncPromoCodesFromCloud() {
+      try {
+        const rawLocal = localStorage.getItem(PROMO_CODES_STORAGE_KEY);
+        if (rawLocal) {
+          state.promoCodes = { ...state.promoCodes, ...JSON.parse(rawLocal) };
+        }
+      } catch (e) {}
+      try {
+        const res = await fetch('/api/userdata?key=__promo_codes_registry__', { cache: 'no-store' });
+        const data = await res.json();
+        if (data && data.found && data.snapshot && typeof data.snapshot === 'object') {
+          const cleaned = {};
+          for (const [cKey, cVal] of Object.entries(data.snapshot)) {
+            if (cKey !== 'savedAtServer' && cVal && typeof cVal === 'object' && cVal.code) {
+              cleaned[cKey.toUpperCase()] = cVal;
+            }
+          }
+          state.promoCodes = { ...state.promoCodes, ...cleaned };
+          localStorage.setItem(PROMO_CODES_STORAGE_KEY, JSON.stringify(state.promoCodes));
+        }
+      } catch (e) {}
+      return state.promoCodes;
+    }
+
+    async function savePromoCodesToCloud(codesObj) {
+      state.promoCodes = codesObj || {};
+      try {
+        localStorage.setItem(PROMO_CODES_STORAGE_KEY, JSON.stringify(state.promoCodes));
+        await fetch('/api/userdata?key=__promo_codes_registry__', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(state.promoCodes)
+        });
+      } catch (e) {}
     }
 
     async function syncAccountsFromCloud() {
@@ -1848,16 +1872,19 @@
           phoneRewardClaimed: false,
           allQuestsBonusClaimed: false,
           redeemedCodes: [],
+          meowBucks: 0,
           isPremium: isOwnerUser ? true : false,
           premiumLifetime: isOwnerUser ? true : false,
           premiumPlan: isOwnerUser ? 'Lifetime' : '',
           unlockedMarkers: ['marker_white'],
           ...state.currentUser,
           ...snap.currentUser,
+          meowBucks: typeof snap.currentUser.meowBucks === 'number' ? snap.currentUser.meowBucks : (state.currentUser.meowBucks || 0),
           accountPassword: snap.accountPassword || snap.currentUser.accountPassword || state.currentUser.accountPassword || '',
           username: migratedUsername,
           displayName: migratedDisplayName,
           isOwner: isOwnerUser,
+          friendIds: ['user_meow_ai'],
           ...(isOwnerUser ? { isPremium: true, premiumLifetime: true, premiumPlan: 'Lifetime' } : {})
         };
         if (isOwnerUser && Array.isArray(state.currentUser.unlockedBadges) && !state.currentUser.unlockedBadges.includes('💎 Lifetime Premium')) {
@@ -1870,16 +1897,46 @@
           state.currentUser.redeemedCodes = [];
         }
       }
-      if (snap.users) state.users = snap.users;
+      state.users = normalizeUsersToMeowAi(snap.users);
+      if (LEGACY_CAT_BOT_IDS.includes(state.selectedDmUserId) || !state.users[state.selectedDmUserId]) {
+        state.selectedDmUserId = 'user_meow_ai';
+      }
       if (Array.isArray(snap.servers) && snap.servers.length > 0) state.servers = snap.servers;
       if (snap.messagesByChannel) {
         state.messagesByChannel = snap.messagesByChannel;
-        if (Array.isArray(state.messagesByChannel.chan_general_meows)) {
-          for (const m of state.messagesByChannel.chan_general_meows) {
-            if (m.senderId === 'user_captain' && m.senderName === 'Captain Purr') {
-              m.senderName = 'abood';
+        for (const chKey of Object.keys(state.messagesByChannel)) {
+          if (LEGACY_CAT_BOT_IDS.some(botId => chKey === `dm_${botId}`)) {
+            delete state.messagesByChannel[chKey];
+          } else if (Array.isArray(state.messagesByChannel[chKey])) {
+            for (const m of state.messagesByChannel[chKey]) {
+              if (m.senderId === 'user_captain' && m.senderName === 'Captain Purr') {
+                m.senderName = 'abood';
+              } else if (LEGACY_CAT_BOT_IDS.includes(m.senderId)) {
+                m.senderId = 'user_meow_ai';
+                m.senderName = 'Meow AI';
+                m.senderAvatar = '🤖';
+                m.senderRoleColor = '#5CE1E6';
+                m.senderBadge = '🤖 Meow AI';
+              }
             }
           }
+        }
+        if (!Array.isArray(state.messagesByChannel.dm_user_meow_ai) || state.messagesByChannel.dm_user_meow_ai.length === 0) {
+          state.messagesByChannel.dm_user_meow_ai = [
+            {
+              id: 'dm1',
+              senderId: 'user_meow_ai',
+              senderName: 'Meow AI',
+              senderAvatar: '🤖',
+              senderRoleColor: '#5CE1E6',
+              senderBadge: '🤖 Meow AI',
+              content: 'Hello! 🤖🐾 I am Meow AI, the official AI agent of CatMsg! Send me a Direct Meow anytime!',
+              stickerId: 'sticker_boop',
+              reactions: { '😻': ['user_captain'] },
+              time: '6:58 PM',
+              isPinned: false
+            }
+          ];
         }
       }
       if (Array.isArray(snap.quests) && snap.quests.length > 0) {
@@ -1988,6 +2045,7 @@
 
     // Global Sign-Out Enforcement & Cross-Browser Cloud Account Sync
     (function enforceGlobalSignOutOnce() {
+      syncPromoCodesFromCloud();
       syncAccountsFromCloud().then(() => {
         if (!state.isSignedIn) render();
       });
@@ -2086,12 +2144,14 @@
           isPremium: false,
           bio: `Google CatMsg account (${rawEmail}).`,
           meowCoins: 50,
+          meowBucks: 0,
           unlockedStickerIds: ['sticker_loaf', 'sticker_zoomies', 'sticker_boop', 'sticker_tuna'],
           unlockedBadges: ['🐾 Day One Paws'],
           unlockedMarkers: ['marker_white'],
           equippedBadge: '🐾 Day One Paws',
-          friendIds: ['user_mochi', 'user_pounce', 'user_duchess', 'user_mittens', 'user_shadow']
+          friendIds: ['user_meow_ai']
         };
+        state.users = normalizeUsersToMeowAi({});
         state.quests = createZeroProgressQuests();
         state.visitedChannels = new Set();
       }
@@ -2144,13 +2204,15 @@
           premiumPlan: 'Lifetime',
           bio: 'Founder & Supreme Owner of The Grand Cat Castle. Will trade headbutts for premium salmon.',
           meowCoins: state.currentUser.username === 'abood' ? state.currentUser.meowCoins : 250,
+          meowBucks: typeof state.currentUser.meowBucks === 'number' ? state.currentUser.meowBucks : 100,
           unlockedStickerIds: ['sticker_loaf', 'sticker_zoomies', 'sticker_boop', 'sticker_tuna'],
           unlockedBadges: ['👑 Supreme Loaf', '🐾 Day One Paws', '💎 Lifetime Premium'],
           unlockedMarkers: ['marker_white'],
           equippedBadge: '👑 Supreme Loaf',
-          friendIds: ['user_mochi', 'user_pounce', 'user_duchess', 'user_mittens', 'user_shadow']
+          friendIds: ['user_meow_ai']
         };
       }
+      state.users = normalizeUsersToMeowAi(state.users);
       state.quests = ensureAllUsersQuestsMerged(state.quests);
       state.isSignedIn = true;
       localStorage.setItem(ACTIVE_USER_KEY, 'abood');
@@ -2319,12 +2381,14 @@
         isPremium: false,
         bio: 'Brand new CatMsg member starting fresh quests from zero!',
         meowCoins: 50,
+        meowBucks: 0,
         unlockedStickerIds: ['sticker_loaf', 'sticker_zoomies', 'sticker_boop', 'sticker_tuna'],
         unlockedBadges: ['🐾 New Kitty'],
         unlockedMarkers: ['marker_white'],
         equippedBadge: '🐾 New Kitty',
-        friendIds: ['user_mochi', 'user_pounce', 'user_duchess', 'user_mittens', 'user_shadow']
+        friendIds: ['user_meow_ai']
       };
+      state.users = normalizeUsersToMeowAi({});
       state.quests = createZeroProgressQuests();
       state.visitedChannels = new Set();
 
@@ -2442,7 +2506,7 @@
       );
     }
 
-    function redeemPromoCode() {
+    async function redeemPromoCode() {
       const el = document.getElementById('promo-code-input');
       const raw = (el ? el.value : '').trim().toUpperCase();
       if (!raw) {
@@ -2456,10 +2520,153 @@
         showToast(state.lang === 'ar' ? '😾 تم استخدام هذا الكود مسبقاً في حسابك!' : '😾 You already redeemed this code on your account!');
         return;
       }
+      await syncPromoCodesFromCloud();
+      const promoEntry = state.promoCodes[raw];
+      if (promoEntry && typeof promoEntry.meowBucks === 'number' && promoEntry.meowBucks > 0) {
+        state.currentUser.redeemedCodes.push(raw);
+        state.currentUser.meowBucks = (state.currentUser.meowBucks || 0) + promoEntry.meowBucks;
+        if (el) el.value = '';
+        autoPersistIfEnabled();
+        showToast(
+          state.lang === 'ar'
+            ? `🎟️💵 مبروك! تم تفعيل الكود "${raw}" وحصلت على +${promoEntry.meowBucks} Meow Bucks!`
+            : `🎟️💵 Code "${raw}" redeemed! You received +${promoEntry.meowBucks} Meow Bucks!`
+        );
+        return;
+      }
       showToast(
         state.lang === 'ar'
           ? `🎟️ الكود "${raw}" غير نشط حالياً — ترقبوا طرح الأكواد السرية قريباً!`
           : `🎟️ Code "${raw}" is not active yet — stay tuned for upcoming secret codes!`
+      );
+    }
+
+    async function openCeoPanelModal() {
+      if (!state.currentUser || !state.currentUser.isOwner) return;
+      state.modal = 'ceoPanel';
+      render();
+      await Promise.all([syncAccountsFromCloud(), syncPromoCodesFromCloud()]);
+      if (state.modal === 'ceoPanel') render();
+    }
+
+    async function ceoGiveMeowBucks() {
+      if (!state.currentUser || !state.currentUser.isOwner) return;
+      const uEl = document.getElementById('ceo-target-user');
+      const aEl = document.getElementById('ceo-bucks-amount');
+      const rawUser = (uEl ? uEl.value : '').trim().toLowerCase().replace(/^@/, '').replace(/\s+/g, '_');
+      const amount = parseInt(aEl ? aEl.value : '0', 10);
+
+      if (!rawUser) {
+        showToast(state.lang === 'ar' ? '😾 اختر أو اكتب اسم المستخدم المستلم!' : '😾 Please enter or select a recipient username!');
+        return;
+      }
+      if (!amount || amount <= 0) {
+        showToast(state.lang === 'ar' ? '😾 أدخل كمية صحيحة من Meow Bucks!' : '😾 Please enter a positive Meow Bucks amount!');
+        return;
+      }
+
+      const targetUsername = (rawUser === 'captain_purr' || rawUser === 'owner') ? 'abood' : rawUser;
+
+      if (targetUsername === (state.currentUser.username || 'abood').toLowerCase()) {
+        state.currentUser.meowBucks = (state.currentUser.meowBucks || 0) + amount;
+        autoPersistIfEnabled();
+        showToast(
+          state.lang === 'ar'
+            ? `👑💵 تم إضافة +${amount} Meow Bucks إلى حسابك (@${targetUsername}) من لوحة Cat CEO!`
+            : `👑💵 Added +${amount} Meow Bucks to your account (@${targetUsername}) via Cat CEO Panel!`
+        );
+        return;
+      }
+
+      const accounts = await syncAccountsFromCloud();
+      const cloudSnap = await fetchCloudUserSnapshot(targetUsername);
+      const acc = accounts[targetUsername];
+      const targetSnap = chooseBestSnapshot(acc && acc.snapshot, cloudSnap);
+
+      if (!acc && !targetSnap) {
+        showToast(
+          state.lang === 'ar'
+            ? `😾 الحساب @${targetUsername} غير موجود في النظام بعد!`
+            : `😾 Account @${targetUsername} was not found!`
+        );
+        return;
+      }
+
+      const nowIso = new Date().toISOString();
+      const updatedSnap = targetSnap ? { ...targetSnap } : { version: 5, currentUser: { username: targetUsername, displayName: (acc && acc.displayName) || targetUsername, meowCoins: 50, meowBucks: 0 } };
+      updatedSnap.savedAt = nowIso;
+      if (!updatedSnap.currentUser) updatedSnap.currentUser = { username: targetUsername, meowBucks: 0 };
+      updatedSnap.currentUser.meowBucks = (updatedSnap.currentUser.meowBucks || 0) + amount;
+
+      const targetStorageKey = getUserStorageKey(targetUsername);
+      try {
+        localStorage.setItem(targetStorageKey, JSON.stringify(updatedSnap));
+      } catch (e) {}
+
+      accounts[targetUsername] = {
+        ...(acc || {}),
+        username: targetUsername,
+        displayName: updatedSnap.currentUser.displayName || targetUsername,
+        avatarEmoji: updatedSnap.currentUser.avatarEmoji || '🐱',
+        lastSavedAt: nowIso,
+        snapshot: updatedSnap
+      };
+      saveStoredAccounts(accounts);
+
+      fetch(`/api/userdata?key=${encodeURIComponent(targetUsername)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedSnap)
+      }).catch(() => {});
+
+      showToast(
+        state.lang === 'ar'
+          ? `👑💵 تم إرسال +${amount} Meow Bucks إلى @${targetUsername} بنجاح!`
+          : `👑💵 Sent +${amount} Meow Bucks giveaway to @${targetUsername}!`
+      );
+    }
+
+    async function ceoCreatePromoCode() {
+      if (!state.currentUser || !state.currentUser.isOwner) return;
+      const cEl = document.getElementById('ceo-new-code-name');
+      const bEl = document.getElementById('ceo-new-code-bucks');
+      const code = (cEl ? cEl.value : '').trim().toUpperCase().replace(/\s+/g, '');
+      const bucks = parseInt(bEl ? bEl.value : '0', 10);
+
+      if (!code) {
+        showToast(state.lang === 'ar' ? '😾 أدخل اسم الكود السري!' : '😾 Please enter a code name!');
+        return;
+      }
+      if (!bucks || bucks <= 0) {
+        showToast(state.lang === 'ar' ? '😾 أدخل كمية Meow Bucks للكود!' : '😾 Please enter a positive Meow Bucks reward for the code!');
+        return;
+      }
+
+      await syncPromoCodesFromCloud();
+      state.promoCodes[code] = {
+        code,
+        meowBucks: bucks,
+        createdBy: 'abood',
+        createdAt: new Date().toISOString()
+      };
+      await savePromoCodesToCloud(state.promoCodes);
+      if (cEl) cEl.value = '';
+      showToast(
+        state.lang === 'ar'
+          ? `🎟️💵 تم إنشاء الكود السري "${code}" بقيمة +${bucks} Meow Bucks!`
+          : `🎟️💵 Created Secret Code "${code}" rewarding +${bucks} Meow Bucks!`
+      );
+    }
+
+    async function ceoDeletePromoCode(codeKey) {
+      if (!state.currentUser || !state.currentUser.isOwner) return;
+      const clean = (codeKey || '').toUpperCase();
+      delete state.promoCodes[clean];
+      await savePromoCodesToCloud(state.promoCodes);
+      showToast(
+        state.lang === 'ar'
+          ? `🗑️ تم حذف الكود "${clean}".`
+          : `🗑️ Deleted Secret Code "${clean}".`
       );
     }
 
@@ -2892,25 +3099,24 @@
       render();
       scrollToBottom();
 
-      // Playful Cat Reply
+      // Playful Meow AI Reply
       setTimeout(() => {
-        const friends = Object.values(state.users);
-        const responder = isDm
+        const responder = (isDm && state.users[state.selectedDmUserId])
           ? state.users[state.selectedDmUserId]
-          : friends[Math.floor(Math.random() * friends.length)];
+          : (state.users.user_meow_ai || getDefaultMeowAiUser());
         if (!responder) return;
 
         const repliesEn = [
-          `Pawsitively agreed, @${state.currentUser.displayName}! 👑🐾 Let's celebrate with extra tuna!`,
-          `Mrrrow! *vibrates at 45Hz purr frequency* 😺🎶 Your orders are our command!`,
-          `DID SOMEBODY SAY TUNA?! 🐟👀 I sprinted from the windowsill in 0.4 seconds!`,
-          `10/10 take! Awarding you maximum purrs for the evening 🍞👑`
+          `Meow AI here! 🤖🐾 Pawsitively agreed, @${state.currentUser.displayName}! Let's celebrate with extra tuna!`,
+          `Beep-purr! 🤖🎶 *Meow AI vibrates at 45Hz purr frequency* How can I help you in the Castle today?`,
+          `Meow AI scan complete: 100% certified awesome cat message! 🐟🤖`,
+          `10/10 take, @${state.currentUser.displayName}! Awarding you maximum purrs from Meow AI 🍞👑`
         ];
         const repliesAr = [
-          `نتفق معك تماماً @${state.currentUser.displayName}! 👑🐾 لنحتفل بوجبة تونة فاخرة!`,
-          `مياااو! *خرخرة عالية التردد* 😺🎶 أوامرك مطاعة في القلعة!`,
-          `هل ذكر أحدكم التونة؟! 🐟👀 لقد ركضت من النافذة في 0.4 ثانية!`,
-          `كلام حكيم 10/10! 🍞👑 لا تنسَ تفقد مهام عملات مياو!`
+          `معك Meow AI! 🤖🐾 أتفق معك تماماً @${state.currentUser.displayName}! لنحتفل بوجبة تونة فاخرة!`,
+          `مياو-بيب! 🤖🎶 *Meow AI يعمل بتردد خرخرة 45 هرتز* كيف يمكنني مساعدتك في القلعة اليوم؟`,
+          `اكتمل فحص Meow AI: رسالة قطة رائعة بنسبة 100%! 🐟🤖`,
+          `كلام حكيم 10/10 يا @${state.currentUser.displayName}! تحياتي من Meow AI 🍞👑`
         ];
         const pool = state.lang === 'ar' ? repliesAr : repliesEn;
 
@@ -3208,6 +3414,13 @@
               <div class="rail-btn" style="background:linear-gradient(135deg,#C77DFF,#FFD166);color:#14121D">💎</div>
             </div>
 
+            ${state.currentUser.isOwner ? `
+              <div class="rail-btn-wrap ${state.modal === 'ceoPanel' ? 'active' : ''}" onclick="openCeoPanelModal()" title="${L.ceoPanelNavBtn}">
+                <div class="rail-pill" style="background: #10B981"></div>
+                <div class="rail-btn" style="background:linear-gradient(135deg,#10B981,#FFD166);color:#14121D">💼</div>
+              </div>
+            ` : ''}
+
             <div class="rail-divider"></div>
 
             ${state.servers.map(s => `
@@ -3242,12 +3455,12 @@
             </div>
 
             <div class="quest-mini-banner" onclick="openQuests()">
-              <div style="display:flex;justify-content:space-between;align-items:center">
-                <span style="color:var(--gold);font-weight:800;font-size:13px">🪙 ${state.currentUser.meowCoins} ${L.meowCoins}</span>
-                <span style="color:var(--text-secondary);font-size:11px">${completedCount}/${state.quests.length} ${L.questsWord}</span>
+              <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px">
+                <span style="color:var(--gold);font-weight:800;font-size:12.5px">🪙 ${state.currentUser.meowCoins}</span>
+                <span style="color:#10B981;font-weight:900;font-size:12.5px">💵 ${state.currentUser.meowBucks || 0} ${L.meowBucks}</span>
               </div>
               <div style="font-size:11px;margin-top:4px;color:${claimableCount > 0 ? 'var(--mint)' : 'var(--text-muted)'};font-weight:${claimableCount > 0 ? '700' : '400'}">
-                ${claimableCount > 0 ? L.questReady(claimableCount) : L.questSub}
+                ${claimableCount > 0 ? L.questReady(claimableCount) : `${completedCount}/${state.quests.length} ${L.questsWord} • ${L.questSub}`}
               </div>
             </div>
 
@@ -3333,10 +3546,16 @@
           <span>🧩</span>
           <span style="color:var(--mint);font-weight:800">${L.appsBtnLabel}</span>
         </div>
-        <div class="chan-item" onclick="state.modal='premium';render()" style="border:1px dashed rgba(255,209,102,0.45);margin-bottom:6px">
+        <div class="chan-item" onclick="state.modal='premium';render()" style="border:1px dashed rgba(255,209,102,0.45);margin-bottom:4px">
           <span>💎</span>
           <span style="color:var(--gold);font-weight:800">${L.premiumNavBtn}</span>
         </div>
+        ${state.currentUser.isOwner ? `
+          <div class="chan-item" onclick="openCeoPanelModal()" style="border:1px dashed rgba(16,185,129,0.55);margin-bottom:6px">
+            <span>💼</span>
+            <span style="color:#10B981;font-weight:900">${L.ceoPanelNavBtn}</span>
+          </div>
+        ` : ''}
       ` + srv.categories.map(cat => `
         <div class="cat-header">
           <span>${escapeHtml(cat.name)}</span>
@@ -3370,6 +3589,12 @@
           <span>💎</span>
           <span style="color:var(--gold);font-weight:800">${L.premiumNavBtn}</span>
         </div>
+        ${state.currentUser.isOwner ? `
+          <div class="chan-item" onclick="openCeoPanelModal()">
+            <span>💼</span>
+            <span style="color:#10B981;font-weight:900">${L.ceoPanelNavBtn}</span>
+          </div>
+        ` : ''}
         <div class="cat-header" style="margin-top:12px">
           <span>${L.directMeows}</span>
         </div>
@@ -3404,6 +3629,7 @@
           <div style="flex:1"></div>
           <div class="lang-pill" onclick="openDiscordAppsLauncher()" style="color:var(--mint);border-color:rgba(67,217,173,0.45)">${L.appsBtnLabel}</div>
           <button class="btn-outline" style="color:var(--coral);border-color:rgba(255,107,107,0.45);padding:5px 10px" onclick="exitWhiteboardActivity()">${L.exitActivityBtn}</button>
+          <div class="bucks-pill" onclick="openQuests()" title="${L.meowBucksRule}">💵 ${state.currentUser.meowBucks || 0}</div>
           <div class="coin-pill" onclick="openQuests()">🪙 ${state.currentUser.meowCoins}</div>
         </div>
 
@@ -3588,11 +3814,19 @@
                <span style="font-weight:800;font-size:15.5px">${escapeHtml(ch.name)}</span>
                <div class="topic-text">${escapeHtml(ch.topic)}</div>`}
 
+          ${state.currentUser.isOwner ? `
+            <div class="lang-pill" onclick="openCeoPanelModal()" title="${L.ceoPanelTitle}" style="border-color:rgba(16,185,129,0.55);color:#10B981">
+              ${L.ceoPanelNavBtn}
+            </div>
+          ` : ''}
           <div class="lang-pill" onclick="state.modal='premium';render()" title="${L.premiumCardTitle}" style="border-color:rgba(255,209,102,0.55);color:var(--gold)">
             💎 Premium
           </div>
           <div class="lang-pill" onclick="openDiscordAppsLauncher()" title="${L.appsLauncherHeader}" style="border-color:rgba(67,217,173,0.45);color:var(--mint)">
             ${L.appsBtnLabel}
+          </div>
+          <div class="bucks-pill" onclick="openQuests()" title="${L.meowBucksRule}">
+            💵 ${state.currentUser.meowBucks || 0}
           </div>
           <div class="coin-pill" onclick="openQuests()">
             🪙 ${state.currentUser.meowCoins}
@@ -3743,8 +3977,10 @@
           <span style="font-size:20px">🐾</span>
           <span style="font-weight:800;font-size:16px">${L.catFriends} (${friends.length})</span>
           <div style="flex:1"></div>
+          ${state.currentUser.isOwner ? `<div class="lang-pill" onclick="openCeoPanelModal()" style="color:#10B981;border-color:rgba(16,185,129,0.55)">${L.ceoPanelNavBtn}</div>` : ''}
           <div class="lang-pill" onclick="state.modal='premium';render()" style="color:var(--gold)">💎 Premium</div>
           <div class="lang-pill" onclick="openDiscordAppsLauncher()" style="color:var(--mint)">${L.appsBtnLabel}</div>
+          <div class="bucks-pill" onclick="openQuests()" title="${L.meowBucksRule}">💵 ${state.currentUser.meowBucks || 0}</div>
           <div class="coin-pill" onclick="openQuests()">🪙 ${state.currentUser.meowCoins}</div>
         </div>
         <div class="messages-scroll">
@@ -3823,8 +4059,10 @@
           <span style="font-size:20px">🪙</span>
           <span style="font-weight:800;font-size:16px">${L.questsHeaderTitle}</span>
           <div style="flex:1"></div>
+          ${state.currentUser.isOwner ? `<div class="lang-pill" onclick="openCeoPanelModal()" style="color:#10B981;border-color:rgba(16,185,129,0.55)">${L.ceoPanelNavBtn}</div>` : ''}
           <div class="lang-pill" onclick="state.modal='premium';render()" style="color:var(--gold)">💎 Premium</div>
           <div class="lang-pill" onclick="openDiscordAppsLauncher()" style="color:var(--mint)">${L.appsBtnLabel}</div>
+          <div class="bucks-pill" title="${L.meowBucksRule}">💵 ${state.currentUser.meowBucks || 0} ${L.meowBucks}</div>
           <div class="coin-pill">🪙 ${state.currentUser.meowCoins} ${L.meowCoins}</div>
         </div>
 
@@ -3977,9 +4215,20 @@
             </div>
           ` : ''}
 
-          <!-- SECRET CODES SECTION FOR LATER -->
+          <!-- SECRET CODES & MEOW BUCKS SECTION -->
           <div class="codes-card">
-            <div style="font-weight:900;font-size:14px;color:var(--yarn-blue)">${L.codesSectionHeader}</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+              <div style="font-weight:900;font-size:14.5px;color:var(--yarn-blue)">${L.codesSectionHeader}</div>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <span class="bucks-pill" style="cursor:default">💵 ${state.currentUser.meowBucks || 0} ${L.meowBucks}</span>
+                ${state.currentUser.isOwner ? `
+                  <button class="btn-gold" onclick="openCeoPanelModal()">
+                    ${L.ceoPanelNavBtn}
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+            <div style="color:#10B981;font-size:12px;font-weight:800;margin-top:6px">${L.meowBucksRule}</div>
             <div style="color:var(--text-secondary);font-size:12.5px;margin-top:4px;margin-bottom:10px">${L.codesSectionSub}</div>
             <div style="display:flex;gap:8px">
               <input id="promo-code-input" class="composer-input" placeholder="${L.codeInputPlaceholder}" onkeydown="if(event.key==='Enter'){redeemPromoCode()}" />
@@ -4183,6 +4432,104 @@
 
     function renderModal() {
       const L = t();
+      if (state.modal === 'ceoPanel' && state.currentUser.isOwner) {
+        const accounts = getStoredAccounts();
+        const registeredUsernames = Array.from(new Set(['abood', ...Object.keys(accounts).filter(k => k && k !== 'captain_purr' && k !== 'savedatserver')]));
+        const promoEntries = Object.values(state.promoCodes || {}).filter(c => c && c.code);
+        return `
+          <div class="modal-backdrop" onclick="if(event.target===this){state.modal=null;render()}">
+            <div class="modal-card" style="max-width:580px;border-color:#10B981">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px">
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                  <span style="font-weight:900;font-size:19px;color:#10B981">${L.ceoPanelTitle}</span>
+                  <span class="owner-tag">${L.ownerTag}</span>
+                </div>
+                <button class="icon-btn" onclick="state.modal=null;render()">✕</button>
+              </div>
+              <div style="color:var(--text-secondary);font-size:12.5px;line-height:1.45;margin-bottom:14px">
+                ${L.ceoPanelSub}
+              </div>
+
+              <!-- 1. GIVE AWAY MEOW BUCKS TO ANY ACCOUNT -->
+              <div class="ceo-panel-card">
+                <div style="font-weight:900;font-size:13px;color:#10B981;letter-spacing:0.6px;margin-bottom:8px">
+                  ${L.ceoGiveHeader}
+                </div>
+                <div style="font-size:11.5px;font-weight:700;color:var(--text-secondary);margin-bottom:4px">
+                  ${L.ceoTargetUserLabel}
+                </div>
+                <input id="ceo-target-user" class="composer-input" style="width:100%;padding:9px 12px;margin-bottom:8px" placeholder="e.g. abood or any username..." value="abood" />
+
+                <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">
+                  ${registeredUsernames.map(u => {
+                    const accObj = accounts[u];
+                    const uBucks = (u === (state.currentUser.username || 'abood').toLowerCase())
+                      ? (state.currentUser.meowBucks || 0)
+                      : ((accObj && accObj.snapshot && accObj.snapshot.currentUser && accObj.snapshot.currentUser.meowBucks) || 0);
+                    return `
+                      <button class="btn-outline" style="padding:5px 10px;font-size:11.5px;border-color:rgba(16,185,129,0.45)" onclick="const el=document.getElementById('ceo-target-user');if(el){el.value='${escapeHtml(u)}'}">
+                        @${escapeHtml(u)} (💵 ${uBucks})
+                      </button>
+                    `;
+                  }).join('')}
+                </div>
+
+                <div style="font-size:11.5px;font-weight:700;color:var(--text-secondary);margin-bottom:4px">
+                  ${L.ceoAmountLabel}
+                </div>
+                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                  <input id="ceo-bucks-amount" type="number" min="1" class="composer-input" style="width:130px;padding:9px 12px" value="100" />
+                  ${[10, 50, 100, 500, 1000].map(amt => `
+                    <button class="btn-outline" style="padding:6px 10px;font-size:11.5px;color:#10B981;border-color:rgba(16,185,129,0.45)" onclick="const el=document.getElementById('ceo-bucks-amount');if(el){el.value='${amt}'}">
+                      +${amt} 💵
+                    </button>
+                  `).join('')}
+                </div>
+
+                <button class="btn-gold" style="width:100%;margin-top:12px;padding:11px;background:linear-gradient(135deg,#10B981,#FFD166);color:#14121D" onclick="ceoGiveMeowBucks()">
+                  ${L.ceoSendGiveawayBtn}
+                </button>
+              </div>
+
+              <!-- 2. CREATE & MANAGE SECRET CODES FOR MEOW BUCKS -->
+              <div class="codes-card" style="margin-top:0;margin-bottom:14px">
+                <div style="font-weight:900;font-size:13px;color:var(--yarn-blue);margin-bottom:8px">
+                  ${L.ceoCodesManagerHeader}
+                </div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+                  <input id="ceo-new-code-name" class="composer-input" style="flex:1;min-width:140px;padding:9px 12px" placeholder="Code name (e.g. ABOODBucks)" />
+                  <input id="ceo-new-code-bucks" type="number" min="1" class="composer-input" style="width:120px;padding:9px 12px" value="50" placeholder="💵 Amount" />
+                  <button class="btn-primary" onclick="ceoCreatePromoCode()">
+                    ${L.ceoCreateCodeBtn}
+                  </button>
+                </div>
+
+                ${promoEntries.length > 0 ? `
+                  <div style="display:flex;flex-direction:column;gap:6px;margin-top:8px">
+                    ${promoEntries.map(pe => `
+                      <div style="display:flex;align-items:center;justify-content:space-between;background:var(--rail-bg);padding:8px 12px;border-radius:10px;border:1px solid var(--border)">
+                        <div>
+                          <span style="font-weight:900;font-size:13px;color:var(--gold)">🎟️ ${escapeHtml(pe.code)}</span>
+                          <span class="bucks-pill" style="margin-inline-start:8px;padding:2px 8px;font-size:11.5px">+${pe.meowBucks} 💵</span>
+                        </div>
+                        <button class="btn-outline" style="color:var(--coral);padding:4px 9px;font-size:11px" onclick="ceoDeletePromoCode('${escapeHtml(pe.code)}')">
+                          🗑️ Delete
+                        </button>
+                      </div>
+                    `).join('')}
+                  </div>
+                ` : `
+                  <div style="font-size:12px;color:var(--text-muted)">No active Secret Codes yet — create one above to reward 💵 Meow Bucks!</div>
+                `}
+              </div>
+
+              <div style="display:flex;justify-content:flex-end">
+                <button class="btn-primary" onclick="state.modal=null;render()">${L.closeBtn}</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
       if (state.modal === 'appsLauncher') {
         return `
           <div class="modal-backdrop" onclick="if(event.target===this){state.modal=null;render()}">

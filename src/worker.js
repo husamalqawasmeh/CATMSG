@@ -52,7 +52,14 @@ export class CatMsgStorageDO {
           const body = await request.json();
           const nowIso = new Date().toISOString();
 
-          if (saveKey === "__accounts_registry__") {
+          if (saveKey === "__promo_codes_registry__") {
+            await this.ctx.storage.put("userdata:__promo_codes_registry__", body || {});
+            return jsonResponse({
+              ok: true,
+              key: saveKey,
+              savedAt: nowIso
+            });
+          } else if (saveKey === "__accounts_registry__") {
             const existingRegistry = (await this.ctx.storage.get("userdata:__accounts_registry__")) || {};
             const mergedRegistry = { ...existingRegistry };
 
