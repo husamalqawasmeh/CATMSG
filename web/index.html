@@ -1591,7 +1591,8 @@
         id: 'user_captain',
         username: 'abood',
         displayName: 'abood',
-        avatarEmoji: '😼',
+        avatarEmoji: '🐱',
+        avatarManuallyCustomized: false,
         avatarColorHex: '#FF7EB6',
         presence: 'Purring',
         presenceColor: '#43B581',
@@ -1688,7 +1689,7 @@
             id: 'm0',
             senderId: 'user_captain',
             senderName: 'abood',
-            senderAvatar: '😼',
+            senderAvatar: '🐱',
             senderRoleColor: '#FFD166',
             senderIsOwner: true,
             senderBadge: '👑 Supreme Loaf',
@@ -1806,6 +1807,17 @@
         } else {
           winner.currentUser.meowBucks = winner === snapB ? bucksB : bucksA;
         }
+        const avatarTimeA = (snapA.currentUser && snapA.currentUser.avatarUpdatedAt) ? (Date.parse(snapA.currentUser.avatarUpdatedAt) || 0) : 0;
+        const avatarTimeB = (snapB.currentUser && snapB.currentUser.avatarUpdatedAt) ? (Date.parse(snapB.currentUser.avatarUpdatedAt) || 0) : 0;
+        if (avatarTimeB > avatarTimeA && snapB.currentUser) {
+          winner.currentUser.avatarEmoji = snapB.currentUser.avatarEmoji;
+          winner.currentUser.avatarManuallyCustomized = !!snapB.currentUser.avatarManuallyCustomized;
+          winner.currentUser.avatarUpdatedAt = snapB.currentUser.avatarUpdatedAt;
+        } else if (avatarTimeA > avatarTimeB && snapA.currentUser) {
+          winner.currentUser.avatarEmoji = snapA.currentUser.avatarEmoji;
+          winner.currentUser.avatarManuallyCustomized = !!snapA.currentUser.avatarManuallyCustomized;
+          winner.currentUser.avatarUpdatedAt = snapA.currentUser.avatarUpdatedAt;
+        }
       }
       return winner;
     }
@@ -1894,6 +1906,10 @@
         const migratedUsername = (rawU === 'captain_purr' || !rawU) ? 'abood' : snap.currentUser.username;
         const rawDisp = snap.currentUser.displayName || '';
         const migratedDisplayName = (rawDisp === 'Captain Purr' || rawDisp === 'captain_purr' || !rawDisp) ? 'abood' : rawDisp;
+        const ownerAvatarCustomized = !!snap.currentUser.avatarManuallyCustomized;
+        const resolvedAvatarEmoji = (isOwnerUser && !ownerAvatarCustomized)
+          ? '🐱'
+          : (snap.currentUser.avatarEmoji || '🐱');
 
         state.currentUser = {
           phoneNumber: '',
@@ -1907,6 +1923,8 @@
           unlockedMarkers: ['marker_white'],
           ...state.currentUser,
           ...snap.currentUser,
+          avatarEmoji: resolvedAvatarEmoji,
+          avatarManuallyCustomized: ownerAvatarCustomized,
           meowBucks: typeof snap.currentUser.meowBucks === 'number' ? snap.currentUser.meowBucks : (state.currentUser.meowBucks || 0),
           accountPassword: snap.accountPassword || snap.currentUser.accountPassword || state.currentUser.accountPassword || '',
           username: migratedUsername,
@@ -1931,14 +1949,19 @@
       }
       if (Array.isArray(snap.servers) && snap.servers.length > 0) state.servers = snap.servers;
       if (snap.messagesByChannel) {
+        const isOwnerSession = !!(state.currentUser && state.currentUser.isOwner);
+        const ownerAvatarIsCustom = !!(state.currentUser && state.currentUser.avatarManuallyCustomized);
         state.messagesByChannel = snap.messagesByChannel;
         for (const chKey of Object.keys(state.messagesByChannel)) {
           if (LEGACY_CAT_BOT_IDS.some(botId => chKey === `dm_${botId}`)) {
             delete state.messagesByChannel[chKey];
           } else if (Array.isArray(state.messagesByChannel[chKey])) {
             for (const m of state.messagesByChannel[chKey]) {
-              if (m.senderId === 'user_captain' && m.senderName === 'Captain Purr') {
-                m.senderName = 'abood';
+              if (m.senderId === 'user_captain' || m.senderIsOwner) {
+                if (m.senderName === 'Captain Purr') m.senderName = 'abood';
+                if ((isOwnerSession && !ownerAvatarIsCustom) || (m.id === 'm0' && m.senderAvatar === '😼')) {
+                  m.senderAvatar = '🐱';
+                }
               } else if (LEGACY_CAT_BOT_IDS.includes(m.senderId) || m.senderId === 'user_meow_ai') {
                 m.senderId = 'user_meow_ai';
                 m.senderName = 'Meow AI';
@@ -1993,6 +2016,7 @@
       }
       const storageKey = getUserStorageKey(activeUser);
       let localSnap = null;
+      let localNeedsPersist = false;
       try {
         const raw = localStorage.getItem(storageKey);
         if (raw) {
@@ -2006,6 +2030,9 @@
         }
         if (localSnap) {
           applySnapshot(localSnap);
+          if (state.currentUser.isOwner && !state.currentUser.avatarManuallyCustomized && localSnap.currentUser && localSnap.currentUser.avatarEmoji !== '🐱') {
+            localNeedsPersist = true;
+          }
         }
       } catch (e) {
         console.warn('Could not load local saved user data:', e);
@@ -2017,9 +2044,17 @@
         const bestSnap = chooseBestSnapshot(localSnap, cloudSnap);
         if (bestSnap) {
           applySnapshot(bestSnap);
-          localStorage.setItem(storageKey, JSON.stringify(bestSnap));
+          const ownerAvatarMigrated = state.currentUser.isOwner && !state.currentUser.avatarManuallyCustomized && bestSnap.currentUser && bestSnap.currentUser.avatarEmoji !== '🐱';
+          if (ownerAvatarMigrated) {
+            autoPersistIfEnabled();
+          } else {
+            localStorage.setItem(storageKey, JSON.stringify(bestSnap));
+          }
           render();
         }
+      } else if (localNeedsPersist) {
+        autoPersistIfEnabled();
+        render();
       }
     }
 
@@ -2210,12 +2245,16 @@
         state.currentUser.isPremium = true;
         state.currentUser.premiumLifetime = true;
         state.currentUser.premiumPlan = 'Lifetime';
+        if (!state.currentUser.avatarManuallyCustomized) {
+          state.currentUser.avatarEmoji = '🐱';
+        }
       } else {
         state.currentUser = {
           id: 'user_captain',
           username: 'abood',
           displayName: 'abood',
-          avatarEmoji: '😼',
+          avatarEmoji: '🐱',
+          avatarManuallyCustomized: false,
           avatarColorHex: '#FF7EB6',
           presence: 'Purring',
           presenceColor: '#43B581',
@@ -3457,12 +3496,17 @@
               <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:10px">
                 <div style="font-size:11px;font-weight:800;color:var(--text-muted);margin-bottom:6px">💾 SAVED ACCOUNTS ON THIS DEVICE</div>
                 <div style="display:flex;flex-wrap:wrap;gap:6px">
-                  ${rememberedUsers.map(u => `
-                    <button class="btn-outline" style="padding:6px 10px;font-size:11.5px" onclick="loginRememberedAccount('${escapeHtml(u.username)}')">
-                      <span>${escapeHtml(u.avatarEmoji || '🐱')}</span>
-                      <span>@${escapeHtml(u.username)}</span>
-                    </button>
-                  `).join('')}
+                  ${rememberedUsers.map(u => {
+                    const isRememberedOwner = (u.username === 'abood' || u.username === 'captain_purr' || !!u.isOwner);
+                    const isCustomized = !!(u.snapshot && u.snapshot.currentUser && u.snapshot.currentUser.avatarManuallyCustomized);
+                    const displayAvatar = (isRememberedOwner && !isCustomized) ? '🐱' : (u.avatarEmoji || '🐱');
+                    return `
+                      <button class="btn-outline" style="padding:6px 10px;font-size:11.5px" onclick="loginRememberedAccount('${escapeHtml(u.username)}')">
+                        <span>${escapeHtml(displayAvatar)}</span>
+                        <span>@${escapeHtml(u.username)}</span>
+                      </button>
+                    `;
+                  }).join('')}
                 </div>
               </div>
             ` : ''}
@@ -5045,9 +5089,16 @@
       const status = document.getElementById('prof-status').value.trim();
       const phoneEl = document.getElementById('prof-phone');
       const phone = phoneEl ? phoneEl.value.trim() : '';
+      const prevEmoji = state.currentUser.avatarEmoji;
 
       if (name) state.currentUser.displayName = name;
-      if (emoji) state.currentUser.avatarEmoji = emoji;
+      if (emoji) {
+        state.currentUser.avatarEmoji = emoji;
+        if (emoji !== prevEmoji) {
+          state.currentUser.avatarManuallyCustomized = true;
+          state.currentUser.avatarUpdatedAt = new Date().toISOString();
+        }
+      }
       if (status) state.currentUser.customStatus = status;
 
       let phoneBonusMsg = '';
