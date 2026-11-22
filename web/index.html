@@ -722,7 +722,8 @@
     }
 
     .lang-selector-row {
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 10px;
       margin-bottom: 14px;
     }
@@ -1036,6 +1037,15 @@
       padding: 5px 11px;
       border-radius: 14px;
       cursor: pointer;
+    }
+
+    .meowbucks-icon {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      object-fit: contain;
+      vertical-align: -0.22em;
+      flex-shrink: 0;
     }
 
     .ceo-panel-card {
@@ -1379,6 +1389,326 @@
           Hissing: 'غاضب (عدم الإزعاج)',
           Stray: 'شارد (غير متصل)'
         }
+      },
+      zh: {
+        ownerTag: '👑 站长 (OWNER)',
+        youTag: '(你)',
+        dmsAndHub: '🐾 私聊喵与大厅',
+        meowCoins: '喵币',
+        meowBucks: '喵元 (Meow Bucks)',
+        meowBucksRule: '💵 喵元 (Meow Bucks) 只能通过神秘猫咪兑换码或站长 @abood 的猫咪 CEO 面板赠送获得！',
+        ceoPanelNavBtn: '👑💼 猫咪 CEO 面板',
+        ceoPanelTitle: '👑💼 猫咪 CEO 面板 — 喵元赠送与兑换码管理',
+        ceoPanelSub: '站长 @abood 专属面板：向任意 CatMsg 账号赠送或设置 💵 喵元，或创建奖励 🪙 喵币和/或 💵 喵元的神秘兑换码！',
+        ceoGiveHeader: '💵 向任意账号赠送或设置喵元 (MEOW BUCKS)',
+        ceoTargetUserLabel: '接收方用户名（点击下方账号或输入用户名）',
+        ceoAmountLabel: '喵元数量 (💵)',
+        ceoSendGiveawayBtn: '💵 赠送喵元',
+        ceoSetBucksBtn: '🎯 设置喵元',
+        ceoFunPlus200Btn: '🎉 +200 💵 增加（纯属好玩！）',
+        ceoCodesManagerHeader: '🎟️ 创建神秘兑换码（奖励 🪙 喵币 & 💵 喵元）',
+        ceoCreateCodeBtn: '+ 创建神秘兑换码',
+        questsWord: '任务',
+        questReady: (n) => `🎁 有 ${n} 个任务奖励可领取！`,
+        questSub: '完成猫咪任务并解锁贴纸！',
+        catFriends: '猫咪好友',
+        questsAndEmporium: '任务与商店',
+        whiteboardNav: '猫咪白板（娱乐）',
+        whiteboardTitle: '🎨 猫咪白板 — 纯属娱乐（无奖励）',
+        whiteboardSub: '用猫爪自由涂鸦吧！纯娱乐，无任务或金币压力。',
+        whiteMarkerName: '🤍 默认白色画笔（免费）',
+        emeraldMarkerName: '💚 翡翠绿画笔',
+        unlockEmeraldBtn: '🪙 解锁翡翠绿画笔 (25)',
+        eraserBtn: '🧽 橡皮擦',
+        undoBtn: '↩️ 撤销',
+        clearBoardBtn: '🗑️ 清空白板',
+        stampCatBtn: '🐾 盖章猫咪涂鸦',
+        directMeows: '私聊喵',
+        welcomeTo: (ch) => `欢迎来到 #${ch}！`,
+        dmWith: (name) => `与 ${name} 的私聊喵`,
+        dmStartSub: (u) => `这是你与 @${u} 温馨私聊的开始。`,
+        filterPlaceholder: '按关键词或猫咪名称筛选消息...',
+        stickerHeader: '🏷️ 猫咪贴纸与表情（点击发送或解锁）',
+        meowCoinShopLink: '🪙 喵币商店 →',
+        tapToSend: '点击发送',
+        replyingTo: '↩️ 回复',
+        meowAt: (name) => `向 @${name} 喵一句...`,
+        meowIn: (ch) => `在 #${ch} 中喵一句...`,
+        sendMeow: '🐾 喵',
+        replyBtn: '↩️ 回复',
+        pinBtn: '📌 置顶',
+        unpinBtn: '取消置顶',
+        pinnedLabel: '📌 已置顶',
+        inviteTitle: '邀请或戳一戳猫咪好友',
+        inviteSub: '输入任意猫咪名称将其加入好友列表并开始私聊！',
+        addFriendPlaceholder: '例如：饼干、猫爪公主、胡须...',
+        addFriendBtn: '+ 添加猫咪好友',
+        directMeowBtn: '💬 私聊喵',
+        questsHeaderTitle: '猫咪任务与喵币商店',
+        questsHeroTitle: '每日猫爪与胡须任务',
+        questsHeroSub: '在猫屋聊天、点赞猫爪、回复好友、发送猫咪贴纸即可赚取喵币！在下方兑换专属贴纸、画笔和皇家徽章。',
+        completedWord: '已完成',
+        activeQuestsSection: '🎯 进行中的猫咪任务',
+        claimedBtn: '✓ 已领取',
+        claimBtn: (c) => `🪙 领取 +${c}`,
+        emporiumStickersSection: '🛍️ 喵币商店 — 解锁猫咪贴纸',
+        unlockedWord: '✓ 已解锁',
+        unlockBtn: (c) => `🪙 解锁 (${c})`,
+        royalBadgesSection: '👑 皇家个人徽章（显示在聊天昵称旁）',
+        equippedWord: '已佩戴 ✓',
+        equipBadgeBtn: '佩戴徽章',
+        buyBadgeBtn: (c) => `🪙 ${c} 购买`,
+        catMembersHeader: (n) => `🐈 猫咪成员 (${n})`,
+        ownerRoleSection: '👑 服务器站长 — 1',
+        castleCatsSection: (n) => `🐾 城堡猫咪 — ${n}`,
+        statusHeader: '状态',
+        aboutCatHeader: '关于这只猫',
+        settingsTitle: '😼 个人资料与高级设置',
+        languageLabel: '🌐 界面语言 / UI Language',
+        displayNameLabel: '猫咪显示名称',
+        avatarEmojiLabel: '头像表情',
+        customStatusLabel: '自定义状态',
+        ownerBadgeNotice: '👑 站长 (OWNER) 标签在你的站长账号上永久生效。',
+        advancedSettingsHeader: '🛠️ 高级设置',
+        profilePreviewLabel: '🪪 实时资料预览',
+        phoneOptionalLabel: '📱 手机号（可选 — 奖励 +50 🪙 喵币）',
+        phonePlaceholder: '可选：例如 +86 138-0000-0000',
+        phoneClaimedNotice: (p) => `✓ 已绑定手机号 (${p}) — 已领取 +50 🪙 喵币奖励！`,
+        phoneUnclaimedNotice: '🎁 添加可选手机号即可获得 +50 喵币奖励！',
+        linkPhoneBtn: '📱 添加手机号 (+50 🪙)',
+        signInTitle: '🐱 欢迎来到 CatMsg (PurrCord)',
+        signInSub: '使用猫咪账号或 Google 账号登录，或创建新猫咪资料！新用户所有任务进度从 0 开始。',
+        signInTab: '🔑 登录',
+        signUpTab: '✨ 新猫咪注册',
+        usernameLabel: '用户名',
+        passwordLabel: '密码',
+        signInBtn: '🔑 登录 CatMsg',
+        signUpBtn: '✨ 创建新猫咪账号',
+        googleSignInBtn: '使用 Google 账号继续',
+        googleEmailLabel: 'Google 账号邮箱 (@gmail.com)',
+        googleNameLabel: '显示名称（可选）',
+        googleContinueBtn: '✓ 使用 Google 登录',
+        quickOwnerBtn: '👑 快速登录：abood（站长）',
+        signOutBtn: '🚪 退出登录 / 切换账号',
+        oncePerAccountTag: '🔒 每账号限一次',
+        allQuestsBonusTitle: '🏆 全部新手任务完成奖励 (+150 🪙)',
+        allQuestsBonusDesc: '在你的账号上完成全部 6 个新手任务一次，即可解锁超值 +150 喵币奖励！',
+        claimAllQuestsBonusBtn: '🪙 领取 +150 奖励！',
+        allQuestsBonusClaimedText: '✓ 已领取 +150 🪙 全部任务奖励！',
+        claimAllReadyBtn: '⚡ 一键领取全部可领任务（免费）',
+        claimAllReadyQuestsBtn: (n) => `⚡ 一键领取全部可领任务 (${n}) — 免费`,
+        lifetimePremiumTag: '💎 终身会员',
+        premiumActiveTag: '💎 终身会员已激活',
+        premiumDiscountTag: '💎 会员 16% 折扣已生效',
+        appsBtnLabel: '🧩 应用与活动',
+        appsLauncherHeader: '🧩 应用与活动',
+        appsLauncherSub: '直接在 CatMsg 内启动互动应用与活动。',
+        appsSearchPlaceholder: '搜索已安装的应用与活动...',
+        launchAppBtn: '🚀 启动活动',
+        exitActivityBtn: '✕ 退出活动',
+        onlyAppInstalledNote: '应用与活动 (2)',
+        bouncyCatTitle: '弹跳猫咪 (Bouncy Cat)',
+        bouncyCatTag: '🚧 开发中',
+        bouncyCatDesc: '控制猫咪在平台间弹跳！目前正在开发中 — 即将上线应用与活动。',
+        inProgressBtn: '🚧 开发中',
+        bouncyCatToast: '🚧🐱 弹跳猫咪正在开发中！敬请期待上线！',
+        watchSkeletonBtn: '▶️ 观看骷髅风扇梗视频',
+        skeletonModalTitle: '💀🪭 骷髅风扇梗视频（观看得 +30 🪙 任务奖励）',
+        skeletonModalSub: '在网站内观看骷髅风扇梗视频即可完成任务（每账号限领一次 +30 喵币）！',
+        futureQuestsHeader: '🌟 更多猫咪任务（面向所有用户 — 即将推出）',
+        futureQuestsDesc: '敬请期待！后续将在此添加面向所有 CatMsg 成员的扩展与可重复任务。',
+        codesSectionHeader: '🎟️ 神秘猫咪兑换码（兑换奖励）',
+        codesSectionSub: '有活动码或神秘奖励码？在下方输入兑换！（后续将发布更多兑换码）',
+        codeInputPlaceholder: '输入神秘兑换码...',
+        redeemCodeBtn: '🎟️ 兑换',
+        premiumNavBtn: '💎 CatMsg 会员',
+        premiumCardTitle: '💎 CatMsg 会员订阅（商店 16% 折扣）',
+        premiumCardDesc: '✨ CatMsg 的所有功能（聊天、猫屋、私聊、贴纸、徽章、任务、⚡ 一键领取全部任务、白板）对所有人 100% 免费！CatMsg 会员在喵币商店购买所有贴纸、皇家徽章和白板画笔时享有 🏷️ 16% 折扣（任务额外喵币为 0%，保证所有玩家公平），并附带 💎 VIP 专属标签。',
+        premiumQolBullets: [
+          '✨ 100% 的 CatMsg 功能（包含 ⚡ 一键领取全部任务）对所有人免费开放',
+          '🏷️ 购买所有贴纸包、皇家徽章与白板画笔享 16% 喵币折扣',
+          '🪙 任务额外喵币 0%（保持所有玩家任务奖励公平）',
+          '💎 专属 VIP 钻石资料徽章'
+        ],
+        premiumDealRule: '🔒 专属获取方式：CatMsg 会员仅可通过联系站长直接洽谈获得：',
+        copyEmailBtn: '📋 复制邮箱',
+        emailDealBtn: '✉️ 发邮件联系站长',
+        cancelBtn: '取消',
+        saveBtn: '保存资料与设置',
+        createServerTitle: '🏰 创建新猫屋',
+        createServerBtn: '创建猫屋',
+        createChannelTitle: '🐾 创建频道',
+        createChannelBtn: '创建频道',
+        pinnedModalTitle: '📌 频道置顶消息',
+        noPinnedMessages: '此频道暂无置顶消息！',
+        closeBtn: '关闭',
+        savePillText: '💾 已保存',
+        presenceLabels: {
+          Purring: '呼噜中（在线）',
+          Catnapping: '打盹中（离开）',
+          Hissing: '炸毛中（请勿打扰）',
+          Stray: '流浪中（离线）'
+        }
+      },
+      ru: {
+        ownerTag: '👑 ВЛАДЕЛЕЦ (OWNER)',
+        youTag: '(Вы)',
+        dmsAndHub: '🐾 Личные мяу и хаб',
+        meowCoins: 'МяуКоины',
+        meowBucks: 'МяуБаксы (Meow Bucks)',
+        meowBucksRule: '💵 МяуБаксы (Meow Bucks) можно получить ТОЛЬКО из секретных кодов или раздач владельца @abood в панели Cat CEO!',
+        ceoPanelNavBtn: '👑💼 Панель Cat CEO',
+        ceoPanelTitle: '👑💼 Панель Cat CEO — Раздача МяуБаксов и управление кодами',
+        ceoPanelSub: 'Эксклюзивная панель владельца @abood: дарите или устанавливайте 💵 МяуБаксы любому аккаунту CatMsg и создавайте секретные коды с 🪙 МяуКоинами и/или 💵 МяуБаксами!',
+        ceoGiveHeader: '💵 ВЫДАТЬ ИЛИ ЗАДАТЬ MEOW BUCKS ДЛЯ ЛЮБОГО АККАУНТА',
+        ceoTargetUserLabel: 'Имя получателя (нажмите на аккаунт ниже или введите имя)',
+        ceoAmountLabel: 'Количество МяуБаксов (💵)',
+        ceoSendGiveawayBtn: '💵 Выдать МяуБаксы',
+        ceoSetBucksBtn: '🎯 Задать МяуБаксы',
+        ceoFunPlus200Btn: '🎉 +200 💵 Прибавка (Просто ради веселья!)',
+        ceoCodesManagerHeader: '🎟️ СОЗДАТЬ СЕКРЕТНЫЕ КОДЫ (🪙 МЯУКОИНЫ И 💵 МЯУБАКСЫ)',
+        ceoCreateCodeBtn: '+ Создать секретный код',
+        questsWord: 'Квесты',
+        questReady: (n) => `🎁 Готово наград за квесты: ${n}!`,
+        questSub: 'Выполняйте кошачьи квесты и открывайте стикеры!',
+        catFriends: 'Кото-друзья',
+        questsAndEmporium: 'Квесты и магазин',
+        whiteboardNav: 'Кошачья доска (Фан)',
+        whiteboardTitle: '🎨 Кошачья доска — Просто для веселья (Без наград)',
+        whiteboardSub: 'Рисуйте лапками свободно! Чистое веселье без квестов и монет.',
+        whiteMarkerName: '🤍 Белый маркер по умолчанию (Бесплатно)',
+        emeraldMarkerName: '💚 Изумрудный маркер',
+        unlockEmeraldBtn: '🪙 Открыть изумрудный маркер (25)',
+        eraserBtn: '🧽 Ластик',
+        undoBtn: '↩️ Отменить',
+        clearBoardBtn: '🗑️ Очистить доску',
+        stampCatBtn: '🐾 Штамп котика',
+        directMeows: 'ЛИЧНЫЕ МЯУ',
+        welcomeTo: (ch) => `Добро пожаловать в #${ch}!`,
+        dmWith: (name) => `Личный чат с ${name}`,
+        dmStartSub: (u) => `Начало вашей уютной переписки с @${u}.`,
+        filterPlaceholder: 'Фильтр сообщений по слову или имени котика...',
+        stickerHeader: '🏷️ КОШАЧЬИ СТИКЕРЫ И ЭМОДЗИ (НАЖМИТЕ ДЛЯ ОТПРАВКИ)',
+        meowCoinShopLink: '🪙 Магазин МяуКоинов →',
+        tapToSend: 'Отправить',
+        replyingTo: '↩️ Ответ для',
+        meowAt: (name) => `Мяукнуть @${name}...`,
+        meowIn: (ch) => `Мяукнуть в #${ch}...`,
+        sendMeow: '🐾 Мяу',
+        replyBtn: '↩️ Ответить',
+        pinBtn: '📌 Закрепить',
+        unpinBtn: 'Открепить',
+        pinnedLabel: '📌 Закреплено',
+        inviteTitle: 'Пригласить или бупнуть кото-друга',
+        inviteSub: 'Введите любое имя котика, чтобы добавить его в друзья и начать личный чат!',
+        addFriendPlaceholder: 'например: Бисквит, Принцесса Лапка, Усик...',
+        addFriendBtn: '+ Добавить кото-друга',
+        directMeowBtn: '💬 Написать',
+        questsHeaderTitle: 'Кошачьи квесты и магазин МяуКоинов',
+        questsHeroTitle: 'Ежедневные квесты лапок и усиков',
+        questsHeroSub: 'Общайтесь в Кото-домах, ставьте лапки, отвечайте друзьям и отправляйте стикеры, чтобы зарабатывать МяуКоины! Тратьте их ниже на стикеры, маркеры и значки.',
+        completedWord: 'Выполнено',
+        activeQuestsSection: '🎯 АКТИВНЫЕ КОШАЧЬИ КВЕСТЫ',
+        claimedBtn: '✓ Получено',
+        claimBtn: (c) => `🪙 Забрать +${c}`,
+        emporiumStickersSection: '🛍️ МАГАЗИН МЯУКОИНОВ — ОТКРЫТЬ СТИКЕРЫ',
+        unlockedWord: '✓ Открыто',
+        unlockBtn: (c) => `🪙 Открыть (${c})`,
+        royalBadgesSection: '👑 КОРОЛЕВСКИЕ ЗНАЧКИ ПРОФИЛЯ (РЯДОМ С ИМЕНЕМ В ЧАТЕ)',
+        equippedWord: 'Надето ✓',
+        equipBadgeBtn: 'Надеть значок',
+        buyBadgeBtn: (c) => `🪙 Купить (${c})`,
+        catMembersHeader: (n) => `🐈 Участники (${n})`,
+        ownerRoleSection: '👑 ВЛАДЕЛЕЦ СЕРВЕРА — 1',
+        castleCatsSection: (n) => `🐾 КОТЫ ЗАМКА — ${n}`,
+        statusHeader: 'СТАТУС',
+        aboutCatHeader: 'ОБ ЭТОМ КОТИКЕ',
+        settingsTitle: '😼 Профиль и расширенные настройки',
+        languageLabel: '🌐 Язык интерфейса / UI Language',
+        displayNameLabel: 'Отображаемое имя котика',
+        avatarEmojiLabel: 'Эмодзи аватара',
+        customStatusLabel: 'Пользовательский статус',
+        ownerBadgeNotice: '👑 Тег ВЛАДЕЛЕЦ постоянно активен на вашем аккаунте владельца.',
+        advancedSettingsHeader: '🛠️ РАСШИРЕННЫЕ НАСТРОЙКИ',
+        profilePreviewLabel: '🪪 Предпросмотр профиля',
+        phoneOptionalLabel: '📱 Номер телефона (Необязательно — бонус +50 🪙 МяуКоинов)',
+        phonePlaceholder: 'Необязательно: например +7 999-123-4567',
+        phoneClaimedNotice: (p) => `✓ Телефон привязан (${p}) — бонус +50 🪙 МяуКоинов получен!`,
+        phoneUnclaimedNotice: '🎁 Добавьте номер телефона (по желанию), чтобы получить +50 МяуКоинов!',
+        linkPhoneBtn: '📱 Добавить телефон (+50 🪙)',
+        signInTitle: '🐱 Добро пожаловать в CatMsg (PurrCord)',
+        signInSub: 'Войдите через аккаунт CatMsg или Google, либо создайте новый профиль котика! У новых пользователей прогресс квестов начинается с 0.',
+        signInTab: '🔑 Вход',
+        signUpTab: '✨ Регистрация',
+        usernameLabel: 'Имя пользователя',
+        passwordLabel: 'Пароль',
+        signInBtn: '🔑 Войти в CatMsg',
+        signUpBtn: '✨ Создать аккаунт котика',
+        googleSignInBtn: 'Войти через Google',
+        googleEmailLabel: 'Почта Google (@gmail.com)',
+        googleNameLabel: 'Отображаемое имя (необязательно)',
+        googleContinueBtn: '✓ Войти через Google',
+        quickOwnerBtn: '👑 Быстрый вход: abood (Владелец)',
+        signOutBtn: '🚪 Выйти / Сменить аккаунт',
+        oncePerAccountTag: '🔒 Один раз на аккаунт',
+        allQuestsBonusTitle: '🏆 Бонус за все стартовые квесты (+150 🪙)',
+        allQuestsBonusDesc: 'Выполните все 6 стартовых квестов один раз, чтобы получить огромный бонус +150 МяуКоинов!',
+        claimAllQuestsBonusBtn: '🪙 Забрать бонус +150!',
+        allQuestsBonusClaimedText: '✓ Бонус +150 🪙 за все квесты получен!',
+        claimAllReadyBtn: '⚡ Забрать все готовые квесты (Бесплатно)',
+        claimAllReadyQuestsBtn: (n) => `⚡ Забрать все готовые квесты (${n}) — Бесплатно`,
+        lifetimePremiumTag: '💎 ПОЖИЗНЕННЫЙ ПРЕМИУМ',
+        premiumActiveTag: '💎 ПОЖИЗНЕННЫЙ ПРЕМИУМ АКТИВЕН',
+        premiumDiscountTag: '💎 Активна скидка Премиум 16%',
+        appsBtnLabel: '🧩 Приложения и активности',
+        appsLauncherHeader: '🧩 Приложения и активности',
+        appsLauncherSub: 'Запускайте интерактивные приложения и активности прямо внутри CatMsg.',
+        appsSearchPlaceholder: 'Поиск приложений и активностей...',
+        launchAppBtn: '🚀 Запустить',
+        exitActivityBtn: '✕ Выйти',
+        onlyAppInstalledNote: 'Приложения и активности (2)',
+        bouncyCatTitle: 'Прыгучий Кот (Bouncy Cat)',
+        bouncyCatTag: '🚧 В разработке',
+        bouncyCatDesc: 'Прыгайте котиком по платформам! Сейчас в разработке — скоро в Приложениях и активностях.',
+        inProgressBtn: '🚧 В разработке',
+        bouncyCatToast: '🚧🐱 Bouncy Cat сейчас в разработке! Следите за запуском!',
+        watchSkeletonBtn: '▶️ Смотреть мем-видео Skeleton Fan',
+        skeletonModalTitle: '💀🪭 Мем-видео Skeleton Fan (Квест на +30 🪙)',
+        skeletonModalSub: 'Посмотрите мем-видео Skeleton Fan прямо на сайте, чтобы выполнить квест (+30 МяуКоинов один раз на аккаунт)!',
+        futureQuestsHeader: '🌟 БОЛЬШЕ КОШАЧЬИХ КВЕСТОВ (ДЛЯ ВСЕХ — СКОРО)',
+        futureQuestsDesc: 'Следите за обновлениями! Скоро здесь появятся дополнительные и повторяемые квесты для всех участников CatMsg.',
+        codesSectionHeader: '🎟️ СЕКРЕТНЫЕ КОДЫ CATMSG (ПОЛУЧИТЬ НАГРАДЫ)',
+        codesSectionSub: 'Есть промокод или секретный код? Введите его ниже! (Новые коды появятся позже)',
+        codeInputPlaceholder: 'Введите секретный код...',
+        redeemCodeBtn: '🎟️ Активировать',
+        premiumNavBtn: '💎 CatMsg Премиум',
+        premiumCardTitle: '💎 Подписка CatMsg Премиум (скидка 16% в магазине)',
+        premiumCardDesc: '✨ Все функции CatMsg (чат, Кото-дома, ЛС, стикеры, значки, квесты, ⚡ сбор всех квестов и доска) на 100% БЕСПЛАТНЫ для всех! CatMsg Премиум даёт скидку 🏷️ 16% на все стикеры, королевские значки и маркеры (0% доп. монет за квесты для честного баланса), а также тег 💎 VIP.',
+        premiumQolBullets: [
+          '✨ 100% функций CatMsg (включая ⚡ сбор всех готовых квестов) БЕСПЛАТНЫ для всех',
+          '🏷️ Скидка 16% в МяуКоинах на все стикеры, королевские значки и маркеры',
+          '🪙 0% доп. МяуКоинов за квесты (честные награды для всех игроков)',
+          '💎 Эксклюзивный бриллиантовый VIP-значок профиля'
+        ],
+        premiumDealRule: '🔒 ЭКСКЛЮЗИВНЫЙ ДОСТУП: CatMsg Премиум можно получить ТОЛЬКО по личной договорённости с владельцем:',
+        copyEmailBtn: '📋 Копировать почту',
+        emailDealBtn: '✉️ Написать владельцу',
+        cancelBtn: 'Отмена',
+        saveBtn: 'Сохранить профиль и настройки',
+        createServerTitle: '🏰 Создать новый Кото-дом',
+        createServerBtn: 'Создать Кото-дом',
+        createChannelTitle: '🐾 Создать канал',
+        createChannelBtn: 'Создать канал',
+        pinnedModalTitle: '📌 Закреплённые сообщения',
+        noPinnedMessages: 'В этом канале пока нет закреплённых сообщений!',
+        closeBtn: 'Закрыть',
+        savePillText: '💾 Сохранено',
+        presenceLabels: {
+          Purring: 'Мурлычет (В сети)',
+          Catnapping: 'Дремлет (Неактивен)',
+          Hissing: 'Шипит (Не беспокоить)',
+          Stray: 'Гуляет (Не в сети)'
+        }
       }
     };
 
@@ -1462,6 +1792,14 @@
         return `<img src="${GOLD_BARS_DATA_URI}" onerror="this.onerror=null;this.src='/gold_bars.png'" alt="Gold Bars" style="width:${sizePx}px;height:${sizePx}px;object-fit:contain;vertical-align:middle;display:inline-block" />`;
       }
       return `<span style="font-size:${sizePx}px;line-height:1;display:inline-block;vertical-align:middle">${token}</span>`;
+    }
+
+    function renderMeowBucksImg(sizePx = 18) {
+      return `<img src="/meowbucks.png" alt="Meow Bucks" class="meowbucks-icon" style="width:${sizePx}px;height:${sizePx}px" />`;
+    }
+
+    function withMeowBucksIcons(htmlStr, sizePx = 18) {
+      return String(htmlStr || '').replace(/💵/g, renderMeowBucksImg(sizePx));
     }
 
     const STICKERS = [
@@ -2483,17 +2821,26 @@
     }
 
     function setLanguage(langCode) {
-      state.lang = langCode === 'ar' ? 'ar' : 'en';
+      const supported = ['en', 'ar', 'zh', 'ru'];
+      state.lang = supported.includes(langCode) ? langCode : 'en';
       localStorage.setItem('catmsg_lang', state.lang);
       document.documentElement.lang = state.lang;
       document.documentElement.dir = state.lang === 'ar' ? 'rtl' : 'ltr';
       autoPersistIfEnabled();
-      showToast(state.lang === 'ar' ? '🇸🇦 تم تفعيل الواجهة العربية بنجاح!' : '🇬🇧 Switched UI language to English!');
+      const langToastMap = {
+        en: '🇬🇧 Switched UI language to English!',
+        ar: '🇸🇦 تم تفعيل الواجهة العربية بنجاح!',
+        zh: '🇨🇳 已切换界面语言为中文！',
+        ru: '🇷🇺 Язык интерфейса переключён на русский!'
+      };
+      showToast(langToastMap[state.lang] || langToastMap.en);
       render();
     }
 
     function toggleLanguageQuick() {
-      setLanguage(state.lang === 'ar' ? 'en' : 'ar');
+      const order = ['en', 'ar', 'zh', 'ru'];
+      const idx = order.indexOf(state.lang);
+      setLanguage(order[(idx + 1) % order.length]);
     }
 
     function showToast(text) {
@@ -3545,7 +3892,7 @@
         _lastRenderedViewKey = 'auth_portal';
         app.innerHTML = `
           ${renderAuthPortal()}
-          ${state.toast ? `<div class="toast-box">${escapeHtml(state.toast)}</div>` : ''}
+          ${state.toast ? `<div class="toast-box">${withMeowBucksIcons(escapeHtml(state.toast), 18)}</div>` : ''}
         `;
         return;
       }
@@ -3627,7 +3974,7 @@
             <div class="quest-mini-banner" onclick="openQuests()">
               <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px">
                 <span style="color:var(--gold);font-weight:800;font-size:12.5px">🪙 ${state.currentUser.meowCoins}</span>
-                <span style="color:#10B981;font-weight:900;font-size:12.5px">💵 ${state.currentUser.meowBucks || 0} ${L.meowBucks}</span>
+                <span style="color:#10B981;font-weight:900;font-size:12.5px;display:inline-flex;align-items:center;gap:4px">${renderMeowBucksImg(16)} ${state.currentUser.meowBucks || 0} ${L.meowBucks}</span>
               </div>
               <div style="font-size:11px;margin-top:4px;color:${claimableCount > 0 ? 'var(--mint)' : 'var(--text-muted)'};font-weight:${claimableCount > 0 ? '700' : '400'}">
                 ${claimableCount > 0 ? L.questReady(claimableCount) : `${completedCount}/${state.quests.length} ${L.questsWord} • ${L.questSub}`}
@@ -3673,7 +4020,7 @@
           ${(state.navMode !== 'quests' && state.navMode !== 'whiteboard') ? renderRightSidebar() : ''}
         </div>
 
-        ${state.toast ? `<div class="toast-box">${escapeHtml(state.toast)}</div>` : ''}
+        ${state.toast ? `<div class="toast-box">${withMeowBucksIcons(escapeHtml(state.toast), 18)}</div>` : ''}
         ${state.modal ? renderModal() : ''}
       `;
 
@@ -3799,7 +4146,7 @@
           <div style="flex:1"></div>
           <div class="lang-pill" onclick="openDiscordAppsLauncher()" style="color:var(--mint);border-color:rgba(67,217,173,0.45)">${L.appsBtnLabel}</div>
           <button class="btn-outline" style="color:var(--coral);border-color:rgba(255,107,107,0.45);padding:5px 10px" onclick="exitWhiteboardActivity()">${L.exitActivityBtn}</button>
-          <div class="bucks-pill" onclick="openQuests()" title="${L.meowBucksRule}">💵 ${state.currentUser.meowBucks || 0}</div>
+          <div class="bucks-pill" onclick="openQuests()" title="${L.meowBucksRule}">${renderMeowBucksImg(18)} ${state.currentUser.meowBucks || 0}</div>
           <div class="coin-pill" onclick="openQuests()">🪙 ${state.currentUser.meowCoins}</div>
         </div>
 
@@ -3996,7 +4343,7 @@
             ${L.appsBtnLabel}
           </div>
           <div class="bucks-pill" onclick="openQuests()" title="${L.meowBucksRule}">
-            💵 ${state.currentUser.meowBucks || 0}
+            ${renderMeowBucksImg(18)} ${state.currentUser.meowBucks || 0}
           </div>
           <div class="coin-pill" onclick="openQuests()">
             🪙 ${state.currentUser.meowCoins}
@@ -4103,7 +4450,7 @@
                 ${m.isPinned ? `<span style="font-size:11px;color:var(--gold);font-weight:800">${L.pinnedLabel}</span>` : ''}
               </div>
 
-              ${m.content ? `<div style="margin-top:5px;font-size:14px;line-height:1.42">${escapeHtml(m.content)}</div>` : ''}
+              ${m.content ? `<div style="margin-top:5px;font-size:14px;line-height:1.42">${withMeowBucksIcons(escapeHtml(m.content), 17)}</div>` : ''}
 
               ${sticker ? `
                 <div class="sticker-card" style="border-color:${sticker.bgHex}">
@@ -4150,7 +4497,7 @@
           ${state.currentUser.isOwner ? `<div class="lang-pill" onclick="openCeoPanelModal()" style="color:#10B981;border-color:rgba(16,185,129,0.55)">${L.ceoPanelNavBtn}</div>` : ''}
           <div class="lang-pill" onclick="state.modal='premium';render()" style="color:var(--gold)">💎 Premium</div>
           <div class="lang-pill" onclick="openDiscordAppsLauncher()" style="color:var(--mint)">${L.appsBtnLabel}</div>
-          <div class="bucks-pill" onclick="openQuests()" title="${L.meowBucksRule}">💵 ${state.currentUser.meowBucks || 0}</div>
+          <div class="bucks-pill" onclick="openQuests()" title="${L.meowBucksRule}">${renderMeowBucksImg(18)} ${state.currentUser.meowBucks || 0}</div>
           <div class="coin-pill" onclick="openQuests()">🪙 ${state.currentUser.meowCoins}</div>
         </div>
         <div class="messages-scroll">
@@ -4232,7 +4579,7 @@
           ${state.currentUser.isOwner ? `<div class="lang-pill" onclick="openCeoPanelModal()" style="color:#10B981;border-color:rgba(16,185,129,0.55)">${L.ceoPanelNavBtn}</div>` : ''}
           <div class="lang-pill" onclick="state.modal='premium';render()" style="color:var(--gold)">💎 Premium</div>
           <div class="lang-pill" onclick="openDiscordAppsLauncher()" style="color:var(--mint)">${L.appsBtnLabel}</div>
-          <div class="bucks-pill" title="${L.meowBucksRule}">💵 ${state.currentUser.meowBucks || 0} ${L.meowBucks}</div>
+          <div class="bucks-pill" title="${L.meowBucksRule}">${renderMeowBucksImg(18)} ${state.currentUser.meowBucks || 0} ${L.meowBucks}</div>
           <div class="coin-pill">🪙 ${state.currentUser.meowCoins} ${L.meowCoins}</div>
         </div>
 
@@ -4390,7 +4737,7 @@
             <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
               <div style="font-weight:900;font-size:14.5px;color:var(--yarn-blue)">${L.codesSectionHeader}</div>
               <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-                <span class="bucks-pill" style="cursor:default">💵 ${state.currentUser.meowBucks || 0} ${L.meowBucks}</span>
+                <span class="bucks-pill" style="cursor:default">${renderMeowBucksImg(18)} ${state.currentUser.meowBucks || 0} ${L.meowBucks}</span>
                 ${state.currentUser.isOwner ? `
                   <button class="btn-gold" onclick="openCeoPanelModal()">
                     ${L.ceoPanelNavBtn}
@@ -4398,7 +4745,7 @@
                 ` : ''}
               </div>
             </div>
-            <div style="color:#10B981;font-size:12px;font-weight:800;margin-top:6px">${L.meowBucksRule}</div>
+            <div style="color:#10B981;font-size:12px;font-weight:800;margin-top:6px">${withMeowBucksIcons(L.meowBucksRule, 15)}</div>
             <div style="color:var(--text-secondary);font-size:12.5px;margin-top:4px;margin-bottom:10px">${L.codesSectionSub}</div>
             <div style="display:flex;gap:8px">
               <input id="promo-code-input" class="composer-input" placeholder="${L.codeInputPlaceholder}" onkeydown="if(event.key==='Enter'){redeemPromoCode()}" />
@@ -4617,13 +4964,13 @@
                 <button class="icon-btn" onclick="state.modal=null;render()">✕</button>
               </div>
               <div style="color:var(--text-secondary);font-size:12.5px;line-height:1.45;margin-bottom:14px">
-                ${L.ceoPanelSub}
+                ${withMeowBucksIcons(L.ceoPanelSub, 16)}
               </div>
 
               <!-- 1. GIVE OR SET MEOW BUCKS FOR ANY ACCOUNT -->
               <div class="ceo-panel-card">
                 <div style="font-weight:900;font-size:13px;color:#10B981;letter-spacing:0.6px;margin-bottom:8px">
-                  ${L.ceoGiveHeader}
+                  ${withMeowBucksIcons(L.ceoGiveHeader, 16)}
                 </div>
                 <div style="font-size:11.5px;font-weight:700;color:var(--text-secondary);margin-bottom:4px">
                   ${L.ceoTargetUserLabel}
@@ -4638,27 +4985,27 @@
                       : ((accObj && accObj.snapshot && accObj.snapshot.currentUser && accObj.snapshot.currentUser.meowBucks) || 0);
                     return `
                       <button class="btn-outline" style="padding:5px 10px;font-size:11.5px;border-color:rgba(16,185,129,0.45)" onclick="state.ceoTargetUser='${escapeHtml(u)}';const el=document.getElementById('ceo-target-user');if(el){el.value=state.ceoTargetUser}">
-                        @${escapeHtml(u)} (💵 ${uBucks})
+                        @${escapeHtml(u)} (${renderMeowBucksImg(14)} ${uBucks})
                       </button>
                     `;
                   }).join('')}
                 </div>
 
                 <div style="font-size:11.5px;font-weight:700;color:var(--text-secondary);margin-bottom:4px">
-                  ${L.ceoAmountLabel}
+                  ${withMeowBucksIcons(L.ceoAmountLabel, 15)}
                 </div>
                 <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
                   <input id="ceo-bucks-amount" type="number" min="0" class="composer-input" style="width:130px;padding:9px 12px" value="${escapeHtml(String(state.ceoBucksAmount !== undefined && state.ceoBucksAmount !== null ? state.ceoBucksAmount : '100'))}" oninput="state.ceoBucksAmount=this.value" />
                   ${[0, 10, 50, 100, 200, 500, 1000].map(amt => `
                     <button class="btn-outline" style="padding:6px 10px;font-size:11.5px;color:#10B981;border-color:rgba(16,185,129,0.45)" onclick="state.ceoBucksAmount='${amt}';const el=document.getElementById('ceo-bucks-amount');if(el){el.value='${amt}'}">
-                      ${amt === 0 ? '0' : '+' + amt} 💵
+                      ${amt === 0 ? '0' : '+' + amt} ${renderMeowBucksImg(14)}
                     </button>
                   `).join('')}
                 </div>
 
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px">
                   <button class="btn-gold" style="padding:11px;background:linear-gradient(135deg,#10B981,#FFD166);color:#14121D" onclick="ceoGiveMeowBucks()">
-                    ${L.ceoSendGiveawayBtn}
+                    ${withMeowBucksIcons(L.ceoSendGiveawayBtn, 16)}
                   </button>
                   <button class="btn-gold" style="padding:11px;background:linear-gradient(135deg,#5865F2,#10B981);color:#FFFFFF" onclick="ceoSetMeowBucks()">
                     ${L.ceoSetBucksBtn}
@@ -4666,14 +5013,14 @@
                 </div>
 
                 <button class="btn-gold" style="width:100%;margin-top:8px;padding:11px;background:linear-gradient(135deg,#EC4899,#F59E0B);color:#FFFFFF" onclick="ceoGiveMeowBucks(200)">
-                  ${L.ceoFunPlus200Btn}
+                  ${withMeowBucksIcons(L.ceoFunPlus200Btn, 16)}
                 </button>
               </div>
 
               <!-- 2. CREATE & MANAGE SECRET CODES FOR MEOWCOINS & MEOW BUCKS -->
               <div class="codes-card" style="margin-top:0;margin-bottom:14px">
                 <div style="font-weight:900;font-size:13px;color:var(--yarn-blue);margin-bottom:8px">
-                  ${L.ceoCodesManagerHeader}
+                  ${withMeowBucksIcons(L.ceoCodesManagerHeader, 16)}
                 </div>
                 <div style="display:grid;grid-template-columns:1fr 125px 125px;gap:8px;margin-bottom:8px">
                   <div>
@@ -4685,16 +5032,16 @@
                     <input id="ceo-new-code-coins" type="number" min="0" class="composer-input" style="width:100%;padding:9px 12px" value="100" placeholder="🪙 Coins" />
                   </div>
                   <div>
-                    <div style="font-size:11px;font-weight:700;color:#10B981;margin-bottom:3px">💵 Meow Bucks</div>
-                    <input id="ceo-new-code-bucks" type="number" min="0" class="composer-input" style="width:100%;padding:9px 12px" value="0" placeholder="💵 Bucks" />
+                    <div style="font-size:11px;font-weight:700;color:#10B981;margin-bottom:3px">${renderMeowBucksImg(14)} Meow Bucks</div>
+                    <input id="ceo-new-code-bucks" type="number" min="0" class="composer-input" style="width:100%;padding:9px 12px" value="0" placeholder="Bucks" />
                   </div>
                 </div>
                 <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px">
                   <div style="display:flex;gap:5px;flex-wrap:wrap">
                     <button class="btn-outline" style="padding:4px 8px;font-size:11px;color:var(--gold)" onclick="document.getElementById('ceo-new-code-coins').value='50';document.getElementById('ceo-new-code-bucks').value='0'">+50 🪙 Only</button>
                     <button class="btn-outline" style="padding:4px 8px;font-size:11px;color:var(--gold)" onclick="document.getElementById('ceo-new-code-coins').value='150';document.getElementById('ceo-new-code-bucks').value='0'">+150 🪙 Only</button>
-                    <button class="btn-outline" style="padding:4px 8px;font-size:11px;color:#10B981" onclick="document.getElementById('ceo-new-code-coins').value='0';document.getElementById('ceo-new-code-bucks').value='50'">+50 💵 Only</button>
-                    <button class="btn-outline" style="padding:4px 8px;font-size:11px;color:var(--mint)" onclick="document.getElementById('ceo-new-code-coins').value='100';document.getElementById('ceo-new-code-bucks').value='50'">+100 🪙 & +50 💵</button>
+                    <button class="btn-outline" style="padding:4px 8px;font-size:11px;color:#10B981" onclick="document.getElementById('ceo-new-code-coins').value='0';document.getElementById('ceo-new-code-bucks').value='50'">+50 ${renderMeowBucksImg(14)} Only</button>
+                    <button class="btn-outline" style="padding:4px 8px;font-size:11px;color:var(--mint)" onclick="document.getElementById('ceo-new-code-coins').value='100';document.getElementById('ceo-new-code-bucks').value='50'">+100 🪙 & +50 ${renderMeowBucksImg(14)}</button>
                   </div>
                   <button class="btn-primary" onclick="ceoCreatePromoCode()">
                     ${L.ceoCreateCodeBtn}
@@ -4708,7 +5055,7 @@
                         <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
                           <span style="font-weight:900;font-size:13px;color:var(--gold)">🎟️ ${escapeHtml(pe.code)}</span>
                           ${pe.meowCoins > 0 ? `<span class="coin-pill" style="padding:2px 8px;font-size:11.5px">+${pe.meowCoins} 🪙</span>` : ''}
-                          ${pe.meowBucks > 0 ? `<span class="bucks-pill" style="padding:2px 8px;font-size:11.5px">+${pe.meowBucks} 💵</span>` : ''}
+                          ${pe.meowBucks > 0 ? `<span class="bucks-pill" style="padding:2px 8px;font-size:11.5px">+${pe.meowBucks} ${renderMeowBucksImg(14)}</span>` : ''}
                         </div>
                         <button class="btn-outline" style="color:var(--coral);padding:4px 9px;font-size:11px" onclick="ceoDeletePromoCode('${escapeHtml(pe.code)}')">
                           🗑️ Delete
@@ -4717,7 +5064,7 @@
                     `).join('')}
                   </div>
                 ` : `
-                  <div style="font-size:12px;color:var(--text-muted)">No active Secret Codes yet — create one above to reward 🪙 MeowCoins and/or 💵 Meow Bucks!</div>
+                  <div style="font-size:12px;color:var(--text-muted)">No active Secret Codes yet — create one above to reward 🪙 MeowCoins and/or ${renderMeowBucksImg(14)} Meow Bucks!</div>
                 `}
               </div>
 
@@ -4930,6 +5277,12 @@
                 </button>
                 <button class="lang-option-btn ${state.lang === 'ar' ? 'selected' : ''}" onclick="setLanguage('ar')">
                   🇸🇦 العربية (RTL)
+                </button>
+                <button class="lang-option-btn ${state.lang === 'zh' ? 'selected' : ''}" onclick="setLanguage('zh')">
+                  🇨🇳 中文 (LTR)
+                </button>
+                <button class="lang-option-btn ${state.lang === 'ru' ? 'selected' : ''}" onclick="setLanguage('ru')">
+                  🇷🇺 Русский (LTR)
                 </button>
               </div>
 
