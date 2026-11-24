@@ -21,6 +21,9 @@
       "new_sqlite_classes": ["CatMsgStorageDO"]
     }
   ],
+  "vars": {
+    "SUPABASE_EDGE_URL": "https://ekajgoafgfnhgblqqsci.supabase.co/functions/v1/catmsg-storage"
+  },
   "routes": [
     {
       "pattern": "cats.can-du-ai.com",

@@ -153,8 +153,30 @@ export class CatMsgStorageDO {
   }
 }
 
+async function callSupabaseStorage(env, action, queryParamName, queryParamVal, method = "GET", bodyText = null) {
+  if (!env.SUPABASE_EDGE_URL || !env.CATMSG_SUPABASE_TOKEN) return null;
+  try {
+    const targetUrl = `${env.SUPABASE_EDGE_URL}?action=${encodeURIComponent(action)}&${encodeURIComponent(queryParamName)}=${encodeURIComponent(queryParamVal)}`;
+    const headers = {
+      "x-catmsg-key": env.CATMSG_SUPABASE_TOKEN
+    };
+    if (bodyText !== null) {
+      headers["Content-Type"] = "application/json";
+    }
+    const res = await fetch(targetUrl, {
+      method,
+      headers,
+      body: bodyText
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (e) {
+    return null;
+  }
+}
+
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
     if (request.method === "OPTIONS") {
@@ -162,40 +184,77 @@ export default {
     }
 
     if (url.pathname === "/api/health") {
+      const hasSupabase = !!(env.SUPABASE_EDGE_URL && env.CATMSG_SUPABASE_TOKEN);
       return jsonResponse({
         ok: true,
         app: "CatMsg (PurrCord)",
         domain: "cats.can-du-ai.com",
-        stack: "Flutter + Firebase + Cloudflare Edge + Durable Objects"
+        storage: hasSupabase ? "Supabase Postgres + Cloudflare Durable Objects" : "Cloudflare Durable Objects"
       });
     }
 
     if (url.pathname === "/api/userdata") {
-      if (env.CATMSG_STORE) {
-        try {
-          const id = env.CATMSG_STORE.idFromName("global-catmsg-store-v1");
-          const stub = env.CATMSG_STORE.get(id);
-          const doUrl = new URL(request.url);
-          doUrl.pathname = "/userdata";
-          return await stub.fetch(new Request(doUrl.toString(), request));
-        } catch (e) {
-          // Fallback to in-memory if DO call fails
+      const saveKey = (url.searchParams.get("key") || "abood").toLowerCase().trim();
+
+      if (request.method === "GET") {
+        const supaData = await callSupabaseStorage(env, "userdata", "key", saveKey, "GET");
+        if (supaData && supaData.found) {
+          return jsonResponse(supaData);
         }
+
+        if (env.CATMSG_STORE) {
+          try {
+            const id = env.CATMSG_STORE.idFromName("global-catmsg-store-v1");
+            const stub = env.CATMSG_STORE.get(id);
+            const doUrl = new URL(request.url);
+            doUrl.pathname = "/userdata";
+            const doRes = await stub.fetch(new Request(doUrl.toString(), { method: "GET" }));
+            const doJson = await doRes.json();
+            if (doJson && doJson.found && doJson.snapshot) {
+              // Automatically backfill legacy Durable Object snapshot into Supabase Postgres
+              if (env.SUPABASE_EDGE_URL && env.CATMSG_SUPABASE_TOKEN) {
+                const backfillPromise = callSupabaseStorage(env, "userdata", "key", saveKey, "POST", JSON.stringify(doJson.snapshot));
+                if (ctx && typeof ctx.waitUntil === "function") {
+                  ctx.waitUntil(backfillPromise);
+                }
+              }
+              return jsonResponse(doJson);
+            }
+            if (supaData) return jsonResponse(supaData);
+            return jsonResponse(doJson);
+          } catch (e) {}
+        }
+
+        if (supaData) return jsonResponse(supaData);
+        const snapshot = savedUserDataByKey[saveKey] || null;
+        return jsonResponse({ ok: true, key: saveKey, found: !!snapshot, snapshot });
       }
 
-      const saveKey = (url.searchParams.get("key") || "abood").toLowerCase().trim();
-      if (request.method === "GET") {
-        const snapshot = savedUserDataByKey[saveKey] || null;
-        return jsonResponse({
-          ok: true,
-          key: saveKey,
-          found: !!snapshot,
-          snapshot
-        });
-      }
       if (request.method === "POST") {
         try {
-          const body = await request.json();
+          const bodyText = await request.text();
+          const supaRes = await callSupabaseStorage(env, "userdata", "key", saveKey, "POST", bodyText);
+
+          let doJson = null;
+          if (env.CATMSG_STORE) {
+            try {
+              const id = env.CATMSG_STORE.idFromName("global-catmsg-store-v1");
+              const stub = env.CATMSG_STORE.get(id);
+              const doUrl = new URL(request.url);
+              doUrl.pathname = "/userdata";
+              const doRes = await stub.fetch(new Request(doUrl.toString(), {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: bodyText
+              }));
+              doJson = await doRes.json();
+            } catch (e) {}
+          }
+
+          if (supaRes && supaRes.ok) return jsonResponse(supaRes);
+          if (doJson && doJson.ok) return jsonResponse(doJson);
+
+          const body = JSON.parse(bodyText);
           savedUserDataByKey[saveKey] = {
             ...body,
             savedAtServer: new Date().toISOString()
@@ -212,27 +271,61 @@ export default {
     }
 
     if (url.pathname === "/api/messages") {
-      if (env.CATMSG_STORE) {
-        try {
-          const id = env.CATMSG_STORE.idFromName("global-catmsg-store-v1");
-          const stub = env.CATMSG_STORE.get(id);
-          const doUrl = new URL(request.url);
-          doUrl.pathname = "/messages";
-          return await stub.fetch(new Request(doUrl.toString(), request));
-        } catch (e) {}
-      }
-
       const channelId = url.searchParams.get("channelId") || "chan_general_meows";
+
       if (request.method === "GET") {
+        const supaMsgs = await callSupabaseStorage(env, "messages", "channelId", channelId, "GET");
+        if (supaMsgs && supaMsgs.ok && Array.isArray(supaMsgs.messages) && supaMsgs.messages.length > 0) {
+          return jsonResponse(supaMsgs);
+        }
+
+        if (env.CATMSG_STORE) {
+          try {
+            const id = env.CATMSG_STORE.idFromName("global-catmsg-store-v1");
+            const stub = env.CATMSG_STORE.get(id);
+            const doUrl = new URL(request.url);
+            doUrl.pathname = "/messages";
+            const doRes = await stub.fetch(new Request(doUrl.toString(), { method: "GET" }));
+            const doJson = await doRes.json();
+            if (doJson && Array.isArray(doJson.messages) && doJson.messages.length > 0) {
+              return jsonResponse(doJson);
+            }
+          } catch (e) {}
+        }
+
+        if (supaMsgs && supaMsgs.ok) return jsonResponse(supaMsgs);
         return jsonResponse({
           ok: true,
           channelId,
           messages: sharedMessagesByChannel[channelId] || []
         });
       }
+
       if (request.method === "POST") {
         try {
-          const body = await request.json();
+          const bodyText = await request.text();
+          const supaRes = await callSupabaseStorage(env, "messages", "channelId", channelId, "POST", bodyText);
+
+          let doJson = null;
+          if (env.CATMSG_STORE) {
+            try {
+              const id = env.CATMSG_STORE.idFromName("global-catmsg-store-v1");
+              const stub = env.CATMSG_STORE.get(id);
+              const doUrl = new URL(request.url);
+              doUrl.pathname = "/messages";
+              const doRes = await stub.fetch(new Request(doUrl.toString(), {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: bodyText
+              }));
+              doJson = await doRes.json();
+            } catch (e) {}
+          }
+
+          if (supaRes && supaRes.ok) return jsonResponse(supaRes);
+          if (doJson && doJson.ok) return jsonResponse(doJson);
+
+          const body = JSON.parse(bodyText);
           if (!sharedMessagesByChannel[channelId]) {
             sharedMessagesByChannel[channelId] = [];
           }

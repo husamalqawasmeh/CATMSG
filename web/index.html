@@ -390,6 +390,52 @@
       border: 1px solid rgba(255, 209, 102, 0.35);
     }
 
+    .msg-item.business-announcement {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.14), rgba(255, 209, 102, 0.12));
+      border: 1.5px solid rgba(16, 185, 129, 0.55);
+      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.12);
+    }
+
+    .puzzle-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      width: min(330px, 100%);
+      margin: 0 auto;
+      background: var(--rail-bg);
+      padding: 8px;
+      border-radius: 16px;
+      border: 2px solid rgba(255, 126, 182, 0.45);
+    }
+
+    .puzzle-tile {
+      position: relative;
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: transform 0.12s, border-color 0.12s;
+      aspect-ratio: 1 / 1;
+      background: var(--card-bg);
+    }
+
+    .puzzle-tile:hover {
+      transform: scale(1.03);
+      border-color: rgba(255, 209, 102, 0.75);
+    }
+
+    .puzzle-tile.selected {
+      border-color: #10B981;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.4);
+      transform: scale(0.96);
+    }
+
+    .puzzle-tile canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
     .reply-line {
       font-size: 12px;
       color: var(--text-muted);
@@ -1123,7 +1169,12 @@
         ceoAmountLabel: 'Meow Bucks Amount (💵)',
         ceoSendGiveawayBtn: '💵 Give Meow Bucks',
         ceoSetBucksBtn: '🎯 Set Meow Bucks',
-        ceoFunPlus200Btn: '🎉 +200 💵 Increase (Just for Fun!)',
+        ceoSubGrantHeader: '💎 GRANT ANY SUBSCRIPTION TO ANY EXISTING USER (CUSTOM DAYS)',
+        ceoSubTargetUserLabel: 'Target Existing User (Username)',
+        ceoSubTierLabel: 'Subscription Tier',
+        ceoSubDaysLabel: 'Duration (Days — Enter Any Number)',
+        ceoGrantSubBtn: '🎁 Grant Subscription Days',
+        ceoRevokeSubBtn: '🚫 Remove Sub',
         ceoCodesManagerHeader: '🎟️ CREATE SECRET CODES (REWARD 🪙 MEOWCOINS & 💵 MEOW BUCKS)',
         ceoCreateCodeBtn: '+ Create Secret Code',
         questsWord: 'Quests',
@@ -1157,11 +1208,12 @@
         pinBtn: '📌 Pin',
         unpinBtn: 'Unpin',
         pinnedLabel: '📌 Pinned',
-        inviteTitle: 'Invite or Boop a Cat Friend',
-        inviteSub: 'Enter any cat name to add them to your litter and start a Direct Meow!',
-        addFriendPlaceholder: 'e.g. Biscuit, Princess Paws, Whiskers...',
+        inviteTitle: 'Add a Real CatMsg Friend',
+        inviteSub: 'Enter an existing CatMsg account username or email to add them as a friend and start a Direct Meow!',
+        addFriendPlaceholder: 'Existing username (e.g. abood) or email...',
         addFriendBtn: '+ Add Cat Friend',
         directMeowBtn: '💬 Direct Meow',
+        deleteFriendBtn: '🗑️ Delete',
         questsHeaderTitle: 'Cat Quests & MeowCoin Emporium',
         questsHeroTitle: 'Daily Paws & Whisker Quests',
         questsHeroSub: 'Chat in Cat Houses, react with paws, reply to friends, and send Cat Stickers to earn MeowCoins! Spend your coins below on exclusive stickers, markers, and royal badges.',
@@ -1205,6 +1257,8 @@
         googleSignInBtn: 'Continue with Google Account',
         googleEmailLabel: 'Google Account Email (@gmail.com)',
         googleNameLabel: 'Display Name (Optional)',
+        googlePasswordLabel: 'Account Password (Required — Create or Enter)',
+        googlePasswordPlaceholder: 'Create or enter account password...',
         googleContinueBtn: '✓ Sign In with Google',
         quickOwnerBtn: '👑 Quick Sign In: abood (Owner)',
         signOutBtn: '🚪 Sign Out / Switch Account',
@@ -1224,7 +1278,18 @@
         appsSearchPlaceholder: 'Search installed Apps & Activities...',
         launchAppBtn: '🚀 Launch Activity',
         exitActivityBtn: '✕ Exit Activity',
-        onlyAppInstalledNote: 'Apps & Activities (2)',
+        onlyAppInstalledNote: 'Apps & Activities (3)',
+        dailyPuzzleTitle: 'Daily Cute Cat Image Puzzle',
+        dailyPuzzleSub: 'Swap tiles to complete today\'s cute cat picture! Rewards +5 🪙 MeowCoins once on your first completion each day.',
+        dailyPuzzlePlayBtn: '🧩 Play Daily Puzzle (+5 🪙)',
+        dailyPuzzleRewardReady: '🎁 +5 🪙 Daily First-Completion Reward Available Today!',
+        dailyPuzzleRewardClaimed: '✓ +5 🪙 Daily Reward Claimed Today (Come back tomorrow!)',
+        dailyPuzzlePeekBtn: '👁️ Peek Full Cat Picture',
+        dailyPuzzleShuffleBtn: '🔀 Reshuffle Puzzle',
+        biweeklyCoinsTitle: '🎁 Subscription Perk: +35 Free MeowCoins Every 2 Weeks',
+        biweeklyCoinsClaimBtn: '🪙 Claim +35 Free MeowCoins!',
+        biweeklyCoinsNextIn: (d, h) => `⏳ Next +35 🪙 claim in ${d}d ${h}h`,
+        businessAnnounceToggle: '📣 Business Announcement Mode',
         bouncyCatTitle: 'Bouncy Cat',
         bouncyCatTag: '🚧 In Progress',
         bouncyCatDesc: 'Bounce your cat across platforms! Currently in progress — coming soon to Apps & Activities.',
@@ -1240,13 +1305,13 @@
         codeInputPlaceholder: 'Enter secret code...',
         redeemCodeBtn: '🎟️ Redeem Code',
         premiumNavBtn: '💎 CatMsg Premium',
-        premiumCardTitle: '💎 CatMsg Premium Subscription (16% Shop Discount)',
-        premiumCardDesc: '✨ All CatMsg features (Chat, Cat Houses, DMs, Stickers, Badges, Quests, ⚡ Claim All Quests, and Whiteboard) are 100% FREE for everyone! CatMsg Premium gives a 🏷️ 16% MeowCoin Shop Discount on all Stickers, Royal Badges, and Whiteboard Markers (with 0% extra MeowCoins on quests so quest rewards remain fair for all), plus the 💎 VIP Profile Tag.',
+        premiumCardTitle: '💎 CatMsg Premium Tiers (Basic • Premium • Business)',
+        premiumCardDesc: '✨ All CatMsg features (Chat, Cat Houses, DMs, Stickers, Badges, Quests, ⚡ Claim All Quests, Daily Puzzle, and Whiteboard) are 100% FREE for everyone! Subscriptions unlock Shop Discounts, Exclusive Whiteboard Markers, Custom VIP Tags, Bi-Weekly +35 🪙 Drops, and Business Announcement Perks (0% extra quest coins so quests stay fair).',
         premiumQolBullets: [
           '✨ 100% of CatMsg Features (Including ⚡ Claim All Ready Quests) Are FREE for Everyone',
-          '🏷️ 16% MeowCoin Discount on All Sticker Packs, Royal Badges & Whiteboard Markers',
-          '🪙 0% Extra MeowCoins on Quests (Fair Quest Rewards for All Players)',
-          '💎 Exclusive VIP Diamond Profile Badge'
+          '🏷️ 8% (Basic) / 16% (Premium & Business) Shop Discount on Stickers, Badges & Markers',
+          '🎁 +35 Free MeowCoins Every 2 Weeks on CatMsg Premium & Business',
+          '🎨 Exclusive Whiteboard Markers + 🏢 Business Announcement Banner Perks'
         ],
         premiumDealRule: '🔒 EXCLUSIVE ACCESS: CatMsg Premium Basic, CatMsg Premium, and CatMsg Premium Business are ALL ONLY obtainable by making a direct deal with the Owner at:',
         premiumTiers: [
@@ -1255,13 +1320,14 @@
             cssClass: 'tier-basic',
             badge: '💠 BASIC',
             title: 'CatMsg Premium Basic',
-            subtitle: 'Starter VIP Tier (Less Benefits)',
+            subtitle: 'Starter VIP Tier (Fewer Perks)',
             color: '#5CE1E6',
             mailtoSubject: 'CatMsg%20Premium%20Basic%20Deal',
             bullets: [
               '🏷️ 8% MeowCoin Shop Discount on Stickers, Badges & Markers',
+              '🎨 2 Exclusive Whiteboard Markers Free (Neon Purrple & Paw Pink)',
+              '💠 Basic VIP Profile Tag & Cyan Glow Border',
               '🪙 0% Extra MeowCoins on Quests (Fair for All)',
-              '💠 Basic VIP Profile Tag',
               '✨ All Core CatMsg Features Stay 100% Free'
             ]
           },
@@ -1270,14 +1336,15 @@
             cssClass: 'tier-standard',
             badge: '💎 POPULAR',
             title: 'CatMsg Premium',
-            subtitle: 'Standard VIP Tier',
+            subtitle: 'Everything in Basic + Standard VIP',
             color: '#FFD166',
             mailtoSubject: 'CatMsg%20Premium%20Subscription%20Deal',
             bullets: [
+              '✅ Includes Everything in CatMsg Premium Basic',
               '🏷️ 16% MeowCoin Shop Discount on All Stickers, Royal Badges & Markers',
-              '🪙 0% Extra MeowCoins on Quests (Fair for All)',
-              '💎 Exclusive VIP Diamond Profile Badge',
-              '✨ All Core CatMsg Features Stay 100% Free'
+              '🎁 +35 Free MeowCoins Every 2 Weeks (Claimable in 1 Click!)',
+              '🎨 4 Exclusive Whiteboard Markers Free (+Royal Gold & Sunset Coral)',
+              '💎 Exclusive VIP Diamond Badge & Shimmering Profile Card'
             ]
           },
           {
@@ -1285,13 +1352,14 @@
             cssClass: 'tier-business',
             badge: '🏢👑 BUSINESS',
             title: 'CatMsg Premium Business',
-            subtitle: 'Top Executive & Team Tier',
+            subtitle: 'All CatMsg Premium Perks + Business Perks',
             color: '#10B981',
             mailtoSubject: 'CatMsg%20Premium%20Business%20Deal',
             bullets: [
-              '🏷️ 25% MeowCoin Shop Discount on All Stickers, Royal Badges & Markers',
-              '🪙 0% Extra MeowCoins on Quests (Fair for All)',
-              '🏢👑 Exclusive Business VIP Profile Badge & Cat House Priority Tag',
+              '✅ Always Includes Everything in CatMsg Premium (+35 🪙 Every 2 Weeks & 16% Shop Discount)',
+              '📣 Business Announcement Banner Mode in Chat Composer',
+              '🎨 Executive Cyan Whiteboard Marker Free + All 4 Premium Markers',
+              '🏢👑 Verified Business VIP Profile Tag & Cat House Priority Badge',
               '🤝 Multi-Account & Team Business Deal Support with the Owner'
             ]
           }
@@ -1330,7 +1398,12 @@
         ceoAmountLabel: 'كمية Meow Bucks (💵)',
         ceoSendGiveawayBtn: '💵 إرسال Meow Bucks',
         ceoSetBucksBtn: '🎯 تعيين Meow Bucks',
-        ceoFunPlus200Btn: '🎉 +200 💵 زيادة (للترفيه فقط!)',
+        ceoSubGrantHeader: '💎 منح أي اشتراك لأي مستخدم حالي (بأي عدد أيام)',
+        ceoSubTargetUserLabel: 'اسم المستخدم الحالي المستهدف',
+        ceoSubTierLabel: 'باقة الاشتراك',
+        ceoSubDaysLabel: 'المدة (بالأيام — أدخل أي عدد)',
+        ceoGrantSubBtn: '🎁 منح أيام الاشتراك',
+        ceoRevokeSubBtn: '🚫 إزالة الاشتراك',
         ceoCodesManagerHeader: '🎟️ إنشاء أكواد سرية (تمنح 🪙 عملات مياو و/أو 💵 MEOW BUCKS)',
         ceoCreateCodeBtn: '+ إنشاء كود سري',
         questsWord: 'المهام',
@@ -1364,11 +1437,12 @@
         pinBtn: '📌 تثبيت',
         unpinBtn: 'إلغاء التثبيت',
         pinnedLabel: '📌 مثبتة',
-        inviteTitle: 'أضف صديقاً من القطط',
-        inviteSub: 'أدخل اسم أي قطة لإضافتها إلى قائمة أصدقائك وبدء محادثة خاصة!',
-        addFriendPlaceholder: 'مثال: بسكويت، لونا، ميشو...',
+        inviteTitle: 'أضف صديقاً حقيقياً في CatMsg',
+        inviteSub: 'أدخل اسم مستخدم أو البريد الإلكتروني لحساب CatMsg موجود لإضافته كصديق وبدء محادثة خاصة!',
+        addFriendPlaceholder: 'اسم مستخدم موجود (مثل abood) أو بريد إلكتروني...',
         addFriendBtn: '+ إضافة صديق',
         directMeowBtn: '💬 رسالة خاصة',
+        deleteFriendBtn: '🗑️ حذف',
         questsHeaderTitle: 'مهام القطط ومتجر عملات مياو',
         questsHeroTitle: 'المهام اليومية ومكافآت المخالب',
         questsHeroSub: 'تحدث في بيوت القطط، وتفاعل بالمخالب، ورد على الأصدقاء، وأرسل الملصقات لتربح عملات مياو! أنفق عملاتك بالأسفل لفتح الملصقات والأقلام والشارات الملكية.',
@@ -1412,6 +1486,8 @@
         googleSignInBtn: 'المتابعة باستخدام حساب Google',
         googleEmailLabel: 'البريد الإلكتروني لحساب Google (@gmail.com)',
         googleNameLabel: 'الاسم المعروض (اختياري)',
+        googlePasswordLabel: 'كلمة مرور الحساب (إلزامية — أنشئ أو أدخل كلمة المرور)',
+        googlePasswordPlaceholder: 'أنشئ أو أدخل كلمة مرور الحساب...',
         googleContinueBtn: '✓ تسجيل الدخول عبر Google',
         quickOwnerBtn: '👑 دخول سريع: abood (المالك)',
         signOutBtn: '🚪 تسجيل الخروج / تبديل الحساب',
@@ -1431,7 +1507,18 @@
         appsSearchPlaceholder: 'ابحث في التطبيقات والأنشطة المتوفرة...',
         launchAppBtn: '🚀 تشغيل النشاط',
         exitActivityBtn: '✕ إغلاق النشاط',
-        onlyAppInstalledNote: 'التطبيقات والأنشطة (2)',
+        onlyAppInstalledNote: 'التطبيقات والأنشطة (3)',
+        dailyPuzzleTitle: 'لغز صورة القطة اللطيفة اليومي',
+        dailyPuzzleSub: 'بدّل القطع لإكمال صورة القطة اللطيفة اليوم! يمنحك +5 🪙 عملات مياو عند إكماله لأول مرة في اليوم.',
+        dailyPuzzlePlayBtn: '🧩 العب اللغز اليومي (+5 🪙)',
+        dailyPuzzleRewardReady: '🎁 مكافأة +5 🪙 متاحة اليوم عند الإكمال الأول!',
+        dailyPuzzleRewardClaimed: '✓ تم استلام مكافأة +5 🪙 اليوم (عد غداً!)',
+        dailyPuzzlePeekBtn: '👁️ معاينة الصورة الكاملة',
+        dailyPuzzleShuffleBtn: '🔀 خلط القطع',
+        biweeklyCoinsTitle: '🎁 ميزة الاشتراك: +35 عملة مياو مجانية كل أسبوعين',
+        biweeklyCoinsClaimBtn: '🪙 استلم +35 عملة مياو مجانية!',
+        biweeklyCoinsNextIn: (d, h) => `⏳ الاستلام القادم (+35 🪙) بعد ${d} يوم و ${h} ساعة`,
+        businessAnnounceToggle: '📣 وضع إعلان الأعمال (Business)',
         bouncyCatTitle: 'القط النطاط (Bouncy Cat)',
         bouncyCatTag: '🚧 قيد التطوير',
         bouncyCatDesc: 'لعبة قفز القطط عبر المنصات! قيد التطوير حالياً — قادمة قريباً إلى التطبيقات والأنشطة.',
@@ -1447,13 +1534,13 @@
         codeInputPlaceholder: 'أدخل الكود السري هنا...',
         redeemCodeBtn: '🎟️ تفعيل الكود',
         premiumNavBtn: '💎 اشتراك CatMsg المميز',
-        premiumCardTitle: '💎 اشتراك CatMsg المميز (خصم 16% في المتجر — جميع الميزات مجانية)',
-        premiumCardDesc: '✨ جميع ميزات CatMsg (الدردشة، بيوت القطط، الرسائل الخاصة، الملصقات، الشارات، المهام، زر استلام جميع المهام، والسبورة البيضاء) مجانية 100% للجميع! يمنح اشتراك CatMsg المميز خصم 🏷️ 16% في متجر عملات مياو على جميع الملصقات والشارات والأقلام (مع 0% عملات إضافية من المهام)، بالإضافة إلى شارة 💎 VIP.',
+        premiumCardTitle: '💎 باقات CatMsg المميزة (أساسي • مميز • أعمال)',
+        premiumCardDesc: '✨ جميع ميزات CatMsg (الدردشة، بيوت القطط، الرسائل الخاصة، الملصقات، الشارات، المهام، زر استلام جميع المهام، اللغز اليومي، والسبورة) مجانية 100% للجميع! تمنح الاشتراكات خصومات في المتجر، أقلام سبورة حصرية، شارات VIP، +35 🪙 مجانية كل أسبوعين، ووضع إعلان الأعمال (مع 0% عملات إضافية من المهام للعدل بين الجميع).',
         premiumQolBullets: [
-          '✨ جميع ميزات CatMsg (بما فيها ⚡ زر استلام جميع المهام بضغطة واحدة) مجانية 100% للجميع',
-          '🏷️ خصم 16% من عملات مياو على جميع حزم الملصقات والشارات والأقلام',
-          '🪙 0% عملات إضافية على المهام (مكافآت مهام عادلة لجميع اللاعبين)',
-          '💎 شارة VIP الماسية المميزة للملف الشخصي'
+          '✨ جميع ميزات CatMsg (بما فيها ⚡ زر استلام جميع المهام) مجانية 100% للجميع',
+          '🏷️ خصم 8% (الأساسي) / 16% (المميز والأعمال) في المتجر على الملصقات والشارات والأقلام',
+          '🎁 +35 عملة مياو مجانية كل أسبوعين لمشتركي CatMsg المميز والأعمال',
+          '🎨 أقلام سبورة حصرية + 📣 وضع إعلانات الأعمال المميز'
         ],
         premiumDealRule: '🔒 حصرياً: لا يمكن الحصول على CatMsg المميز الأساسي أو CatMsg المميز أو CatMsg المميز للأعمال إلا عبر الاتفاق المباشر مع المالك عبر البريد الإلكتروني:',
         premiumTiers: [
@@ -1467,8 +1554,9 @@
             mailtoSubject: 'CatMsg%20Premium%20Basic%20Deal',
             bullets: [
               '🏷️ خصم 8% في متجر عملات مياو على الملصقات والشارات والأقلام',
+              '🎨 قلمان حصريان للسبورة مجاناً (بنفسجي نيون ووردي المخالب)',
+              '💠 شارة VIP الأساسية وإطار سماوي مميز للملف الشخصي',
               '🪙 0% عملات إضافية على المهام (مكافآت عادلة للجميع)',
-              '💠 شارة VIP الأساسية للملف الشخصي',
               '✨ جميع ميزات CatMsg الأساسية مجانية 100%'
             ]
           },
@@ -1477,14 +1565,15 @@
             cssClass: 'tier-standard',
             badge: '💎 الأشهر',
             title: 'CatMsg المميز (Premium)',
-            subtitle: 'الباقة المميزة القياسية',
+            subtitle: 'كل مزايا الأساسي + الباقة المميزة',
             color: '#FFD166',
             mailtoSubject: 'CatMsg%20Premium%20Subscription%20Deal',
             bullets: [
+              '✅ يشمل كل مزايا CatMsg المميز الأساسي',
               '🏷️ خصم 16% في متجر عملات مياو على جميع الملصقات والشارات والأقلام',
-              '🪙 0% عملات إضافية على المهام (مكافآت عادلة للجميع)',
-              '💎 شارة VIP الماسية المميزة للملف الشخصي',
-              '✨ جميع ميزات CatMsg الأساسية مجانية 100%'
+              '🎁 +35 عملة مياو مجانية كل أسبوعين (بضغطة زر!)',
+              '🎨 4 أقلام حصرية للسبورة مجاناً (+الذهبي الملكي والمرجاني)',
+              '💎 شارة VIP الماسية المميزة للملف الشخصي'
             ]
           },
           {
@@ -1492,13 +1581,14 @@
             cssClass: 'tier-business',
             badge: '🏢👑 أعمال',
             title: 'CatMsg المميز للأعمال (Business)',
-            subtitle: 'أعلى باقة للأعمال والفرق',
+            subtitle: 'جميع مزايا CatMsg المميز + مزايا الأعمال',
             color: '#10B981',
             mailtoSubject: 'CatMsg%20Premium%20Business%20Deal',
             bullets: [
-              '🏷️ خصم 25% في متجر عملات مياو على جميع الملصقات والشارات والأقلام',
-              '🪙 0% عملات إضافية على المهام (مكافآت عادلة للجميع)',
-              '🏢👑 شارة الأعمال الحصرية وأولوية تمييز بيت القطط',
+              '✅ يشمل دائماً كل ما في CatMsg المميز (+35 🪙 كل أسبوعين وخصم 16% في المتجر)',
+              '📣 وضع إعلانات الأعمال المميز في الدردشة',
+              '🎨 قلم الأعمال السماوي الحصري مجاناً + جميع أقلام البريميوم الأربعة',
+              '🏢👑 شارة الأعمال الموثقة وأولوية تمييز بيت القطط',
               '🤝 دعم الصفقات متعددة الحسابات والفرق مباشرة مع المالك'
             ]
           }
@@ -1537,7 +1627,12 @@
         ceoAmountLabel: '喵元数量 (💵)',
         ceoSendGiveawayBtn: '💵 赠送喵元',
         ceoSetBucksBtn: '🎯 设置喵元',
-        ceoFunPlus200Btn: '🎉 +200 💵 增加（纯属好玩！）',
+        ceoSubGrantHeader: '💎 为任意现有用户赠送任意天数的会员订阅',
+        ceoSubTargetUserLabel: '目标现有用户名',
+        ceoSubTierLabel: '订阅等级',
+        ceoSubDaysLabel: '天数（可输入任意天数）',
+        ceoGrantSubBtn: '🎁 赠送订阅天数',
+        ceoRevokeSubBtn: '🚫 移除订阅',
         ceoCodesManagerHeader: '🎟️ 创建神秘兑换码（奖励 🪙 喵币 & 💵 喵元）',
         ceoCreateCodeBtn: '+ 创建神秘兑换码',
         questsWord: '任务',
@@ -1571,11 +1666,12 @@
         pinBtn: '📌 置顶',
         unpinBtn: '取消置顶',
         pinnedLabel: '📌 已置顶',
-        inviteTitle: '邀请或戳一戳猫咪好友',
-        inviteSub: '输入任意猫咪名称将其加入好友列表并开始私聊！',
-        addFriendPlaceholder: '例如：饼干、猫爪公主、胡须...',
+        inviteTitle: '添加真实 CatMsg 好友',
+        inviteSub: '输入已有 CatMsg 账号的用户名或邮箱来添加好友并开始私聊！',
+        addFriendPlaceholder: '现有用户名（如 abood）或邮箱...',
         addFriendBtn: '+ 添加猫咪好友',
         directMeowBtn: '💬 私聊喵',
+        deleteFriendBtn: '🗑️ 删除',
         questsHeaderTitle: '猫咪任务与喵币商店',
         questsHeroTitle: '每日猫爪与胡须任务',
         questsHeroSub: '在猫屋聊天、点赞猫爪、回复好友、发送猫咪贴纸即可赚取喵币！在下方兑换专属贴纸、画笔和皇家徽章。',
@@ -1619,6 +1715,8 @@
         googleSignInBtn: '使用 Google 账号继续',
         googleEmailLabel: 'Google 账号邮箱 (@gmail.com)',
         googleNameLabel: '显示名称（可选）',
+        googlePasswordLabel: '账号密码（必填 — 创建或输入密码）',
+        googlePasswordPlaceholder: '创建或输入账号密码...',
         googleContinueBtn: '✓ 使用 Google 登录',
         quickOwnerBtn: '👑 快速登录：abood（站长）',
         signOutBtn: '🚪 退出登录 / 切换账号',
@@ -1638,7 +1736,18 @@
         appsSearchPlaceholder: '搜索已安装的应用与活动...',
         launchAppBtn: '🚀 启动活动',
         exitActivityBtn: '✕ 退出活动',
-        onlyAppInstalledNote: '应用与活动 (2)',
+        onlyAppInstalledNote: '应用与活动 (3)',
+        dailyPuzzleTitle: '每日可爱猫咪拼图',
+        dailyPuzzleSub: '交换图块拼出今天的可爱猫咪图片！每天首次完成奖励 +5 🪙 喵币。',
+        dailyPuzzlePlayBtn: '🧩 开始每日拼图 (+5 🪙)',
+        dailyPuzzleRewardReady: '🎁 今日首次完成可领 +5 🪙 喵币奖励！',
+        dailyPuzzleRewardClaimed: '✓ 今日 +5 🪙 奖励已领取（明天再来！）',
+        dailyPuzzlePeekBtn: '👁️ 偷看完整猫图',
+        dailyPuzzleShuffleBtn: '🔀 重新打乱拼图',
+        biweeklyCoinsTitle: '🎁 订阅福利：每 2 周免费领取 +35 喵币',
+        biweeklyCoinsClaimBtn: '🪙 领取 +35 免费喵币！',
+        biweeklyCoinsNextIn: (d, h) => `⏳ 距离下次领取 +35 🪙 还有 ${d}天 ${h}小时`,
+        businessAnnounceToggle: '📣 商业公告横幅模式',
         bouncyCatTitle: '弹跳猫咪 (Bouncy Cat)',
         bouncyCatTag: '🚧 开发中',
         bouncyCatDesc: '控制猫咪在平台间弹跳！目前正在开发中 — 即将上线应用与活动。',
@@ -1654,13 +1763,13 @@
         codeInputPlaceholder: '输入神秘兑换码...',
         redeemCodeBtn: '🎟️ 兑换',
         premiumNavBtn: '💎 CatMsg 会员',
-        premiumCardTitle: '💎 CatMsg 会员订阅（商店 16% 折扣）',
-        premiumCardDesc: '✨ CatMsg 的所有功能（聊天、猫屋、私聊、贴纸、徽章、任务、⚡ 一键领取全部任务、白板）对所有人 100% 免费！CatMsg 会员在喵币商店购买所有贴纸、皇家徽章和白板画笔时享有 🏷️ 16% 折扣（任务额外喵币为 0%，保证所有玩家公平），并附带 💎 VIP 专属标签。',
+        premiumCardTitle: '💎 CatMsg 会员订阅（基础版 • 会员 • 商业版）',
+        premiumCardDesc: '✨ CatMsg 的所有核心功能（聊天、猫屋、私聊、贴纸、徽章、任务、⚡ 一键领取全部任务、每日拼图与白板）对所有人 100% 免费！订阅会员可解锁商店折扣、专属白板画笔、VIP 标签、每两周 +35 🪙 喵币礼包及商业公告模式（任务额外喵币为 0%，保证公平）。',
         premiumQolBullets: [
           '✨ 100% 的 CatMsg 功能（包含 ⚡ 一键领取全部任务）对所有人免费开放',
-          '🏷️ 购买所有贴纸包、皇家徽章与白板画笔享 16% 喵币折扣',
-          '🪙 任务额外喵币 0%（保持所有玩家任务奖励公平）',
-          '💎 专属 VIP 钻石资料徽章'
+          '🏷️ 基础版 8% / 会员与商业版 16% 商店折扣（贴纸、徽章与画笔）',
+          '🎁 CatMsg 会员与商业版每 2 周免费领取 +35 喵币',
+          '🎨 专属白板画笔 + 📣 商业公告横幅权益'
         ],
         premiumDealRule: '🔒 专属获取方式：CatMsg 会员基础版、CatMsg 会员及 CatMsg 会员商业版均仅可通过联系站长直接洽谈获得：',
         premiumTiers: [
@@ -1669,13 +1778,14 @@
             cssClass: 'tier-basic',
             badge: '💠 基础版',
             title: 'CatMsg 会员基础版 (Basic)',
-            subtitle: '入门 VIP 档位（权益较少）',
+            subtitle: '入门 VIP 档位（较少权益）',
             color: '#5CE1E6',
             mailtoSubject: 'CatMsg%20Premium%20Basic%20Deal',
             bullets: [
               '🏷️ 贴纸、徽章与白板画笔享 8% 喵币商店折扣',
+              '🎨 免费解锁 2 款专属白板画笔（霓虹紫 & 粉猫爪）',
+              '💠 基础 VIP 个人资料标签与青色光环边框',
               '🪙 任务额外喵币 0%（全员公平）',
-              '💠 基础 VIP 个人资料标签',
               '✨ 所有核心 CatMsg 功能保持 100% 免费'
             ]
           },
@@ -1684,14 +1794,15 @@
             cssClass: 'tier-standard',
             badge: '💎 推荐',
             title: 'CatMsg 会员 (Premium)',
-            subtitle: '标准 VIP 档位',
+            subtitle: '包含基础版全部权益 + 标准 VIP',
             color: '#FFD166',
             mailtoSubject: 'CatMsg%20Premium%20Subscription%20Deal',
             bullets: [
+              '✅ 包含 CatMsg 会员基础版全部权益',
               '🏷️ 全部贴纸、皇家徽章与白板画笔享 16% 喵币折扣',
-              '🪙 任务额外喵币 0%（全员公平）',
-              '💎 专属 VIP 钻石资料徽章',
-              '✨ 所有核心 CatMsg 功能保持 100% 免费'
+              '🎁 每 2 周免费领取 +35 喵币（一键领取！）',
+              '🎨 免费解锁 4 款专属白板画笔（+皇家金 & 珊瑚橙）',
+              '💎 专属 VIP 钻石资料徽章'
             ]
           },
           {
@@ -1699,13 +1810,14 @@
             cssClass: 'tier-business',
             badge: '🏢👑 商业版',
             title: 'CatMsg 会员商业版 (Business)',
-            subtitle: '顶级商业与团队档位',
+            subtitle: '始终包含 CatMsg 会员全部权益 + 商业专属权益',
             color: '#10B981',
             mailtoSubject: 'CatMsg%20Premium%20Business%20Deal',
             bullets: [
-              '🏷️ 全部贴纸、皇家徽章与白板画笔享 25% 喵币折扣',
-              '🪙 任务额外喵币 0%（全员公平）',
-              '🏢👑 专属商业 VIP 徽章与猫屋优先标识',
+              '✅ 始终包含 CatMsg 会员全部权益（每 2 周 +35 🪙 与商店 16% 折扣）',
+              '📣 聊天框商业公告横幅模式',
+              '🎨 免费解锁行政青白板画笔 + 全部 4 款会员画笔',
+              '🏢👑 认证商业 VIP 徽章与猫屋优先标识',
               '🤝 支持与站长洽谈多账号及团队商业合作方案'
             ]
           }
@@ -1744,7 +1856,12 @@
         ceoAmountLabel: 'Количество МяуБаксов (💵)',
         ceoSendGiveawayBtn: '💵 Выдать МяуБаксы',
         ceoSetBucksBtn: '🎯 Задать МяуБаксы',
-        ceoFunPlus200Btn: '🎉 +200 💵 Прибавка (Просто ради веселья!)',
+        ceoSubGrantHeader: '💎 ВЫДАТЬ ЛЮБУЮ ПОДПИСКУ СУЩЕСТВУЮЩЕМУ ИГРОКУ (НА ЛЮБОЕ ЧИСЛО ДНЕЙ)',
+        ceoSubTargetUserLabel: 'Имя существующего пользователя',
+        ceoSubTierLabel: 'Уровень подписки',
+        ceoSubDaysLabel: 'Срок (в днях — введите любое число)',
+        ceoGrantSubBtn: '🎁 Выдать дни подписки',
+        ceoRevokeSubBtn: '🚫 Снять подписку',
         ceoCodesManagerHeader: '🎟️ СОЗДАТЬ СЕКРЕТНЫЕ КОДЫ (🪙 МЯУКОИНЫ И 💵 МЯУБАКСЫ)',
         ceoCreateCodeBtn: '+ Создать секретный код',
         questsWord: 'Квесты',
@@ -1778,11 +1895,12 @@
         pinBtn: '📌 Закрепить',
         unpinBtn: 'Открепить',
         pinnedLabel: '📌 Закреплено',
-        inviteTitle: 'Пригласить или бупнуть кото-друга',
-        inviteSub: 'Введите любое имя котика, чтобы добавить его в друзья и начать личный чат!',
-        addFriendPlaceholder: 'например: Бисквит, Принцесса Лапка, Усик...',
+        inviteTitle: 'Добавить реального друга CatMsg',
+        inviteSub: 'Введите имя пользователя или email существующего аккаунта CatMsg, чтобы добавить в друзья и начать личный чат!',
+        addFriendPlaceholder: 'Существующее имя (напр. abood) или email...',
         addFriendBtn: '+ Добавить кото-друга',
         directMeowBtn: '💬 Написать',
+        deleteFriendBtn: '🗑️ Удалить',
         questsHeaderTitle: 'Кошачьи квесты и магазин МяуКоинов',
         questsHeroTitle: 'Ежедневные квесты лапок и усиков',
         questsHeroSub: 'Общайтесь в Кото-домах, ставьте лапки, отвечайте друзьям и отправляйте стикеры, чтобы зарабатывать МяуКоины! Тратьте их ниже на стикеры, маркеры и значки.',
@@ -1826,6 +1944,8 @@
         googleSignInBtn: 'Войти через Google',
         googleEmailLabel: 'Почта Google (@gmail.com)',
         googleNameLabel: 'Отображаемое имя (необязательно)',
+        googlePasswordLabel: 'Пароль аккаунта (Обязательно — создайте или введите)',
+        googlePasswordPlaceholder: 'Создайте или введите пароль...',
         googleContinueBtn: '✓ Войти через Google',
         quickOwnerBtn: '👑 Быстрый вход: abood (Владелец)',
         signOutBtn: '🚪 Выйти / Сменить аккаунт',
@@ -1845,7 +1965,18 @@
         appsSearchPlaceholder: 'Поиск приложений и активностей...',
         launchAppBtn: '🚀 Запустить',
         exitActivityBtn: '✕ Выйти',
-        onlyAppInstalledNote: 'Приложения и активности (2)',
+        onlyAppInstalledNote: 'Приложения и активности (3)',
+        dailyPuzzleTitle: 'Ежедневный пазл с милым котиком',
+        dailyPuzzleSub: 'Меняйте плитки местами, чтобы собрать милую картинку котика дня! +5 🪙 МяуКоинов за первое прохождение в день.',
+        dailyPuzzlePlayBtn: '🧩 Играть в пазл дня (+5 🪙)',
+        dailyPuzzleRewardReady: '🎁 Награда +5 🪙 доступна сегодня за первое решение!',
+        dailyPuzzleRewardClaimed: '✓ Награда +5 🪙 на сегодня получена (приходите завтра!)',
+        dailyPuzzlePeekBtn: '👁️ Подсмотреть картинку',
+        dailyPuzzleShuffleBtn: '🔀 Перемешать пазл',
+        biweeklyCoinsTitle: '🎁 Бонус подписки: +35 бесплатных МяуКоинов каждые 2 недели',
+        biweeklyCoinsClaimBtn: '🪙 Забрать +35 бесплатных МяуКоинов!',
+        biweeklyCoinsNextIn: (d, h) => `⏳ Следующие +35 🪙 через ${d}д ${h}ч`,
+        businessAnnounceToggle: '📣 Режим бизнес-объявления',
         bouncyCatTitle: 'Прыгучий Кот (Bouncy Cat)',
         bouncyCatTag: '🚧 В разработке',
         bouncyCatDesc: 'Прыгайте котиком по платформам! Сейчас в разработке — скоро в Приложениях и активностях.',
@@ -1861,13 +1992,13 @@
         codeInputPlaceholder: 'Введите секретный код...',
         redeemCodeBtn: '🎟️ Активировать',
         premiumNavBtn: '💎 CatMsg Премиум',
-        premiumCardTitle: '💎 Подписка CatMsg Премиум (скидка 16% в магазине)',
-        premiumCardDesc: '✨ Все функции CatMsg (чат, Кото-дома, ЛС, стикеры, значки, квесты, ⚡ сбор всех квестов и доска) на 100% БЕСПЛАТНЫ для всех! CatMsg Премиум даёт скидку 🏷️ 16% на все стикеры, королевские значки и маркеры (0% доп. монет за квесты для честного баланса), а также тег 💎 VIP.',
+        premiumCardTitle: '💎 Подписки CatMsg Премиум (Базовый • Премиум • Бизнес)',
+        premiumCardDesc: '✨ Все функции CatMsg (чат, Кото-дома, ЛС, стикеры, значки, квесты, ⚡ сбор всех квестов, ежедневный пазл и доска) на 100% БЕСПЛАТНЫ! Подписки открывают скидки в магазине, эксклюзивные маркеры доски, VIP-теги, +35 🪙 каждые 2 недели и бизнес-объявления (0% доп. монет за квесты ради честности).',
         premiumQolBullets: [
           '✨ 100% функций CatMsg (включая ⚡ сбор всех готовых квестов) БЕСПЛАТНЫ для всех',
-          '🏷️ Скидка 16% в МяуКоинах на все стикеры, королевские значки и маркеры',
-          '🪙 0% доп. МяуКоинов за квесты (честные награды для всех игроков)',
-          '💎 Эксклюзивный бриллиантовый VIP-значок профиля'
+          '🏷️ Скидка 8% (Базовый) / 16% (Премиум и Бизнес) на стикеры, значки и маркеры',
+          '🎁 +35 бесплатных МяуКоинов каждые 2 недели в CatMsg Премиум и Бизнес',
+          '🎨 Эксклюзивные маркеры для доски + 📣 баннеры бизнес-объявлений'
         ],
         premiumDealRule: '🔒 ЭКСКЛЮЗИВНЫЙ ДОСТУП: CatMsg Премиум Базовый, CatMsg Премиум и CatMsg Премиум Бизнес можно получить ТОЛЬКО по личной договорённости с владельцем:',
         premiumTiers: [
@@ -1881,8 +2012,9 @@
             mailtoSubject: 'CatMsg%20Premium%20Basic%20Deal',
             bullets: [
               '🏷️ Скидка 8% в магазине МяуКоинов на стикеры, значки и маркеры',
+              '🎨 2 эксклюзивных маркера бесплатно (Неоновый фиолетовый и Розовая лапка)',
+              '💠 Базовый VIP-тег профиля и голубая рамка',
               '🪙 0% доп. МяуКоинов за квесты (честно для всех)',
-              '💠 Базовый VIP-тег профиля',
               '✨ Все основные функции CatMsg на 100% бесплатны'
             ]
           },
@@ -1891,14 +2023,15 @@
             cssClass: 'tier-standard',
             badge: '💎 ПОПУЛЯРНЫЙ',
             title: 'CatMsg Премиум (Premium)',
-            subtitle: 'Стандартный VIP-уровень',
+            subtitle: 'Всё из Базового + Стандартный VIP',
             color: '#FFD166',
             mailtoSubject: 'CatMsg%20Premium%20Subscription%20Deal',
             bullets: [
+              '✅ Включает всё из CatMsg Премиум Базовый',
               '🏷️ Скидка 16% в магазине на все стикеры, королевские значки и маркеры',
-              '🪙 0% доп. МяуКоинов за квесты (честно для всех)',
-              '💎 Эксклюзивный бриллиантовый VIP-значок профиля',
-              '✨ Все основные функции CatMsg на 100% бесплатны'
+              '🎁 +35 бесплатных МяуКоинов каждые 2 недели (в 1 клик!)',
+              '🎨 4 эксклюзивных маркера бесплатно (+Королевское золото и Коралл)',
+              '💎 Эксклюзивный бриллиантовый VIP-значок профиля'
             ]
           },
           {
@@ -1906,13 +2039,14 @@
             cssClass: 'tier-business',
             badge: '🏢👑 БИЗНЕС',
             title: 'CatMsg Премиум Бизнес (Business)',
-            subtitle: 'Максимальный уровень для команд и бизнеса',
+            subtitle: 'Всё из CatMsg Премиум + Бизнес-привилегии',
             color: '#10B981',
             mailtoSubject: 'CatMsg%20Premium%20Business%20Deal',
             bullets: [
-              '🏷️ Скидка 25% в магазине на все стикеры, королевские значки и маркеры',
-              '🪙 0% доп. МяуКоинов за квесты (честно для всех)',
-              '🏢👑 Эксклюзивный бизнес-значок VIP и приоритетный тег Кото-дома',
+              '✅ Всегда включает ВСЁ из CatMsg Премиум (+35 🪙 раз в 2 недели и скидка 16%)',
+              '📣 Режим баннера бизнес-объявлений в чате',
+              '🎨 Эксклюзивный бирюзовый бизнес-маркер + все 4 Премиум-маркера бесплатно',
+              '🏢👑 Подтверждённый бизнес-значок VIP и приоритетный тег Кото-дома',
               '🤝 Поддержка мультиаккаунтных и командных сделок с владельцем'
             ]
           }
@@ -2049,8 +2183,13 @@
     ];
 
     const WHITEBOARD_MARKERS = [
-      { id: 'marker_white', name: '🤍 Default White Marker', nameAr: '🤍 قلم أبيض افتراضي', colorHex: '#FFFFFF', priceCoins: 0 },
-      { id: 'marker_emerald', name: '💚 Emerald Marker', nameAr: '💚 قلم زمردي (Emerald)', colorHex: '#10B981', priceCoins: 25 }
+      { id: 'marker_white', name: '🤍 Default White Marker', nameAr: '🤍 قلم أبيض افتراضي', colorHex: '#FFFFFF', priceCoins: 0, tierRequired: null },
+      { id: 'marker_emerald', name: '💚 Emerald Marker', nameAr: '💚 قلم زمردي (Emerald)', colorHex: '#10B981', priceCoins: 25, tierRequired: null },
+      { id: 'marker_neon_purple', name: '💜 Neon Purrple Marker', nameAr: '💜 قلم بنفسجي نيون (Basic+)', colorHex: '#A855F7', priceCoins: 35, tierRequired: 'basic' },
+      { id: 'marker_paw_pink', name: '🌸 Paw Pink Marker', nameAr: '🌸 قلم وردي المخالب (Basic+)', colorHex: '#FF7EB6', priceCoins: 35, tierRequired: 'basic' },
+      { id: 'marker_royal_gold', name: '🌟 Royal Gold Marker', nameAr: '🌟 قلم ذهبي ملكي (Premium+)', colorHex: '#FFD166', priceCoins: 50, tierRequired: 'standard' },
+      { id: 'marker_sunset_coral', name: '🔥 Sunset Coral Marker', nameAr: '🔥 قلم مرجاني غروب (Premium+)', colorHex: '#FF6B6B', priceCoins: 50, tierRequired: 'standard' },
+      { id: 'marker_exec_cyan', name: '🩵 Executive Cyan Marker', nameAr: '🩵 قلم الأعمال السماوي (Business)', colorHex: '#5CE1E6', priceCoins: 75, tierRequired: 'business' }
     ];
 
     const REACTION_PALETTE = ['🐾', '😻', '🐟', '🧶', '🥛', '😾', '⚡', '👑'];
@@ -2099,11 +2238,15 @@
       };
     }
 
-    function normalizeUsersToMeowAi(usersObj) {
-      const cleaned = { user_meow_ai: getDefaultMeowAiUser() };
+    function normalizeUsersToMeowAi(usersObj, removedFriendIds = []) {
+      const removedSet = new Set(Array.isArray(removedFriendIds) ? removedFriendIds : []);
+      const cleaned = {};
+      if (!removedSet.has('user_meow_ai')) {
+        cleaned.user_meow_ai = getDefaultMeowAiUser();
+      }
       if (usersObj && typeof usersObj === 'object') {
         for (const [uid, uVal] of Object.entries(usersObj)) {
-          if (!LEGACY_CAT_BOT_IDS.includes(uid) && uid !== 'user_meow_ai' && uVal && typeof uVal === 'object') {
+          if (!LEGACY_CAT_BOT_IDS.includes(uid) && uid !== 'user_meow_ai' && !removedSet.has(uid) && uVal && typeof uVal === 'object') {
             cleaned[uid] = uVal;
           }
         }
@@ -2134,6 +2277,11 @@
       promoCodes: {},
       ceoTargetUser: 'abood',
       ceoBucksAmount: '100',
+      ceoSubTargetUser: 'abood',
+      ceoSubTier: 'standard',
+      ceoSubDays: '30',
+      businessAnnouncementMode: false,
+      dailyPuzzle: null,
 
       // Whiteboard state (Just for Fun, No Rewards)
       activeMarkerId: 'marker_white',
@@ -2166,7 +2314,12 @@
         isOwner: true,
         isPremium: true,
         premiumLifetime: true,
+        premiumTier: 'standard',
         premiumPlan: 'Lifetime',
+        premiumExpiresAt: null,
+        lastBiweeklyCoinsClaimAt: null,
+        lastDailyPuzzleRewardDate: null,
+        removedFriendIds: [],
         phoneNumber: '',
         phoneRewardClaimed: false,
         bio: 'Founder & Supreme Owner of The Grand Cat Castle. Will trade headbutts for premium salmon.',
@@ -2382,6 +2535,37 @@
           winner.currentUser.avatarManuallyCustomized = !!snapA.currentUser.avatarManuallyCustomized;
           winner.currentUser.avatarUpdatedAt = snapA.currentUser.avatarUpdatedAt;
         }
+        const premTimeA = (snapA.currentUser && snapA.currentUser.premiumUpdatedAt) ? (Date.parse(snapA.currentUser.premiumUpdatedAt) || 0) : 0;
+        const premTimeB = (snapB.currentUser && snapB.currentUser.premiumUpdatedAt) ? (Date.parse(snapB.currentUser.premiumUpdatedAt) || 0) : 0;
+        if (premTimeB > premTimeA && snapB.currentUser) {
+          winner.currentUser.isPremium = !!snapB.currentUser.isPremium;
+          winner.currentUser.premiumLifetime = !!snapB.currentUser.premiumLifetime;
+          winner.currentUser.premiumTier = snapB.currentUser.premiumTier || '';
+          winner.currentUser.premiumPlan = snapB.currentUser.premiumPlan || '';
+          winner.currentUser.premiumExpiresAt = snapB.currentUser.premiumExpiresAt || null;
+          winner.currentUser.premiumUpdatedAt = snapB.currentUser.premiumUpdatedAt;
+        } else if (premTimeA > premTimeB && snapA.currentUser) {
+          winner.currentUser.isPremium = !!snapA.currentUser.isPremium;
+          winner.currentUser.premiumLifetime = !!snapA.currentUser.premiumLifetime;
+          winner.currentUser.premiumTier = snapA.currentUser.premiumTier || '';
+          winner.currentUser.premiumPlan = snapA.currentUser.premiumPlan || '';
+          winner.currentUser.premiumExpiresAt = snapA.currentUser.premiumExpiresAt || null;
+          winner.currentUser.premiumUpdatedAt = snapA.currentUser.premiumUpdatedAt;
+        }
+        const bwA = (snapA.currentUser && snapA.currentUser.lastBiweeklyCoinsClaimAt) ? (Date.parse(snapA.currentUser.lastBiweeklyCoinsClaimAt) || 0) : 0;
+        const bwB = (snapB.currentUser && snapB.currentUser.lastBiweeklyCoinsClaimAt) ? (Date.parse(snapB.currentUser.lastBiweeklyCoinsClaimAt) || 0) : 0;
+        if (bwB > bwA && snapB.currentUser) {
+          winner.currentUser.lastBiweeklyCoinsClaimAt = snapB.currentUser.lastBiweeklyCoinsClaimAt;
+        } else if (bwA > bwB && snapA.currentUser) {
+          winner.currentUser.lastBiweeklyCoinsClaimAt = snapA.currentUser.lastBiweeklyCoinsClaimAt;
+        }
+        const puzA = (snapA.currentUser && snapA.currentUser.lastDailyPuzzleRewardDate) || '';
+        const puzB = (snapB.currentUser && snapB.currentUser.lastDailyPuzzleRewardDate) || '';
+        if (puzB > puzA) {
+          winner.currentUser.lastDailyPuzzleRewardDate = puzB;
+        } else if (puzA > puzB) {
+          winner.currentUser.lastDailyPuzzleRewardDate = puzA;
+        }
       }
       return winner;
     }
@@ -2475,6 +2659,10 @@
           ? '🐱'
           : (snap.currentUser.avatarEmoji || '🐱');
 
+        const snapFriendIds = Array.isArray(snap.currentUser.friendIds) ? snap.currentUser.friendIds : ['user_meow_ai'];
+        const snapRemovedIds = Array.isArray(snap.currentUser.removedFriendIds) ? snap.currentUser.removedFriendIds : [];
+        const resolvedFriendIds = snapFriendIds.filter(fid => !snapRemovedIds.includes(fid));
+
         state.currentUser = {
           phoneNumber: '',
           phoneRewardClaimed: false,
@@ -2483,7 +2671,12 @@
           meowBucks: 0,
           isPremium: isOwnerUser ? true : false,
           premiumLifetime: isOwnerUser ? true : false,
+          premiumTier: isOwnerUser ? 'standard' : 'none',
           premiumPlan: isOwnerUser ? 'Lifetime' : '',
+          premiumExpiresAt: null,
+          lastBiweeklyCoinsClaimAt: null,
+          lastDailyPuzzleRewardDate: null,
+          removedFriendIds: [],
           unlockedMarkers: ['marker_white'],
           ...state.currentUser,
           ...snap.currentUser,
@@ -2494,9 +2687,18 @@
           username: migratedUsername,
           displayName: migratedDisplayName,
           isOwner: isOwnerUser,
-          friendIds: ['user_meow_ai'],
-          ...(isOwnerUser ? { isPremium: true, premiumLifetime: true, premiumPlan: 'Lifetime' } : {})
+          removedFriendIds: snapRemovedIds,
+          friendIds: resolvedFriendIds,
+          ...(isOwnerUser ? {
+            isPremium: true,
+            premiumLifetime: true,
+            premiumPlan: snap.currentUser.premiumPlan || 'Lifetime',
+            premiumTier: snap.currentUser.premiumTier || 'standard'
+          } : {})
         };
+        if (!isOwnerUser && !state.currentUser.premiumLifetime && state.currentUser.premiumExpiresAt && Date.parse(state.currentUser.premiumExpiresAt) <= Date.now()) {
+          state.currentUser.isPremium = false;
+        }
         if (isOwnerUser && Array.isArray(state.currentUser.unlockedBadges) && !state.currentUser.unlockedBadges.includes('💎 Lifetime Premium')) {
           state.currentUser.unlockedBadges.push('💎 Lifetime Premium');
         }
@@ -2507,7 +2709,7 @@
           state.currentUser.redeemedCodes = [];
         }
       }
-      state.users = normalizeUsersToMeowAi(snap.users);
+      state.users = normalizeUsersToMeowAi(snap.users, state.currentUser.removedFriendIds);
       if (LEGACY_CAT_BOT_IDS.includes(state.selectedDmUserId) || !state.users[state.selectedDmUserId]) {
         state.selectedDmUserId = 'user_meow_ai';
       }
@@ -2712,8 +2914,10 @@
     async function handleGoogleSignInSubmit() {
       const emailEl = document.getElementById('google-auth-email');
       const nameEl = document.getElementById('google-auth-name');
+      const passEl = document.getElementById('google-auth-password');
       const rawEmail = (emailEl ? emailEl.value : '').trim().toLowerCase();
       const rawName = (nameEl ? nameEl.value : '').trim();
+      const password = (passEl ? passEl.value : '').trim();
 
       if (!rawEmail || !rawEmail.includes('@')) {
         showToast(
@@ -2724,10 +2928,36 @@
         return;
       }
 
+      if (!password) {
+        showToast(
+          state.lang === 'ar'
+            ? '😾 يجب إنشاء أو إدخال كلمة مرور لحماية حساب Google الخاص بك!'
+            : '😾 A password is required! Please create or enter your account password to sign in with Google.'
+        );
+        return;
+      }
+
+      const accounts = await syncAccountsFromCloud();
+
       if (rawEmail === OWNER_EMAIL.toLowerCase() || rawEmail === 'abood@gmail.com') {
+        const cloudOwnerSnap = await fetchCloudUserSnapshot('abood');
+        const ownerAcc = accounts['abood'] || accounts['captain_purr'] || null;
+        const bestOwner = chooseBestSnapshot(ownerAcc && ownerAcc.snapshot, cloudOwnerSnap);
+        const storedOwnerPwd = (ownerAcc && ownerAcc.password) || (bestOwner && bestOwner.accountPassword) || (bestOwner && bestOwner.currentUser && bestOwner.currentUser.accountPassword) || '';
+        if (storedOwnerPwd && storedOwnerPwd !== password) {
+          showToast(
+            state.lang === 'ar'
+              ? '😾 كلمة المرور غير صحيحة لحساب المالك @abood!'
+              : '😾 Incorrect password for Owner account @abood!'
+          );
+          return;
+        }
         markOwnerLoggedInOnce();
         await quickOwnerLogin();
         state.currentUser.googleEmail = rawEmail;
+        if (!storedOwnerPwd) {
+          state.currentUser.accountPassword = password;
+        }
         state.showGoogleAuthPanel = false;
         autoPersistIfEnabled();
         showToast(
@@ -2739,22 +2969,41 @@
       }
 
       const localPart = rawEmail.split('@')[0].replace(/[^a-z0-9_]/gi, '_').toLowerCase() || 'google_cat';
-      const username = localPart;
-      const displayName = rawName || localPart;
+      const emailMatchedAcc = Object.values(accounts).find(a =>
+        a && typeof a === 'object' && (
+          String(a.googleEmail || '').toLowerCase() === rawEmail ||
+          String((a.snapshot && a.snapshot.currentUser && a.snapshot.currentUser.googleEmail) || '').toLowerCase() === rawEmail
+        )
+      );
+      const username = (emailMatchedAcc && emailMatchedAcc.username) ? emailMatchedAcc.username : localPart;
+      const displayName = rawName || username;
 
-      const accounts = await syncAccountsFromCloud();
       const cloudSnap = await fetchCloudUserSnapshot(username);
-      const acc = accounts[username];
+      const acc = accounts[username] || emailMatchedAcc || null;
       const bestSnap = chooseBestSnapshot(acc && acc.snapshot, cloudSnap);
+      const storedPassword = (acc && acc.password) || (bestSnap && bestSnap.accountPassword) || (bestSnap && bestSnap.currentUser && bestSnap.currentUser.accountPassword) || '';
+
+      if ((acc || bestSnap) && storedPassword && storedPassword !== password) {
+        showToast(
+          state.lang === 'ar'
+            ? `😾 كلمة المرور غير صحيحة لحساب @${username}!`
+            : `😾 Incorrect password for @${username}!`
+        );
+        return;
+      }
 
       if (bestSnap) {
         applySnapshot(bestSnap);
         state.currentUser.googleEmail = rawEmail;
+        if (!storedPassword) {
+          state.currentUser.accountPassword = password;
+        }
       } else {
         state.currentUser = {
           id: 'user_google_' + Date.now(),
           username: username,
           displayName: displayName,
+          accountPassword: password,
           googleEmail: rawEmail,
           avatarEmoji: '🐱',
           avatarColorHex: '#5CE1E6',
@@ -2769,8 +3018,15 @@
           allQuestsBonusClaimed: false,
           redeemedCodes: [],
           isPremium: false,
+          premiumLifetime: false,
+          premiumTier: 'none',
+          premiumPlan: '',
+          premiumExpiresAt: null,
+          lastBiweeklyCoinsClaimAt: null,
+          lastDailyPuzzleRewardDate: null,
+          removedFriendIds: [],
           bio: `Google CatMsg account (${rawEmail}).`,
-          meowCoins: 50,
+          meowCoins: 250,
           meowBucks: 0,
           unlockedStickerIds: ['sticker_loaf', 'sticker_zoomies', 'sticker_boop', 'sticker_tuna'],
           unlockedBadges: ['🐾 Day One Paws'],
@@ -2808,7 +3064,8 @@
         state.currentUser.isOwner = true;
         state.currentUser.isPremium = true;
         state.currentUser.premiumLifetime = true;
-        state.currentUser.premiumPlan = 'Lifetime';
+        state.currentUser.premiumPlan = state.currentUser.premiumPlan || 'Lifetime';
+        state.currentUser.premiumTier = state.currentUser.premiumTier || 'standard';
         if (!state.currentUser.avatarManuallyCustomized) {
           state.currentUser.avatarEmoji = '🐱';
         }
@@ -2832,7 +3089,12 @@
           redeemedCodes: state.currentUser.redeemedCodes || [],
           isPremium: true,
           premiumLifetime: true,
+          premiumTier: 'standard',
           premiumPlan: 'Lifetime',
+          premiumExpiresAt: null,
+          lastBiweeklyCoinsClaimAt: null,
+          lastDailyPuzzleRewardDate: null,
+          removedFriendIds: [],
           bio: 'Founder & Supreme Owner of The Grand Cat Castle. Will trade headbutts for premium salmon.',
           meowCoins: state.currentUser.username === 'abood' ? state.currentUser.meowCoins : 250,
           meowBucks: typeof state.currentUser.meowBucks === 'number' ? state.currentUser.meowBucks : 100,
@@ -2843,7 +3105,7 @@
           friendIds: ['user_meow_ai']
         };
       }
-      state.users = normalizeUsersToMeowAi(state.users);
+      state.users = normalizeUsersToMeowAi(state.users, state.currentUser.removedFriendIds);
       state.quests = ensureAllUsersQuestsMerged(state.quests);
       state.isSignedIn = true;
       localStorage.setItem(ACTIVE_USER_KEY, 'abood');
@@ -3010,8 +3272,15 @@
         allQuestsBonusClaimed: false,
         redeemedCodes: [],
         isPremium: false,
+        premiumLifetime: false,
+        premiumTier: 'none',
+        premiumPlan: '',
+        premiumExpiresAt: null,
+        lastBiweeklyCoinsClaimAt: null,
+        lastDailyPuzzleRewardDate: null,
+        removedFriendIds: [],
         bio: 'Brand new CatMsg member starting fresh quests from zero!',
-        meowCoins: 50,
+        meowCoins: 250,
         meowBucks: 0,
         unlockedStickerIds: ['sticker_loaf', 'sticker_zoomies', 'sticker_boop', 'sticker_tuna'],
         unlockedBadges: ['🐾 New Kitty'],
@@ -3208,25 +3477,23 @@
       if (state.modal === 'ceoPanel') render();
     }
 
-    function ceoGiveMeowBucks(overrideAmount = null) {
-      return ceoModifyMeowBucks('give', overrideAmount);
+    function ceoGiveMeowBucks() {
+      return ceoModifyMeowBucks('give');
     }
 
     function ceoSetMeowBucks() {
-      return ceoModifyMeowBucks('set', null);
+      return ceoModifyMeowBucks('set');
     }
 
-    async function ceoModifyMeowBucks(mode = 'give', overrideAmount = null) {
+    async function ceoModifyMeowBucks(mode = 'give') {
       if (!state.currentUser || !state.currentUser.isOwner) return;
       const uEl = document.getElementById('ceo-target-user');
       const aEl = document.getElementById('ceo-bucks-amount');
       const rawUser = ((uEl ? uEl.value : state.ceoTargetUser) || '').trim().toLowerCase().replace(/^@/, '').replace(/\s+/g, '_');
       if (rawUser) state.ceoTargetUser = rawUser;
 
-      const rawAmount = (overrideAmount !== null && overrideAmount !== undefined)
-        ? String(overrideAmount)
-        : ((aEl ? aEl.value : state.ceoBucksAmount) || '').trim();
-      if ((overrideAmount === null || overrideAmount === undefined) && aEl) {
+      const rawAmount = ((aEl ? aEl.value : state.ceoBucksAmount) || '').trim();
+      if (aEl) {
         state.ceoBucksAmount = aEl.value;
       }
 
@@ -3264,12 +3531,6 @@
               ? `👑🎯 تم تعيين رصيد حسابك (@${targetUsername}) إلى 💵 ${amount} Meow Bucks من لوحة Cat CEO!`
               : `👑🎯 Set your account (@${targetUsername}) balance to 💵 ${amount} Meow Bucks via Cat CEO Panel!`
           );
-        } else if (overrideAmount === 200) {
-          showToast(
-            state.lang === 'ar'
-              ? `🎉💵 للترفيه فقط! تمت زيادة رصيدك (@${targetUsername}) بمقدار +200 Meow Bucks (الإجمالي: 💵 ${state.currentUser.meowBucks})!`
-              : `🎉💵 Just for fun! Increased your account (@${targetUsername}) by +200 Meow Bucks (now 💵 ${state.currentUser.meowBucks})!`
-          );
         } else {
           showToast(
             state.lang === 'ar'
@@ -3294,7 +3555,7 @@
         return;
       }
 
-      const updatedSnap = targetSnap ? { ...targetSnap } : { version: 5, currentUser: { username: targetUsername, displayName: (acc && acc.displayName) || targetUsername, meowCoins: 50, meowBucks: 0 } };
+      const updatedSnap = targetSnap ? { ...targetSnap } : { version: 5, currentUser: { username: targetUsername, displayName: (acc && acc.displayName) || targetUsername, meowCoins: 250, meowBucks: 0 } };
       updatedSnap.savedAt = nowIso;
       if (!updatedSnap.currentUser) updatedSnap.currentUser = { username: targetUsername, meowBucks: 0 };
       updatedSnap.currentUser = {
@@ -3332,12 +3593,6 @@
             ? `👑🎯 تم تعيين رصيد @${targetUsername} إلى 💵 ${amount} Meow Bucks بنجاح!`
             : `👑🎯 Set @${targetUsername}'s balance to 💵 ${amount} Meow Bucks!`
         );
-      } else if (overrideAmount === 200) {
-        showToast(
-          state.lang === 'ar'
-            ? `🎉💵 للترفيه فقط! تمت زيادة رصيد @${targetUsername} بمقدار +200 Meow Bucks (الإجمالي: 💵 ${updatedSnap.currentUser.meowBucks})!`
-            : `🎉💵 Just for fun! Increased @${targetUsername} by +200 Meow Bucks (now 💵 ${updatedSnap.currentUser.meowBucks})!`
-        );
       } else {
         showToast(
           state.lang === 'ar'
@@ -3345,6 +3600,173 @@
             : `👑💵 Sent +${amount} Meow Bucks giveaway to @${targetUsername}!`
         );
       }
+    }
+
+    async function ceoGrantSubscriptionDays() {
+      if (!state.currentUser || !state.currentUser.isOwner) return;
+      const uEl = document.getElementById('ceo-sub-target-user');
+      const dEl = document.getElementById('ceo-sub-days');
+      const rawUser = ((uEl ? uEl.value : state.ceoSubTargetUser) || '').trim().toLowerCase().replace(/^@/, '').replace(/\s+/g, '_');
+      if (rawUser) state.ceoSubTargetUser = rawUser;
+
+      const tier = state.ceoSubTier || 'standard';
+      const rawDays = ((dEl ? dEl.value : state.ceoSubDays) || '').trim();
+      if (dEl) state.ceoSubDays = dEl.value;
+      const days = parseInt(rawDays, 10);
+
+      if (!rawUser) {
+        showToast(state.lang === 'ar' ? '😾 اختر أو اكتب اسم مستخدم حالي!' : '😾 Please enter or select an existing username!');
+        return;
+      }
+      if (!Number.isFinite(days) || days <= 0) {
+        showToast(state.lang === 'ar' ? '😾 أدخل عدداً صحيحاً موجباً من الأيام!' : '😾 Please enter a positive number of subscription days!');
+        return;
+      }
+
+      const targetUsername = (rawUser === 'captain_purr' || rawUser === 'owner') ? 'abood' : rawUser;
+      const tierLabelMap = {
+        basic: 'CatMsg Premium Basic',
+        standard: 'CatMsg Premium',
+        business: 'CatMsg Premium Business'
+      };
+      const tierName = tierLabelMap[tier] || 'CatMsg Premium';
+      const nowMs = Date.now();
+      const nowIso = new Date(nowMs).toISOString();
+
+      if (targetUsername === (state.currentUser.username || 'abood').toLowerCase()) {
+        const curExp = state.currentUser.premiumExpiresAt ? Date.parse(state.currentUser.premiumExpiresAt) || 0 : 0;
+        const baseMs = (state.currentUser.premiumTier === tier && curExp > nowMs) ? curExp : nowMs;
+        const nextExpIso = new Date(baseMs + days * 86400000).toISOString();
+        state.currentUser.isPremium = true;
+        state.currentUser.premiumTier = tier;
+        state.currentUser.premiumPlan = `${tierName} (${days}d)`;
+        state.currentUser.premiumExpiresAt = nextExpIso;
+        state.currentUser.premiumUpdatedAt = nowIso;
+        autoPersistIfEnabled();
+        render();
+        showToast(
+          state.lang === 'ar'
+            ? `💎 تم منح حسابك (@${targetUsername}) ${days} يوماً من ${tierName}!`
+            : `💎 Granted your account (@${targetUsername}) ${days} day(s) of ${tierName}!`
+        );
+        return;
+      }
+
+      const accounts = await syncAccountsFromCloud();
+      const cloudSnap = await fetchCloudUserSnapshot(targetUsername);
+      const acc = accounts[targetUsername];
+      const targetSnap = chooseBestSnapshot(acc && acc.snapshot, cloudSnap);
+
+      if (!acc && !targetSnap) {
+        showToast(
+          state.lang === 'ar'
+            ? `😾 المستخدم @${targetUsername} غير موجود! يجب أن يكون حساباً مسجلاً.`
+            : `😾 Existing user @${targetUsername} was not found!`
+        );
+        return;
+      }
+
+      const updatedSnap = targetSnap ? { ...targetSnap } : { version: 5, currentUser: { username: targetUsername, displayName: (acc && acc.displayName) || targetUsername, meowCoins: 250, meowBucks: 0 } };
+      updatedSnap.savedAt = nowIso;
+      const curU = updatedSnap.currentUser || { username: targetUsername };
+      const curExp = curU.premiumExpiresAt ? Date.parse(curU.premiumExpiresAt) || 0 : 0;
+      const curActive = !!curU.isPremium && curExp > nowMs;
+      const baseMs = (curActive && curU.premiumTier === tier) ? curExp : nowMs;
+      const nextExpIso = new Date(baseMs + days * 86400000).toISOString();
+
+      updatedSnap.currentUser = {
+        ...curU,
+        isPremium: true,
+        premiumLifetime: false,
+        premiumTier: tier,
+        premiumPlan: tierName,
+        premiumExpiresAt: nextExpIso,
+        premiumUpdatedAt: nowIso
+      };
+
+      const targetStorageKey = getUserStorageKey(targetUsername);
+      try {
+        localStorage.setItem(targetStorageKey, JSON.stringify(updatedSnap));
+      } catch (e) {}
+
+      accounts[targetUsername] = {
+        ...(acc || {}),
+        username: targetUsername,
+        displayName: updatedSnap.currentUser.displayName || targetUsername,
+        avatarEmoji: updatedSnap.currentUser.avatarEmoji || '🐱',
+        lastSavedAt: nowIso,
+        snapshot: updatedSnap
+      };
+      saveStoredAccounts(accounts);
+
+      fetch(`/api/userdata?key=${encodeURIComponent(targetUsername)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedSnap)
+      }).catch(() => {});
+
+      render();
+      showToast(
+        state.lang === 'ar'
+          ? `💎🎁 تم منح @${targetUsername} اشتراك ${tierName} لمدة ${days} يوماً بنجاح!`
+          : `💎🎁 Granted @${targetUsername} ${days} day(s) of ${tierName}!`
+      );
+    }
+
+    async function ceoRevokeSubscription() {
+      if (!state.currentUser || !state.currentUser.isOwner) return;
+      const uEl = document.getElementById('ceo-sub-target-user');
+      const rawUser = ((uEl ? uEl.value : state.ceoSubTargetUser) || '').trim().toLowerCase().replace(/^@/, '').replace(/\s+/g, '_');
+      if (!rawUser) return;
+      const targetUsername = (rawUser === 'captain_purr' || rawUser === 'owner') ? 'abood' : rawUser;
+      const nowIso = new Date().toISOString();
+
+      if (targetUsername === (state.currentUser.username || 'abood').toLowerCase()) {
+        state.currentUser.premiumTier = 'standard';
+        state.currentUser.premiumPlan = 'Lifetime';
+        state.currentUser.premiumExpiresAt = null;
+        state.currentUser.premiumUpdatedAt = nowIso;
+        autoPersistIfEnabled();
+        render();
+        showToast('👑 Reset @abood back to default Owner Lifetime Premium!');
+        return;
+      }
+
+      const accounts = await syncAccountsFromCloud();
+      const cloudSnap = await fetchCloudUserSnapshot(targetUsername);
+      const acc = accounts[targetUsername];
+      const targetSnap = chooseBestSnapshot(acc && acc.snapshot, cloudSnap);
+      if (!acc && !targetSnap) {
+        showToast(`😾 Existing user @${targetUsername} was not found!`);
+        return;
+      }
+      const updatedSnap = { ...targetSnap, savedAt: nowIso };
+      updatedSnap.currentUser = {
+        ...(updatedSnap.currentUser || { username: targetUsername }),
+        isPremium: false,
+        premiumLifetime: false,
+        premiumTier: 'none',
+        premiumPlan: '',
+        premiumExpiresAt: null,
+        premiumUpdatedAt: nowIso
+      };
+      try {
+        localStorage.setItem(getUserStorageKey(targetUsername), JSON.stringify(updatedSnap));
+      } catch (e) {}
+      accounts[targetUsername] = {
+        ...(acc || {}),
+        username: targetUsername,
+        lastSavedAt: nowIso,
+        snapshot: updatedSnap
+      };
+      saveStoredAccounts(accounts);
+      fetch(`/api/userdata?key=${encodeURIComponent(targetUsername)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedSnap)
+      }).catch(() => {});
+      render();
+      showToast(`🚫 Removed active subscription from @${targetUsername}.`);
     }
 
     async function ceoCreatePromoCode() {
@@ -3731,12 +4153,110 @@
       ctx.fillText(cap[1], w / 2, h - 18);
     }
 
-    function getUserPremiumDiscountPercent() {
-      if (!state.currentUser || !state.currentUser.isPremium) return 0;
-      const plan = String(state.currentUser.premiumPlan || '').toLowerCase();
-      if (plan.includes('business')) return 25;
-      if (plan.includes('basic')) return 8;
-      return 16;
+    function isUserPremiumActive(user = state.currentUser) {
+      if (!user) return false;
+      if (user.isOwner || user.premiumLifetime) return true;
+      if (!user.isPremium) return false;
+      if (!user.premiumExpiresAt) return true;
+      const exp = Date.parse(user.premiumExpiresAt);
+      return Number.isFinite(exp) && exp > Date.now();
+    }
+
+    function getUserPremiumTier(user = state.currentUser) {
+      if (!isUserPremiumActive(user)) return 'none';
+      const explicit = String(user.premiumTier || '').toLowerCase();
+      if (explicit === 'business' || explicit === 'basic' || explicit === 'standard') {
+        return explicit;
+      }
+      const plan = String(user.premiumPlan || '').toLowerCase();
+      if (plan.includes('business')) return 'business';
+      if (plan.includes('basic')) return 'basic';
+      return 'standard';
+    }
+
+    function hasStandardOrBusinessPremium(user = state.currentUser) {
+      const tier = getUserPremiumTier(user);
+      return tier === 'standard' || tier === 'business';
+    }
+
+    function getPremiumDaysRemaining(user = state.currentUser) {
+      if (!isUserPremiumActive(user)) return 0;
+      if (user.premiumLifetime || (user.isOwner && !user.premiumExpiresAt)) return Infinity;
+      if (!user.premiumExpiresAt) return Infinity;
+      const ms = Date.parse(user.premiumExpiresAt) - Date.now();
+      return Math.max(1, Math.ceil(ms / 86400000));
+    }
+
+    function getPremiumBadgeLabel(user = state.currentUser) {
+      const tier = getUserPremiumTier(user);
+      if (tier === 'none') return '';
+      const rem = getPremiumDaysRemaining(user);
+      const suffix = Number.isFinite(rem) ? ` (${rem}d)` : (user.premiumLifetime ? ' LIFETIME' : '');
+      if (tier === 'business') return `🏢 BUSINESS${suffix}`;
+      if (tier === 'basic') return `💠 BASIC${suffix}`;
+      return `💎${suffix || ' VIP'}`;
+    }
+
+    function isMarkerUnlockedForUser(marker, user = state.currentUser) {
+      if (!marker) return false;
+      if (marker.priceCoins === 0) return true;
+      const owned = Array.isArray(user && user.unlockedMarkers) ? user.unlockedMarkers : ['marker_white'];
+      if (owned.includes(marker.id)) return true;
+      const tier = getUserPremiumTier(user);
+      const rank = { none: 0, basic: 1, standard: 2, business: 3 };
+      const reqRank = rank[marker.tierRequired || ''] || 99;
+      return rank[tier] >= reqRank;
+    }
+
+    function getUserPremiumDiscountPercent(user = state.currentUser) {
+      const tier = getUserPremiumTier(user);
+      if (tier === 'business') return 16;
+      if (tier === 'standard') return 16;
+      if (tier === 'basic') return 8;
+      return 0;
+    }
+
+    function getBiweeklyCoinsStatus(user = state.currentUser) {
+      if (!hasStandardOrBusinessPremium(user)) {
+        return { eligible: false, canClaim: false, daysLeft: 14, hoursLeft: 0 };
+      }
+      const lastMs = user.lastBiweeklyCoinsClaimAt ? (Date.parse(user.lastBiweeklyCoinsClaimAt) || 0) : 0;
+      const cooldownMs = 14 * 86400000;
+      const diff = Date.now() - lastMs;
+      if (!lastMs || diff >= cooldownMs) {
+        return { eligible: true, canClaim: true, daysLeft: 0, hoursLeft: 0 };
+      }
+      const remMs = cooldownMs - diff;
+      const daysLeft = Math.floor(remMs / 86400000);
+      const hoursLeft = Math.floor((remMs % 86400000) / 3600000);
+      return { eligible: true, canClaim: false, daysLeft, hoursLeft };
+    }
+
+    function claimBiweeklyPremiumCoins() {
+      const status = getBiweeklyCoinsStatus();
+      if (!status.eligible || !status.canClaim) return;
+      state.currentUser.meowCoins = (state.currentUser.meowCoins || 0) + 35;
+      state.currentUser.lastBiweeklyCoinsClaimAt = new Date().toISOString();
+      autoPersistIfEnabled();
+      render();
+      showToast(
+        state.lang === 'ar'
+          ? '🎁🪙 تم استلام +35 عملة مياو مجانية (ميزة الاشتراك كل أسبوعين)!'
+          : '🎁🪙 Claimed +35 Free MeowCoins (Bi-Weekly Subscription Perk)!'
+      );
+    }
+
+    function renderBiweeklyCoinsBanner(L) {
+      const bw = getBiweeklyCoinsStatus();
+      if (!bw.eligible) return '';
+      return `
+        <div style="margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.45);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+          <span style="font-size:12.5px;font-weight:800;color:var(--mint)">${L.biweeklyCoinsTitle}</span>
+          ${bw.canClaim
+            ? `<button class="btn-gold" onclick="claimBiweeklyPremiumCoins()">${L.biweeklyCoinsClaimBtn}</button>`
+            : `<span class="badge-tag" style="color:var(--gold);border-color:rgba(255,209,102,0.45)">${L.biweeklyCoinsNextIn(bw.daysLeft, bw.hoursLeft)}</span>`}
+        </div>
+      `;
     }
 
     function getEffectiveCoinPrice(basePrice) {
@@ -3746,6 +4266,345 @@
         return Math.max(1, Math.round(basePrice * (1 - pct / 100)));
       }
       return basePrice;
+    }
+
+    // --- DAILY CUTE CAT IMAGE PUZZLE (+5 MEOWCOINS ONCE PER DAY ON FIRST COMPLETION) ---
+    function getTodayDateKey() {
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
+    }
+
+    const DAILY_CAT_PUZZLES = [
+      { id: 'tuxedo', title: 'Sir Tuxedo Whiskers 🎩🐱', bg: ['#1E1B4B', '#4338CA'], coat: '#1F2937', earInner: '#FDA4AF', eyes: '#34D399', accessory: 'bowtie' },
+      { id: 'calico', title: 'Strawberry Teacup Kitty 🍓🐱', bg: ['#831843', '#DB2777'], coat: '#FFF7ED', earInner: '#FBCFE8', eyes: '#0F172A', accessory: 'strawberry' },
+      { id: 'tabby', title: 'Sunny Orange Loaf ☀️🧡', bg: ['#7C2D12', '#EA580C'], coat: '#FB923C', earInner: '#FED7AA', eyes: '#1E293B', accessory: 'sun' },
+      { id: 'astro', title: 'Astro Space Kitty 🚀🌙', bg: ['#0F172A', '#0284C7'], coat: '#F8FAFC', earInner: '#93C5FD', eyes: '#38BDF8', accessory: 'astro' },
+      { id: 'sakura', title: 'Sakura Blossom Cat 🌸🐱', bg: ['#581C87', '#EC4899'], coat: '#FEF2F2', earInner: '#F9A8D4', eyes: '#6D28D9', accessory: 'sakura' },
+      { id: 'king', title: 'Golden Castle Loaf 👑🏰', bg: ['#422006', '#CA8A04'], coat: '#FEF08A', earInner: '#FDBA74', eyes: '#1E1B4B', accessory: 'crown' },
+      { id: 'mint', title: 'Matcha Cream Kitten 🍵🐾', bg: ['#064E3B', '#10B981'], coat: '#F0FDF4', earInner: '#86EFAC', eyes: '#065F46', accessory: 'leaf' }
+    ];
+
+    function getTodaysCatPuzzleSpec() {
+      const parts = getTodayDateKey().split('-').map(Number);
+      const daySeed = parts[0] * 372 + parts[1] * 31 + parts[2];
+      return DAILY_CAT_PUZZLES[daySeed % DAILY_CAT_PUZZLES.length];
+    }
+
+    function createShuffledPuzzleBoard() {
+      const board = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+      for (let i = board.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const tmp = board[i];
+        board[i] = board[j];
+        board[j] = tmp;
+      }
+      if (board.every((v, idx) => v === idx)) {
+        [board[0], board[4]] = [board[4], board[0]];
+        [board[2], board[7]] = [board[7], board[2]];
+      }
+      return board;
+    }
+
+    function openDailyCatPuzzle() {
+      const todayKey = getTodayDateKey();
+      if (!state.dailyPuzzle || state.dailyPuzzle.dateKey !== todayKey) {
+        state.dailyPuzzle = {
+          dateKey: todayKey,
+          board: createShuffledPuzzleBoard(),
+          selectedPos: null,
+          moves: 0,
+          solved: false,
+          showPeek: false
+        };
+      }
+      state.modal = 'dailyPuzzle';
+      render();
+      setTimeout(renderDailyCatPuzzleCanvases, 30);
+    }
+
+    function resetDailyCatPuzzle() {
+      state.dailyPuzzle = {
+        dateKey: getTodayDateKey(),
+        board: createShuffledPuzzleBoard(),
+        selectedPos: null,
+        moves: 0,
+        solved: false,
+        showPeek: false
+      };
+      render();
+      setTimeout(renderDailyCatPuzzleCanvases, 30);
+    }
+
+    function toggleDailyPuzzlePeek() {
+      if (!state.dailyPuzzle) return;
+      state.dailyPuzzle.showPeek = !state.dailyPuzzle.showPeek;
+      render();
+      setTimeout(renderDailyCatPuzzleCanvases, 30);
+    }
+
+    function clickDailyPuzzleTile(posIdx) {
+      if (!state.dailyPuzzle || state.dailyPuzzle.solved) return;
+      if (state.dailyPuzzle.selectedPos === null) {
+        state.dailyPuzzle.selectedPos = posIdx;
+        render();
+        setTimeout(renderDailyCatPuzzleCanvases, 10);
+        return;
+      }
+      if (state.dailyPuzzle.selectedPos === posIdx) {
+        state.dailyPuzzle.selectedPos = null;
+        render();
+        setTimeout(renderDailyCatPuzzleCanvases, 10);
+        return;
+      }
+      const a = state.dailyPuzzle.selectedPos;
+      const b = posIdx;
+      [state.dailyPuzzle.board[a], state.dailyPuzzle.board[b]] = [state.dailyPuzzle.board[b], state.dailyPuzzle.board[a]];
+      state.dailyPuzzle.selectedPos = null;
+      state.dailyPuzzle.moves += 1;
+
+      const isNowSolved = state.dailyPuzzle.board.every((v, i) => v === i);
+      if (isNowSolved) {
+        state.dailyPuzzle.solved = true;
+        const todayKey = getTodayDateKey();
+        if (state.currentUser.lastDailyPuzzleRewardDate !== todayKey) {
+          state.currentUser.lastDailyPuzzleRewardDate = todayKey;
+          state.currentUser.meowCoins = (state.currentUser.meowCoins || 0) + 5;
+          autoPersistIfEnabled();
+          render();
+          setTimeout(renderDailyCatPuzzleCanvases, 20);
+          showToast(
+            state.lang === 'ar'
+              ? '🧩🐱 أحسنت! أكملت لغز القطة اللطيفة اليوم وحصلت على +5 🪙 عملات مياو!'
+              : '🧩🐱 Purrfect! Completed today\'s Cute Cat Puzzle for +5 🪙 MeowCoins!'
+          );
+          return;
+        }
+        render();
+        setTimeout(renderDailyCatPuzzleCanvases, 20);
+        showToast(
+          state.lang === 'ar'
+            ? '🧩✨ أكملت اللغز بنجاح! تم استلام مكافأة اليوم (+5 🪙) مسبقاً — عد غداً!'
+            : '🧩✨ Puzzle solved! Today\'s +5 🪙 reward was already claimed — come back tomorrow!'
+        );
+        return;
+      }
+
+      render();
+      setTimeout(renderDailyCatPuzzleCanvases, 10);
+    }
+
+    function buildCuteCatArtworkCanvas(spec, size = 300) {
+      const c = document.createElement('canvas');
+      c.width = size;
+      c.height = size;
+      const ctx = c.getContext('2d');
+
+      const grad = ctx.createLinearGradient(0, 0, size, size);
+      grad.addColorStop(0, spec.bg[0]);
+      grad.addColorStop(1, spec.bg[1]);
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, size, size);
+
+      // Cute sparkles & floating paw dots background
+      ctx.fillStyle = 'rgba(255,255,255,0.16)';
+      const dots = [[36, 44, 5], [258, 52, 6], [42, 246, 5], [254, 240, 7], [150, 28, 4], [272, 148, 4], [24, 152, 4]];
+      for (const [dx, dy, dr] of dots) {
+        ctx.beginPath();
+        ctx.arc(dx, dy, dr, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Soft grid frame hints inside artwork so corners/edges are fun to spot
+      ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+      ctx.lineWidth = 4;
+      ctx.strokeRect(12, 12, size - 24, size - 24);
+
+      const cx = size / 2;
+      const cy = size * 0.54;
+
+      // Chubby cat loaf body at bottom center
+      ctx.fillStyle = spec.coat;
+      ctx.beginPath();
+      ctx.ellipse(cx, cy + 58, 76, 48, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Ears
+      ctx.fillStyle = spec.coat;
+      ctx.beginPath();
+      ctx.moveTo(cx - 66, cy - 18);
+      ctx.lineTo(cx - 58, cy - 92);
+      ctx.lineTo(cx - 10, cy - 52);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(cx + 66, cy - 18);
+      ctx.lineTo(cx + 58, cy - 92);
+      ctx.lineTo(cx + 10, cy - 52);
+      ctx.closePath();
+      ctx.fill();
+
+      // Inner pink ears
+      ctx.fillStyle = spec.earInner;
+      ctx.beginPath();
+      ctx.moveTo(cx - 56, cy - 28);
+      ctx.lineTo(cx - 52, cy - 76);
+      ctx.lineTo(cx - 20, cy - 48);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(cx + 56, cy - 28);
+      ctx.lineTo(cx + 52, cy - 76);
+      ctx.lineTo(cx + 20, cy - 48);
+      ctx.closePath();
+      ctx.fill();
+
+      // Head
+      ctx.fillStyle = spec.coat;
+      ctx.beginPath();
+      ctx.ellipse(cx, cy - 12, 72, 60, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Forehead stripes
+      ctx.fillStyle = 'rgba(255,159,104,0.38)';
+      for (const ox of [-14, 0, 14]) {
+        ctx.beginPath();
+        ctx.roundRect(cx + ox - 3, cy - 66, 6, 18, 3);
+        ctx.fill();
+      }
+
+      // Big kawaii sparkling eyes
+      ctx.fillStyle = spec.eyes;
+      ctx.beginPath();
+      ctx.arc(cx - 27, cy - 16, 13, 0, Math.PI * 2);
+      ctx.arc(cx + 27, cy - 16, 13, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#FFFFFF';
+      ctx.beginPath();
+      ctx.arc(cx - 31, cy - 21, 5, 0, Math.PI * 2);
+      ctx.arc(cx + 23, cy - 21, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(cx - 22, cy - 11, 2.5, 0, Math.PI * 2);
+      ctx.arc(cx + 32, cy - 11, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Rosy cheeks
+      ctx.fillStyle = 'rgba(255, 126, 182, 0.55)';
+      ctx.beginPath();
+      ctx.ellipse(cx - 44, cy + 2, 12, 7, 0, 0, Math.PI * 2);
+      ctx.ellipse(cx + 44, cy + 2, 12, 7, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Cute pink nose & :3 mouth
+      ctx.fillStyle = '#FF7EB6';
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - 2);
+      ctx.lineTo(cx - 7, cy - 10);
+      ctx.lineTo(cx + 7, cy - 10);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.strokeStyle = spec.coat === '#1F2937' ? '#F9FAFB' : '#374151';
+      ctx.lineWidth = 3.5;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.arc(cx - 8, cy + 4, 8, 0.1, Math.PI - 0.1);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(cx + 8, cy + 4, 8, 0.1, Math.PI - 0.1);
+      ctx.stroke();
+
+      // Whiskers
+      ctx.lineWidth = 2.5;
+      ctx.strokeStyle = spec.coat === '#1F2937' ? '#D1D5DB' : 'rgba(55,65,81,0.75)';
+      for (const wy of [-12, -4, 4]) {
+        ctx.beginPath();
+        ctx.moveTo(cx - 52, cy + wy);
+        ctx.lineTo(cx - 88, cy + wy - 4);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(cx + 52, cy + wy);
+        ctx.lineTo(cx + 88, cy + wy - 4);
+        ctx.stroke();
+      }
+
+      // Little paws
+      ctx.fillStyle = '#FFFFFF';
+      ctx.beginPath();
+      ctx.ellipse(cx - 28, cy + 52, 14, 10, 0, 0, Math.PI * 2);
+      ctx.ellipse(cx + 28, cy + 52, 14, 10, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Unique accessory per daily puzzle
+      if (spec.accessory === 'crown' || spec.accessory === 'sakura') {
+        ctx.fillStyle = spec.accessory === 'crown' ? '#FFD166' : '#FF7EB6';
+        ctx.beginPath();
+        ctx.moveTo(cx - 28, cy - 66);
+        ctx.lineTo(cx - 22, cy - 96);
+        ctx.lineTo(cx - 8, cy - 76);
+        ctx.lineTo(cx, cy - 104);
+        ctx.lineTo(cx + 8, cy - 76);
+        ctx.lineTo(cx + 22, cy - 96);
+        ctx.lineTo(cx + 28, cy - 66);
+        ctx.closePath();
+        ctx.fill();
+      } else if (spec.accessory === 'bowtie' || spec.accessory === 'strawberry') {
+        ctx.fillStyle = '#EF4444';
+        ctx.beginPath();
+        ctx.moveTo(cx, cy + 36);
+        ctx.lineTo(cx - 22, cy + 24);
+        ctx.lineTo(cx - 22, cy + 48);
+        ctx.closePath();
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(cx, cy + 36);
+        ctx.lineTo(cx + 22, cy + 24);
+        ctx.lineTo(cx + 22, cy + 48);
+        ctx.closePath();
+        ctx.fill();
+      } else if (spec.accessory === 'astro') {
+        ctx.strokeStyle = 'rgba(147, 197, 253, 0.75)';
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.arc(cx, cy - 18, 92, 0, Math.PI * 2);
+        ctx.stroke();
+      } else {
+        ctx.fillStyle = '#FFD166';
+        ctx.font = 'bold 28px Nunito, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('🐟✨', cx, 48);
+      }
+
+      return c;
+    }
+
+    function renderDailyCatPuzzleCanvases() {
+      if (state.modal !== 'dailyPuzzle' || !state.dailyPuzzle) return;
+      const spec = getTodaysCatPuzzleSpec();
+      const master = buildCuteCatArtworkCanvas(spec, 300);
+
+      const peekCanvas = document.getElementById('daily-puzzle-peek-canvas');
+      if (peekCanvas) {
+        const pCtx = peekCanvas.getContext('2d');
+        pCtx.clearRect(0, 0, peekCanvas.width, peekCanvas.height);
+        pCtx.drawImage(master, 0, 0, peekCanvas.width, peekCanvas.height);
+      }
+
+      for (let pos = 0; pos < 9; pos++) {
+        const tileCanvas = document.getElementById(`daily-puzzle-tile-${pos}`);
+        if (!tileCanvas) continue;
+        const pieceIdx = state.dailyPuzzle.board[pos];
+        const sx = (pieceIdx % 3) * 100;
+        const sy = Math.floor(pieceIdx / 3) * 100;
+        const tCtx = tileCanvas.getContext('2d');
+        tCtx.clearRect(0, 0, tileCanvas.width, tileCanvas.height);
+        tCtx.drawImage(master, sx, sy, 100, 100, 0, 0, tileCanvas.width, tileCanvas.height);
+      }
     }
 
     function renderPremiumTiersGrid(L) {
@@ -3799,7 +4658,7 @@
       if (!Array.isArray(state.currentUser.unlockedMarkers)) {
         state.currentUser.unlockedMarkers = ['marker_white'];
       }
-      const owned = state.currentUser.unlockedMarkers.includes(marker.id) || marker.priceCoins === 0;
+      const owned = isMarkerUnlockedForUser(marker);
       if (owned) {
         state.activeMarkerId = marker.id;
         state.whiteboardTool = 'pen';
@@ -3810,7 +4669,7 @@
       }
       const effectiveCost = getEffectiveCoinPrice(marker.priceCoins);
       if (state.currentUser.meowCoins < effectiveCost) {
-        showToast(state.lang === 'ar' ? `😾 تحتاج إلى ${effectiveCost} عملة مياو لفتح القلم الزمردي!` : `😾 Need ${effectiveCost} MeowCoins to unlock ${marker.name}!`);
+        showToast(state.lang === 'ar' ? `😾 تحتاج إلى ${effectiveCost} عملة مياو لفتح هذا القلم!` : `😾 Need ${effectiveCost} MeowCoins to unlock ${marker.name}!`);
         return;
       }
       state.currentUser.meowCoins -= effectiveCost;
@@ -3818,7 +4677,7 @@
       state.activeMarkerId = marker.id;
       state.whiteboardTool = 'pen';
       autoPersistIfEnabled();
-      showToast(state.lang === 'ar' ? `💚 تم فتح القلم الزمردي مقابل ${effectiveCost} عملة مياو!` : `💚 Unlocked Emerald Marker for ${effectiveCost} MeowCoins!`);
+      showToast(state.lang === 'ar' ? `🎨 تم فتح ${marker.nameAr} مقابل ${effectiveCost} عملة مياو!` : `🎨 Unlocked ${marker.name} for ${effectiveCost} MeowCoins!`);
       setTimeout(initWhiteboardCanvas, 20);
     }
 
@@ -3830,6 +4689,7 @@
       if (!state.messagesByChannel[key]) state.messagesByChannel[key] = [];
 
       const isDm = state.navMode === 'dms' && state.dmSubView === 'conversation';
+      const canBusinessAnnounce = getUserPremiumTier() === 'business';
       const newMsg = {
         id: 'm_' + Date.now(),
         senderId: state.currentUser.id,
@@ -3838,6 +4698,7 @@
         senderRoleColor: state.currentUser.roleColor,
         senderIsOwner: !!state.currentUser.isOwner,
         senderBadge: state.currentUser.equippedBadge,
+        isBusinessAnnouncement: canBusinessAnnounce && !!state.businessAnnouncementMode,
         content: trimmed,
         stickerId: stickerId,
         singleEmoji: singleEmoji,
@@ -4089,7 +4950,9 @@
                   <div style="font-size:11.5px;font-weight:800;color:var(--text-secondary);margin-bottom:4px">${L.googleEmailLabel}</div>
                   <input id="google-auth-email" class="composer-input" style="width:100%;padding:9px 12px;margin-bottom:8px" placeholder="yourname@gmail.com" onkeydown="if(event.key==='Enter'){handleGoogleSignInSubmit()}" />
                   <div style="font-size:11.5px;font-weight:800;color:var(--text-secondary);margin-bottom:4px">${L.googleNameLabel}</div>
-                  <input id="google-auth-name" class="composer-input" style="width:100%;padding:9px 12px;margin-bottom:10px" placeholder="Cat Display Name..." onkeydown="if(event.key==='Enter'){handleGoogleSignInSubmit()}" />
+                  <input id="google-auth-name" class="composer-input" style="width:100%;padding:9px 12px;margin-bottom:8px" placeholder="Cat Display Name..." onkeydown="if(event.key==='Enter'){handleGoogleSignInSubmit()}" />
+                  <div style="font-size:11.5px;font-weight:800;color:var(--text-secondary);margin-bottom:4px">${L.googlePasswordLabel}</div>
+                  <input id="google-auth-password" type="password" class="composer-input" style="width:100%;padding:9px 12px;margin-bottom:10px" placeholder="${escapeHtml(L.googlePasswordPlaceholder)}" onkeydown="if(event.key==='Enter'){handleGoogleSignInSubmit()}" />
                   <button class="btn-primary" style="width:100%;justify-content:center;padding:10px" onclick="handleGoogleSignInSubmit()">
                     ${L.googleContinueBtn}
                   </button>
@@ -4252,7 +5115,7 @@
                 <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">
                   <span style="font-weight:800;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--gold)">${escapeHtml(state.currentUser.displayName)}</span>
                   ${state.currentUser.isOwner ? `<span class="owner-tag">${L.ownerTag}</span>` : ''}
-                  ${state.currentUser.isPremium ? `<span class="lifetime-premium-tag">💎 ${state.currentUser.premiumLifetime ? 'LIFETIME' : 'VIP'}</span>` : ''}
+                  ${isUserPremiumActive() ? `<span class="lifetime-premium-tag">${escapeHtml(getPremiumBadgeLabel())}</span>` : ''}
                 </div>
                 <div style="font-size:11px;color:${state.currentUser.presenceColor};font-weight:700;margin-top:2px">
                   ${L.presenceLabels[state.currentUser.presence] || state.currentUser.presence}
@@ -4390,10 +5253,9 @@
 
     function renderWhiteboardView() {
       const L = t();
-      const unlockedMarkers = state.currentUser.unlockedMarkers || ['marker_white'];
-      const emeraldOwned = unlockedMarkers.includes('marker_emerald');
       const isEmeraldEquipped = state.whiteboardTool === 'pen' && state.activeMarkerId === 'marker_emerald';
       const cursorClass = isEmeraldEquipped ? 'cursor-emerald' : 'cursor-white';
+      const discountPct = getUserPremiumDiscountPercent();
 
       return `
         <div class="top-bar">
@@ -4410,24 +5272,25 @@
 
         <div class="whiteboard-wrap">
           <div class="whiteboard-toolbar">
-            <!-- Free Default White Marker -->
-            <button class="marker-btn ${state.whiteboardTool === 'pen' && state.activeMarkerId === 'marker_white' ? 'selected' : ''}" onclick="selectOrUnlockMarker('marker_white')">
-              <span class="marker-swatch" style="background:#FFFFFF"></span>
-              <span>${L.whiteMarkerName}</span>
-            </button>
-
-            <!-- Emerald Marker (25 MeowCoins, 16% off for Premium) -->
-            ${emeraldOwned ? `
-              <button class="marker-btn ${isEmeraldEquipped ? 'selected' : ''}" style="${isEmeraldEquipped ? 'border-color:#10B981;box-shadow:0 0 12px rgba(16,185,129,0.45)' : ''}" onclick="selectOrUnlockMarker('marker_emerald')">
-                <span class="marker-swatch" style="background:#10B981"></span>
-                <span style="color:#10B981">${L.emeraldMarkerName} (✓)</span>
-              </button>
-            ` : `
-              <button class="btn-gold" onclick="selectOrUnlockMarker('marker_emerald')">
-                <span class="marker-swatch" style="background:#10B981;vertical-align:middle;margin-inline-end:4px"></span>
-                ${L.unlockBtn(getEffectiveCoinPrice(25))}${getUserPremiumDiscountPercent() > 0 ? ` 💎 -${getUserPremiumDiscountPercent()}%` : ''}
-              </button>
-            `}
+            ${WHITEBOARD_MARKERS.map(mk => {
+              const owned = isMarkerUnlockedForUser(mk);
+              const isEquipped = state.whiteboardTool === 'pen' && state.activeMarkerId === mk.id;
+              const mkName = state.lang === 'ar' ? mk.nameAr : mk.name;
+              if (owned) {
+                return `
+                  <button class="marker-btn ${isEquipped ? 'selected' : ''}" style="${isEquipped ? `border-color:${mk.colorHex};box-shadow:0 0 12px ${mk.colorHex}66` : ''}" onclick="selectOrUnlockMarker('${mk.id}')">
+                    <span class="marker-swatch" style="background:${mk.colorHex}"></span>
+                    <span style="color:${mk.colorHex === '#FFFFFF' ? 'inherit' : mk.colorHex}">${escapeHtml(mkName)}</span>
+                  </button>
+                `;
+              }
+              return `
+                <button class="btn-gold" onclick="selectOrUnlockMarker('${mk.id}')">
+                  <span class="marker-swatch" style="background:${mk.colorHex};vertical-align:middle;margin-inline-end:4px"></span>
+                  ${escapeHtml(mkName)} (${getEffectiveCoinPrice(mk.priceCoins)} 🪙${discountPct > 0 ? ` -${discountPct}%` : ''})
+                </button>
+              `;
+            }).join('')}
 
             <button class="marker-btn ${state.whiteboardTool === 'eraser' ? 'selected' : ''}" onclick="state.whiteboardTool='eraser';render()">
               ${L.eraserBtn}
@@ -4674,6 +5537,9 @@
         <div class="composer-bar">
           <button class="btn-square" title="${L.appsLauncherHeader}" onclick="openDiscordAppsLauncher()">🧩</button>
           <button class="btn-square" title="Cat Stickers" onclick="state.showStickerPicker=!state.showStickerPicker;render()">🏷️</button>
+          ${getUserPremiumTier() === 'business' ? `
+            <button class="btn-square" title="${L.businessAnnounceToggle}" style="${state.businessAnnouncementMode ? 'border-color:#10B981;background:rgba(16,185,129,0.25);color:#10B981' : ''}" onclick="state.businessAnnouncementMode=!state.businessAnnouncementMode;render()">📣</button>
+          ` : ''}
           <input id="chat-input" class="composer-input" placeholder="${isDm && partner ? L.meowAt(escapeHtml(partner.displayName)) : L.meowIn(escapeHtml(ch.name))}" onkeydown="if(event.key==='Enter'){sendMessage(this.value)}" />
           <button class="btn-primary" onclick="sendMessage(document.getElementById('chat-input').value)">
             <span>${L.sendMeow}</span>
@@ -4689,7 +5555,7 @@
       const isOwnerMsg = m.senderIsOwner || (m.senderId === 'user_captain');
 
       return `
-        <div class="msg-item ${m.isPinned ? 'pinned' : ''}">
+        <div class="msg-item ${m.isPinned ? 'pinned' : ''} ${m.isBusinessAnnouncement ? 'business-announcement' : ''}">
           ${m.replyToSenderName ? `
             <div class="reply-line">
               <span>╭── ↩️</span>
@@ -4703,6 +5569,7 @@
               <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
                 <span style="font-weight:800;font-size:14.5px;color:${m.senderRoleColor || '#F4F1FA'}">${escapeHtml(m.senderName)}</span>
                 ${isOwnerMsg ? `<span class="owner-tag">${L.ownerTag}</span>` : ''}
+                ${m.isBusinessAnnouncement ? `<span class="badge-tag" style="color:#10B981;border-color:#10B981;background:rgba(16,185,129,0.18)">📣 BUSINESS ANNOUNCEMENT</span>` : ''}
                 ${m.senderBadge ? `<span class="badge-tag">${escapeHtml(m.senderBadge)}</span>` : ''}
                 <span style="font-size:11px;color:var(--text-muted)">${escapeHtml(m.time)}</span>
                 ${m.isPinned ? `<span style="font-size:11px;color:var(--gold);font-weight:800">${L.pinnedLabel}</span>` : ''}
@@ -4765,7 +5632,7 @@
               <div style="font-weight:800;font-size:16px">${L.inviteTitle}</div>
               <div style="color:var(--text-secondary);font-size:13px;margin-top:4px">${L.inviteSub}</div>
               <div style="display:flex;gap:8px;margin-top:10px">
-                <input id="new-friend-input" class="composer-input" placeholder="${L.addFriendPlaceholder}" />
+                <input id="new-friend-input" class="composer-input" placeholder="${L.addFriendPlaceholder}" onkeydown="if(event.key==='Enter'){addFriendFromInput()}" />
                 <button class="btn-primary" onclick="addFriendFromInput()">${L.addFriendBtn}</button>
               </div>
             </div>
@@ -4779,41 +5646,181 @@
                   <div class="status-dot" style="background:${f.presenceColor}"></div>
                 </div>
                 <div>
-                  <div style="display:flex;align-items:center;gap:8px">
+                  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
                     <span style="font-weight:800;font-size:15px">${escapeHtml(f.displayName)}</span>
+                    <span style="font-size:11.5px;color:var(--text-muted)">@${escapeHtml(f.username || f.id)}</span>
                     <span class="badge-tag">${escapeHtml(f.equippedBadge || f.roleTitle)}</span>
                   </div>
                   <div style="color:var(--text-secondary);font-size:12.5px;margin-top:4px">${L.presenceLabels[f.presence] || f.presence} • ${escapeHtml(f.customStatus)}</div>
                 </div>
               </div>
-              <button class="btn-primary" onclick="openDmConversation('${f.id}')">${L.directMeowBtn}</button>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <button class="btn-primary" onclick="openDmConversation('${f.id}')">${L.directMeowBtn}</button>
+                <button class="btn-outline" style="color:var(--coral);border-color:rgba(255,107,107,0.45)" onclick="removeFriend('${f.id}')">${L.deleteFriendBtn}</button>
+              </div>
             </div>
           `).join('')}
         </div>
       `;
     }
 
-    function addFriendFromInput() {
+    async function addFriendFromInput() {
       const el = document.getElementById('new-friend-input');
-      if (!el || !el.value.trim()) return;
-      const name = el.value.trim();
-      const id = 'user_custom_' + Date.now();
-      state.users[id] = {
-        id,
-        username: name.toLowerCase().replace(/\s+/g, '_'),
-        displayName: name,
-        avatarEmoji: '😺',
-        avatarColorHex: '#43D9AD',
-        presence: 'Purring',
-        presenceColor: '#43B581',
-        customStatus: 'Just joined CatMsg! Meow! 🐾',
-        roleTitle: 'Kitten',
-        roleColor: '#5CE1E6',
-        equippedBadge: '🐾 New Kitty',
-        bio: 'Freshly arrived cat looking for cozy boxes and MeowCoins.'
+      if (!el || !el.value.trim()) {
+        showToast(state.lang === 'ar' ? '😾 أدخل اسم مستخدم أو بريد إلكتروني لحساب موجود!' : '😾 Please enter an existing CatMsg username or email!');
+        return;
+      }
+      const rawQuery = el.value.trim();
+      const normalized = rawQuery.toLowerCase().replace(/^@/, '').replace(/\s+/g, '_');
+      const emailLookup = rawQuery.toLowerCase();
+
+      const myUsername = (state.currentUser.username || '').toLowerCase();
+      const myEmail = (state.currentUser.googleEmail || (state.currentUser.isOwner ? OWNER_EMAIL : '')).toLowerCase();
+      if (normalized === myUsername || (myEmail && emailLookup === myEmail)) {
+        showToast(state.lang === 'ar' ? '😸 هذا هو حسابك الشخصي!' : '😸 You cannot add your own account as a friend!');
+        return;
+      }
+
+      // 1. Official Meow AI account support if deleted and re-added
+      if (normalized === 'meow_ai' || normalized === 'meowai') {
+        const already = state.users.user_meow_ai;
+        if (already) {
+          showToast('🐾 @meow_ai is already in your Cat Friends list!');
+          return;
+        }
+        state.users.user_meow_ai = getDefaultMeowAiUser();
+        state.currentUser.removedFriendIds = (state.currentUser.removedFriendIds || []).filter(fid => fid !== 'user_meow_ai');
+        if (!Array.isArray(state.currentUser.friendIds)) state.currentUser.friendIds = [];
+        if (!state.currentUser.friendIds.includes('user_meow_ai')) state.currentUser.friendIds.push('user_meow_ai');
+        el.value = '';
+        autoPersistIfEnabled();
+        render();
+        showToast('🎉 Added @meow_ai to your Cat Friends!');
+        return;
+      }
+
+      // 2. Sync existing accounts from cloud (Supabase) & check username or email
+      const accounts = await syncAccountsFromCloud();
+      let matchedAcc = null;
+      let matchedKey = null;
+
+      if (emailLookup === OWNER_EMAIL.toLowerCase() || emailLookup === 'abood@gmail.com' || normalized === 'abood' || normalized === 'captain_purr') {
+        matchedKey = 'abood';
+        matchedAcc = accounts['abood'] || accounts['captain_purr'] || {
+          username: 'abood',
+          displayName: 'abood',
+          avatarEmoji: '🐱',
+          isOwner: true,
+          googleEmail: OWNER_EMAIL
+        };
+      } else {
+        for (const [k, a] of Object.entries(accounts)) {
+          if (!a || typeof a !== 'object') continue;
+          const u = String(a.username || k || '').toLowerCase().trim();
+          const accEmail = String(a.googleEmail || (a.snapshot && a.snapshot.currentUser && a.snapshot.currentUser.googleEmail) || '').toLowerCase().trim();
+          if (u === normalized || (accEmail && accEmail === emailLookup)) {
+            matchedKey = u;
+            matchedAcc = a;
+            break;
+          }
+        }
+      }
+
+      // Also check direct snapshot endpoint by username in case account exists outside local registry cache
+      if (!matchedAcc && !emailLookup.includes('@')) {
+        const directSnap = await fetchCloudUserSnapshot(normalized);
+        if (directSnap && directSnap.currentUser && directSnap.currentUser.username) {
+          matchedKey = directSnap.currentUser.username.toLowerCase();
+          matchedAcc = {
+            username: matchedKey,
+            displayName: directSnap.currentUser.displayName || matchedKey,
+            avatarEmoji: directSnap.currentUser.avatarEmoji || '🐱',
+            isOwner: !!directSnap.currentUser.isOwner,
+            googleEmail: directSnap.currentUser.googleEmail || '',
+            snapshot: directSnap
+          };
+        }
+      }
+
+      if (!matchedAcc || !matchedKey) {
+        showToast(
+          state.lang === 'ar'
+            ? `😾 لم يتم العثور على حساب CatMsg موجود باسم أو بريد "${rawQuery}"!`
+            : `😾 No existing CatMsg account found matching username or email "${rawQuery}"!`
+        );
+        return;
+      }
+
+      const snapU = (matchedAcc.snapshot && matchedAcc.snapshot.currentUser) || {};
+      const friendId = (matchedKey === 'abood')
+        ? 'user_captain'
+        : (snapU.id || `user_acc_${matchedKey}`);
+
+      const duplicate = Object.values(state.users).find(u =>
+        u && (u.id === friendId || String(u.username || '').toLowerCase() === matchedKey)
+      );
+      if (duplicate) {
+        showToast(
+          state.lang === 'ar'
+            ? `🐾 @${matchedKey} موجود بالفعل في قائمة أصدقائك!`
+            : `🐾 @${matchedKey} is already in your Cat Friends list!`
+        );
+        return;
+      }
+
+      state.users[friendId] = {
+        id: friendId,
+        username: matchedKey,
+        displayName: snapU.displayName || matchedAcc.displayName || matchedKey,
+        googleEmail: snapU.googleEmail || matchedAcc.googleEmail || '',
+        avatarEmoji: (matchedAcc.isOwner && !snapU.avatarManuallyCustomized) ? '🐱' : (snapU.avatarEmoji || matchedAcc.avatarEmoji || '🐱'),
+        avatarColorHex: snapU.avatarColorHex || '#5CE1E6',
+        presence: snapU.presence || 'Purring',
+        presenceColor: snapU.presenceColor || '#43B581',
+        customStatus: snapU.customStatus || 'CatMsg Member 🐾',
+        roleTitle: snapU.roleTitle || (matchedAcc.isOwner ? 'Owner' : 'Cat Member'),
+        roleColor: snapU.roleColor || (matchedAcc.isOwner ? '#FFD166' : '#43D9AD'),
+        equippedBadge: snapU.equippedBadge || (matchedAcc.isOwner ? '👑 Supreme Loaf' : '🐾 CatMsg Friend'),
+        bio: snapU.bio || `CatMsg friend (@${matchedKey}).`
       };
+
+      state.currentUser.removedFriendIds = (state.currentUser.removedFriendIds || []).filter(fid => fid !== friendId);
+      if (!Array.isArray(state.currentUser.friendIds)) state.currentUser.friendIds = [];
+      if (!state.currentUser.friendIds.includes(friendId)) state.currentUser.friendIds.push(friendId);
+
+      el.value = '';
       autoPersistIfEnabled();
-      showToast(`🎉 + ${name}!`);
+      render();
+      showToast(
+        state.lang === 'ar'
+          ? `🎉 تمت إضافة الصديق @${matchedKey} بنجاح!`
+          : `🎉 Added existing CatMsg user @${matchedKey} to Cat Friends!`
+      );
+    }
+
+    function removeFriend(friendId) {
+      const target = state.users[friendId];
+      if (!target) return;
+      const disp = target.username ? `@${target.username}` : target.displayName;
+      delete state.users[friendId];
+      state.currentUser.friendIds = (state.currentUser.friendIds || []).filter(fid => fid !== friendId);
+      const removed = Array.isArray(state.currentUser.removedFriendIds) ? state.currentUser.removedFriendIds : [];
+      if (!removed.includes(friendId)) removed.push(friendId);
+      state.currentUser.removedFriendIds = removed;
+
+      if (state.navMode === 'dms' && state.selectedDmUserId === friendId) {
+        const remainingIds = Object.keys(state.users);
+        state.selectedDmUserId = remainingIds[0] || '';
+        state.dmSubView = 'friends';
+      }
+
+      autoPersistIfEnabled();
+      render();
+      showToast(
+        state.lang === 'ar'
+          ? `🗑️ تم حذف الصديق ${disp} من قائمة الأصدقاء.`
+          : `🗑️ Removed ${disp} from your Cat Friends list.`
+      );
     }
 
     function renderQuestsAndShopView() {
@@ -4848,9 +5855,10 @@
               <div style="flex:1;min-width:240px">
                 <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
                   <span style="font-weight:900;font-size:18px;color:var(--gold)">${L.premiumCardTitle}</span>
-                  <span class="lifetime-premium-tag">${state.currentUser.isPremium ? L.premiumActiveTag : 'VIP DEAL ONLY'}</span>
+                  <span class="lifetime-premium-tag">${isUserPremiumActive() ? escapeHtml(getPremiumBadgeLabel()) : 'VIP DEAL ONLY'}</span>
                 </div>
                 <div style="color:var(--text-secondary);font-size:13px;margin-top:5px;line-height:1.45">${L.premiumCardDesc}</div>
+                ${renderBiweeklyCoinsBanner(L)}
                 ${renderPremiumTiersGrid(L)}
                 <div style="color:var(--text-primary);font-size:12.5px;font-weight:800;margin-top:10px">
                   ${L.premiumDealRule}
@@ -4890,6 +5898,23 @@
                 <button class="btn-outline" style="border-color:rgba(67,217,173,0.55);color:var(--mint)" onclick="claimAllReadyQuests()">
                   ${L.claimAllReadyBtn}
                 </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- DAILY CUTE CAT IMAGE PUZZLE (+5 MEOWCOINS ON FIRST COMPLETION EACH DAY) -->
+          <div class="welcome-card" style="border-color:rgba(92,225,230,0.55);background:linear-gradient(135deg,rgba(92,225,230,0.12),rgba(255,126,182,0.12))">
+            <div style="font-size:40px">🧩🐱</div>
+            <div style="flex:1">
+              <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+                <span style="font-weight:900;font-size:17px;color:var(--yarn-blue)">${L.dailyPuzzleTitle}</span>
+                <span class="badge-tag" style="color:${state.currentUser.lastDailyPuzzleRewardDate === getTodayDateKey() ? 'var(--mint)' : 'var(--gold)'};border-color:${state.currentUser.lastDailyPuzzleRewardDate === getTodayDateKey() ? 'rgba(67,217,173,0.5)' : 'rgba(255,209,102,0.5)'}">
+                  ${state.currentUser.lastDailyPuzzleRewardDate === getTodayDateKey() ? L.dailyPuzzleRewardClaimed : L.dailyPuzzleRewardReady}
+                </span>
+              </div>
+              <div style="color:var(--text-secondary);font-size:12.5px;margin-top:4px">${L.dailyPuzzleSub}</div>
+              <div style="margin-top:10px">
+                <button class="btn-primary" onclick="openDailyCatPuzzle()">${L.dailyPuzzlePlayBtn}</button>
               </div>
             </div>
           </div>
@@ -5013,7 +6038,7 @@
             <div style="font-weight:900;font-size:13px;color:var(--text-secondary);letter-spacing:0.8px">
               ${L.emporiumStickersSection}
             </div>
-            ${state.currentUser.isPremium ? `<span class="badge-tag" style="color:var(--gold);border-color:rgba(255,209,102,0.55)">${L.premiumDiscountTag}</span>` : ''}
+            ${getUserPremiumDiscountPercent() > 0 ? `<span class="badge-tag" style="color:var(--gold);border-color:rgba(255,209,102,0.55)">💎 -${getUserPremiumDiscountPercent()}% Shop Discount Active</span>` : ''}
           </div>
 
           <div class="shop-grid">
@@ -5021,6 +6046,7 @@
               const owned = state.currentUser.unlockedStickerIds.includes(s.id);
               const sName = state.lang === 'ar' ? s.nameAr : s.name;
               const effPrice = getEffectiveCoinPrice(s.priceCoins);
+              const hasDisc = getUserPremiumDiscountPercent() > 0 && effPrice < s.priceCoins;
               return `
                 <div class="shop-card">
                   <div style="font-weight:800;font-size:14px">${escapeHtml(sName)}</div>
@@ -5035,7 +6061,7 @@
                   <div style="margin-top:6px">
                     ${owned
                       ? `<span style="color:var(--mint);font-weight:800;font-size:12px">${L.unlockedWord} (3/3)</span>`
-                      : `<button class="btn-gold" style="width:100%" onclick="unlockOrSendSticker('${s.id}', false)">${L.unlockBtn(effPrice)}${state.currentUser.isPremium ? ` (was ${s.priceCoins})` : ''}</button>`}
+                      : `<button class="btn-gold" style="width:100%" onclick="unlockOrSendSticker('${s.id}', false)">${L.unlockBtn(effPrice)}${hasDisc ? ` (was ${s.priceCoins})` : ''}</button>`}
                   </div>
                 </div>
               `;
@@ -5047,20 +6073,25 @@
           </div>
 
           ${WHITEBOARD_MARKERS.map(m => {
-            const owned = unlockedMarkers.includes(m.id) || m.priceCoins === 0;
+            const owned = isMarkerUnlockedForUser(m);
             const mName = state.lang === 'ar' ? m.nameAr : m.name;
             const effMarkerPrice = getEffectiveCoinPrice(m.priceCoins);
+            const hasDisc = getUserPremiumDiscountPercent() > 0 && effMarkerPrice < m.priceCoins;
+            const perkTag = m.tierRequired ? (m.tierRequired === 'basic' ? '💠 Basic+' : (m.tierRequired === 'standard' ? '💎 Premium+' : '🏢 Business')) : '';
             return `
               <div class="quest-card" style="justify-content:space-between">
                 <div style="display:flex;align-items:center;gap:12px">
                   <span class="marker-swatch" style="width:22px;height:22px;background:${m.colorHex}"></span>
                   <div>
-                    <span style="font-weight:800;font-size:14px">${escapeHtml(mName)}</span>
+                    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+                      <span style="font-weight:800;font-size:14px">${escapeHtml(mName)}</span>
+                      ${perkTag ? `<span class="badge-tag" style="font-size:10px">${perkTag} Free</span>` : ''}
+                    </div>
                     <div style="color:var(--text-secondary);font-size:12.5px;margin-top:3px">Draw on the 🎨 Cat Whiteboard (Just for fun, no rewards).</div>
                   </div>
                 </div>
                 <button class="btn-gold" onclick="${owned ? `selectOrUnlockMarker('${m.id}');openWhiteboard()` : `selectOrUnlockMarker('${m.id}')`}">
-                  ${owned ? '🎨 Use in Whiteboard' : `${L.unlockBtn(effMarkerPrice)}${state.currentUser.isPremium ? ` (was ${m.priceCoins})` : ''}`}
+                  ${owned ? '🎨 Use in Whiteboard' : `${L.unlockBtn(effMarkerPrice)}${hasDisc ? ` (was ${m.priceCoins})` : ''}`}
                 </button>
               </div>
             `;
@@ -5075,6 +6106,7 @@
             const equipped = state.currentUser.equippedBadge === b.badgeTitle;
             const bDesc = state.lang === 'ar' ? b.descriptionAr : b.description;
             const effBadgePrice = getEffectiveCoinPrice(b.priceCoins);
+            const hasDisc = getUserPremiumDiscountPercent() > 0 && effBadgePrice < b.priceCoins;
             return `
               <div class="quest-card" style="justify-content:space-between">
                 <div>
@@ -5082,7 +6114,7 @@
                   <div style="color:var(--text-secondary);font-size:13px;margin-top:8px">${escapeHtml(bDesc)}</div>
                 </div>
                 <button class="btn-gold" onclick="buyOrEquipBadge('${b.badgeTitle}', ${b.priceCoins})">
-                  ${equipped ? L.equippedWord : (owned ? L.equipBadgeBtn : `${L.buyBadgeBtn(effBadgePrice)}${state.currentUser.isPremium ? ` (was ${b.priceCoins})` : ''}`)}
+                  ${equipped ? L.equippedWord : (owned ? L.equipBadgeBtn : `${L.buyBadgeBtn(effBadgePrice)}${hasDisc ? ` (was ${b.priceCoins})` : ''}`)}
                 </button>
               </div>
             `;
@@ -5138,7 +6170,7 @@
                     ${escapeHtml(state.currentUser.displayName)}
                   </span>
                   ${state.currentUser.isOwner ? `<span class="owner-tag">${L.ownerTag}</span>` : ''}
-                  ${state.currentUser.isPremium ? `<span class="lifetime-premium-tag">💎 ${state.currentUser.premiumLifetime ? 'LIFETIME' : 'VIP'}</span>` : ''}
+                  ${isUserPremiumActive() ? `<span class="lifetime-premium-tag">${escapeHtml(getPremiumBadgeLabel())}</span>` : ''}
                 </div>
                 <div style="font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
                   ${escapeHtml(state.currentUser.customStatus)}
@@ -5267,13 +6299,71 @@
                     ${L.ceoSetBucksBtn}
                   </button>
                 </div>
-
-                <button class="btn-gold" style="width:100%;margin-top:8px;padding:11px;background:linear-gradient(135deg,#EC4899,#F59E0B);color:#FFFFFF" onclick="ceoGiveMeowBucks(200)">
-                  ${withMeowBucksIcons(L.ceoFunPlus200Btn, 16)}
-                </button>
               </div>
 
-              <!-- 2. CREATE & MANAGE SECRET CODES FOR MEOWCOINS & MEOW BUCKS -->
+              <!-- 2. GRANT SUBSCRIPTION DAYS TO ANY EXISTING USER -->
+              <div class="ceo-panel-card" style="border-color:rgba(255,209,102,0.55);background:linear-gradient(135deg,rgba(199,125,255,0.14),rgba(255,209,102,0.12))">
+                <div style="font-weight:900;font-size:13px;color:var(--gold);letter-spacing:0.6px;margin-bottom:8px">
+                  ${L.ceoSubGrantHeader}
+                </div>
+                <div style="font-size:11.5px;font-weight:700;color:var(--text-secondary);margin-bottom:4px">
+                  ${L.ceoSubTargetUserLabel}
+                </div>
+                <input id="ceo-sub-target-user" class="composer-input" style="width:100%;padding:9px 12px;margin-bottom:8px" placeholder="Existing username (e.g. abood)..." value="${escapeHtml(state.ceoSubTargetUser || 'abood')}" oninput="state.ceoSubTargetUser=this.value" />
+
+                <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">
+                  ${registeredUsernames.map(u => {
+                    const accObj = accounts[u];
+                    const uObj = (u === (state.currentUser.username || 'abood').toLowerCase())
+                      ? state.currentUser
+                      : ((accObj && accObj.snapshot && accObj.snapshot.currentUser) || {});
+                    const badge = isUserPremiumActive(uObj) ? getPremiumBadgeLabel(uObj) : 'Free';
+                    return `
+                      <button class="btn-outline" style="padding:5px 10px;font-size:11.5px;border-color:rgba(255,209,102,0.45)" onclick="state.ceoSubTargetUser='${escapeHtml(u)}';const el=document.getElementById('ceo-sub-target-user');if(el){el.value=state.ceoSubTargetUser}">
+                        @${escapeHtml(u)} (${escapeHtml(badge)})
+                      </button>
+                    `;
+                  }).join('')}
+                </div>
+
+                <div style="font-size:11.5px;font-weight:700;color:var(--text-secondary);margin-bottom:4px">
+                  ${L.ceoSubTierLabel}
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px">
+                  <button class="btn-outline" style="padding:8px;font-size:11.5px;border-color:${(state.ceoSubTier || 'standard') === 'basic' ? '#5CE1E6' : 'var(--border)'};background:${(state.ceoSubTier || 'standard') === 'basic' ? 'rgba(92,225,230,0.2)' : 'var(--card-bg)'};color:#5CE1E6" onclick="state.ceoSubTier='basic';render()">
+                    💠 Premium Basic
+                  </button>
+                  <button class="btn-outline" style="padding:8px;font-size:11.5px;border-color:${(state.ceoSubTier || 'standard') === 'standard' ? '#FFD166' : 'var(--border)'};background:${(state.ceoSubTier || 'standard') === 'standard' ? 'rgba(255,209,102,0.2)' : 'var(--card-bg)'};color:#FFD166" onclick="state.ceoSubTier='standard';render()">
+                    💎 Premium
+                  </button>
+                  <button class="btn-outline" style="padding:8px;font-size:11.5px;border-color:${(state.ceoSubTier || 'standard') === 'business' ? '#10B981' : 'var(--border)'};background:${(state.ceoSubTier || 'standard') === 'business' ? 'rgba(16,185,129,0.2)' : 'var(--card-bg)'};color:#10B981" onclick="state.ceoSubTier='business';render()">
+                    🏢 Business
+                  </button>
+                </div>
+
+                <div style="font-size:11.5px;font-weight:700;color:var(--text-secondary);margin-bottom:4px">
+                  ${L.ceoSubDaysLabel}
+                </div>
+                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                  <input id="ceo-sub-days" type="number" min="1" class="composer-input" style="width:130px;padding:9px 12px" value="${escapeHtml(String(state.ceoSubDays !== undefined && state.ceoSubDays !== null ? state.ceoSubDays : '30'))}" oninput="state.ceoSubDays=this.value" />
+                  ${[1, 7, 14, 30, 90, 365].map(days => `
+                    <button class="btn-outline" style="padding:6px 10px;font-size:11.5px;color:var(--gold);border-color:rgba(255,209,102,0.45)" onclick="state.ceoSubDays='${days}';const el=document.getElementById('ceo-sub-days');if(el){el.value='${days}'}">
+                      +${days}d
+                    </button>
+                  `).join('')}
+                </div>
+
+                <div style="display:grid;grid-template-columns:2fr 1fr;gap:8px;margin-top:12px">
+                  <button class="btn-gold" style="padding:11px;background:linear-gradient(135deg,#C77DFF,#FFD166);color:#14121D" onclick="ceoGrantSubscriptionDays()">
+                    ${L.ceoGrantSubBtn}
+                  </button>
+                  <button class="btn-outline" style="padding:11px;color:var(--coral);border-color:rgba(255,107,107,0.45)" onclick="ceoRevokeSubscription()">
+                    ${L.ceoRevokeSubBtn}
+                  </button>
+                </div>
+              </div>
+
+              <!-- 3. CREATE & MANAGE SECRET CODES FOR MEOWCOINS & MEOW BUCKS -->
               <div class="codes-card" style="margin-top:0;margin-bottom:14px">
                 <div style="font-weight:900;font-size:13px;color:var(--yarn-blue);margin-bottom:8px">
                   ${withMeowBucksIcons(L.ceoCodesManagerHeader, 16)}
@@ -5372,6 +6462,25 @@
                   </button>
                 </div>
 
+                <!-- DAILY CUTE CAT IMAGE PUZZLE -->
+                <div class="discord-app-tile" style="margin-top:12px;border-color:rgba(92,225,230,0.55)" onclick="openDailyCatPuzzle()">
+                  <div style="width:54px;height:54px;border-radius:16px;background:linear-gradient(135deg,#5CE1E6,#FF7EB6);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;box-shadow:0 6px 16px rgba(92,225,230,0.3)">
+                    🧩
+                  </div>
+                  <div style="flex:1;min-width:0">
+                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                      <span style="font-weight:900;font-size:16px;color:var(--text-primary)">${L.dailyPuzzleTitle}</span>
+                      <span class="badge-tag" style="color:${state.currentUser.lastDailyPuzzleRewardDate === getTodayDateKey() ? 'var(--mint)' : 'var(--gold)'};border-color:rgba(255,209,102,0.5)">+5 🪙 / Day</span>
+                    </div>
+                    <div style="color:var(--text-secondary);font-size:12.5px;margin-top:4px;line-height:1.4">
+                      ${L.dailyPuzzleSub}
+                    </div>
+                  </div>
+                  <button class="btn-primary" onclick="event.stopPropagation();openDailyCatPuzzle()">
+                    ${L.dailyPuzzlePlayBtn}
+                  </button>
+                </div>
+
                 <!-- GAME IN PROGRESS: BOUNCY CAT -->
                 <div class="discord-app-tile" style="margin-top:12px;border-style:dashed;border-color:rgba(255,209,102,0.55);opacity:0.92" onclick="showToast(t().bouncyCatToast)">
                   <div style="width:54px;height:54px;border-radius:16px;background:linear-gradient(135deg,#FF9F68,#FFD166);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;box-shadow:0 6px 16px rgba(255,159,104,0.3)">
@@ -5393,6 +6502,51 @@
 
                 <div style="display:flex;justify-content:flex-end;margin-top:16px">
                   <button class="btn-outline" onclick="state.modal=null;render()">${L.closeBtn}</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+      if (state.modal === 'dailyPuzzle') {
+        const dp = state.dailyPuzzle || { dateKey: getTodayDateKey(), board: [0,1,2,3,4,5,6,7,8], selectedPos: null, moves: 0, solved: false, showPeek: false };
+        const spec = getTodaysCatPuzzleSpec();
+        const claimedToday = state.currentUser.lastDailyPuzzleRewardDate === getTodayDateKey();
+        return `
+          <div class="modal-backdrop" onclick="if(event.target===this){state.modal=null;render()}">
+            <div class="modal-card" style="max-width:520px;border-color:var(--yarn-blue)">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px">
+                <span style="font-weight:900;font-size:18px;color:var(--yarn-blue)">🧩 ${L.dailyPuzzleTitle}</span>
+                <button class="icon-btn" onclick="state.modal=null;render()">✕</button>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:10px">
+                <span style="font-weight:800;font-size:13px;color:var(--gold)">${escapeHtml(spec.title)} • ${escapeHtml(dp.dateKey)}</span>
+                <span class="badge-tag" style="color:${claimedToday ? 'var(--mint)' : 'var(--gold)'}">${claimedToday ? L.dailyPuzzleRewardClaimed : L.dailyPuzzleRewardReady}</span>
+              </div>
+              <div style="color:var(--text-secondary);font-size:12.5px;margin-bottom:12px">${L.dailyPuzzleSub}</div>
+
+              ${dp.showPeek ? `
+                <div style="text-align:center;margin-bottom:12px">
+                  <canvas id="daily-puzzle-peek-canvas" width="210" height="210" style="border-radius:14px;border:2px solid var(--gold);box-shadow:0 6px 18px rgba(0,0,0,0.35)"></canvas>
+                </div>
+              ` : ''}
+
+              <div class="puzzle-grid">
+                ${dp.board.map((pieceIdx, posIdx) => `
+                  <div class="puzzle-tile ${dp.selectedPos === posIdx ? 'selected' : ''}" onclick="clickDailyPuzzleTile(${posIdx})">
+                    <canvas id="daily-puzzle-tile-${posIdx}" width="100" height="100"></canvas>
+                  </div>
+                `).join('')}
+              </div>
+
+              <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:14px">
+                <span style="font-size:12.5px;font-weight:800;color:${dp.solved ? 'var(--mint)' : 'var(--text-secondary)'}">
+                  ${dp.solved ? `🎉 Solved in ${dp.moves} swap(s)!` : `🔄 Moves: ${dp.moves} (Click any 2 tiles to swap)`}
+                </span>
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                  <button class="btn-outline" onclick="toggleDailyPuzzlePeek()">${L.dailyPuzzlePeekBtn}</button>
+                  <button class="btn-outline" onclick="resetDailyCatPuzzle()">${L.dailyPuzzleShuffleBtn}</button>
+                  <button class="btn-primary" onclick="state.modal=null;render()">${L.closeBtn}</button>
                 </div>
               </div>
             </div>
@@ -5457,11 +6611,12 @@
             <div class="modal-card" style="max-width:760px;border-color:var(--gold)">
               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
                 <span style="font-weight:900;font-size:19px;color:var(--gold)">${L.premiumCardTitle}</span>
-                <span class="lifetime-premium-tag">${state.currentUser.isPremium ? L.premiumActiveTag : '💎 VIP'}</span>
+                <span class="lifetime-premium-tag">${isUserPremiumActive() ? escapeHtml(getPremiumBadgeLabel()) : '💎 VIP'}</span>
               </div>
               <div style="color:var(--text-secondary);font-size:13.5px;line-height:1.5;margin-bottom:10px">
                 ${L.premiumCardDesc}
               </div>
+              ${renderBiweeklyCoinsBanner(L)}
               ${renderPremiumTiersGrid(L)}
               <div class="premium-card" style="margin-bottom:14px">
                 <div style="font-weight:800;font-size:13px;color:var(--text-primary);line-height:1.45">
@@ -5520,7 +6675,7 @@
                 <span style="font-weight:800;font-size:18px">${L.settingsTitle}</span>
                 <div style="display:flex;gap:6px;align-items:center">
                   ${state.currentUser.isOwner ? `<span class="owner-tag">${L.ownerTag}</span>` : ''}
-                  ${state.currentUser.isPremium ? `<span class="lifetime-premium-tag">${L.lifetimePremiumTag}</span>` : ''}
+                  ${isUserPremiumActive() ? `<span class="lifetime-premium-tag">${escapeHtml(getPremiumBadgeLabel())}</span>` : ''}
                 </div>
               </div>
 
@@ -5570,7 +6725,7 @@
                     </div>
                     <div style="display:flex;gap:6px;flex-wrap:wrap">
                       ${state.currentUser.isOwner ? `<span class="owner-tag">${L.ownerTag}</span>` : ''}
-                      ${state.currentUser.isPremium ? `<span class="lifetime-premium-tag">${L.lifetimePremiumTag}</span>` : ''}
+                      ${isUserPremiumActive() ? `<span class="lifetime-premium-tag">${escapeHtml(getPremiumBadgeLabel())}</span>` : ''}
                       ${state.currentUser.equippedBadge ? `<span class="badge-tag">${escapeHtml(state.currentUser.equippedBadge)}</span>` : ''}
                     </div>
                   </div>
