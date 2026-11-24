@@ -928,6 +928,44 @@
       box-shadow: 0 8px 26px rgba(199, 125, 255, 0.15);
     }
 
+    .premium-tiers-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin: 12px 0;
+    }
+
+    .premium-tier-box {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .premium-tier-box.tier-basic {
+      border-color: rgba(92, 225, 230, 0.55);
+      background: linear-gradient(160deg, rgba(92, 225, 230, 0.1), var(--card-bg));
+    }
+
+    .premium-tier-box.tier-standard {
+      border-color: rgba(255, 209, 102, 0.65);
+      background: linear-gradient(160deg, rgba(199, 125, 255, 0.15), rgba(255, 209, 102, 0.1));
+    }
+
+    .premium-tier-box.tier-business {
+      border-color: rgba(16, 185, 129, 0.65);
+      background: linear-gradient(160deg, rgba(16, 185, 129, 0.15), rgba(255, 209, 102, 0.1));
+    }
+
+    @media (max-width: 760px) {
+      .premium-tiers-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
     .codes-card {
       background: var(--card-bg);
       border: 1.5px dashed rgba(92, 225, 230, 0.45);
@@ -1210,7 +1248,54 @@
           '🪙 0% Extra MeowCoins on Quests (Fair Quest Rewards for All Players)',
           '💎 Exclusive VIP Diamond Profile Badge'
         ],
-        premiumDealRule: '🔒 EXCLUSIVE ACCESS: CatMsg Premium is ONLY obtainable by making a direct deal with the Owner at:',
+        premiumDealRule: '🔒 EXCLUSIVE ACCESS: CatMsg Premium Basic, CatMsg Premium, and CatMsg Premium Business are ALL ONLY obtainable by making a direct deal with the Owner at:',
+        premiumTiers: [
+          {
+            id: 'basic',
+            cssClass: 'tier-basic',
+            badge: '💠 BASIC',
+            title: 'CatMsg Premium Basic',
+            subtitle: 'Starter VIP Tier (Less Benefits)',
+            color: '#5CE1E6',
+            mailtoSubject: 'CatMsg%20Premium%20Basic%20Deal',
+            bullets: [
+              '🏷️ 8% MeowCoin Shop Discount on Stickers, Badges & Markers',
+              '🪙 0% Extra MeowCoins on Quests (Fair for All)',
+              '💠 Basic VIP Profile Tag',
+              '✨ All Core CatMsg Features Stay 100% Free'
+            ]
+          },
+          {
+            id: 'standard',
+            cssClass: 'tier-standard',
+            badge: '💎 POPULAR',
+            title: 'CatMsg Premium',
+            subtitle: 'Standard VIP Tier',
+            color: '#FFD166',
+            mailtoSubject: 'CatMsg%20Premium%20Subscription%20Deal',
+            bullets: [
+              '🏷️ 16% MeowCoin Shop Discount on All Stickers, Royal Badges & Markers',
+              '🪙 0% Extra MeowCoins on Quests (Fair for All)',
+              '💎 Exclusive VIP Diamond Profile Badge',
+              '✨ All Core CatMsg Features Stay 100% Free'
+            ]
+          },
+          {
+            id: 'business',
+            cssClass: 'tier-business',
+            badge: '🏢👑 BUSINESS',
+            title: 'CatMsg Premium Business',
+            subtitle: 'Top Executive & Team Tier',
+            color: '#10B981',
+            mailtoSubject: 'CatMsg%20Premium%20Business%20Deal',
+            bullets: [
+              '🏷️ 25% MeowCoin Shop Discount on All Stickers, Royal Badges & Markers',
+              '🪙 0% Extra MeowCoins on Quests (Fair for All)',
+              '🏢👑 Exclusive Business VIP Profile Badge & Cat House Priority Tag',
+              '🤝 Multi-Account & Team Business Deal Support with the Owner'
+            ]
+          }
+        ],
         copyEmailBtn: '📋 Copy Email',
         emailDealBtn: '✉️ Email Owner to Make a Deal',
         cancelBtn: 'Cancel',
@@ -1370,7 +1455,54 @@
           '🪙 0% عملات إضافية على المهام (مكافآت مهام عادلة لجميع اللاعبين)',
           '💎 شارة VIP الماسية المميزة للملف الشخصي'
         ],
-        premiumDealRule: '🔒 حصرياً: لا يمكن الحصول على اشتراك CatMsg المميز إلا عبر الاتفاق المباشر مع المالك عبر البريد الإلكتروني:',
+        premiumDealRule: '🔒 حصرياً: لا يمكن الحصول على CatMsg المميز الأساسي أو CatMsg المميز أو CatMsg المميز للأعمال إلا عبر الاتفاق المباشر مع المالك عبر البريد الإلكتروني:',
+        premiumTiers: [
+          {
+            id: 'basic',
+            cssClass: 'tier-basic',
+            badge: '💠 أساسي',
+            title: 'CatMsg المميز الأساسي (Basic)',
+            subtitle: 'الباقة الأساسية (مزايا أقل)',
+            color: '#5CE1E6',
+            mailtoSubject: 'CatMsg%20Premium%20Basic%20Deal',
+            bullets: [
+              '🏷️ خصم 8% في متجر عملات مياو على الملصقات والشارات والأقلام',
+              '🪙 0% عملات إضافية على المهام (مكافآت عادلة للجميع)',
+              '💠 شارة VIP الأساسية للملف الشخصي',
+              '✨ جميع ميزات CatMsg الأساسية مجانية 100%'
+            ]
+          },
+          {
+            id: 'standard',
+            cssClass: 'tier-standard',
+            badge: '💎 الأشهر',
+            title: 'CatMsg المميز (Premium)',
+            subtitle: 'الباقة المميزة القياسية',
+            color: '#FFD166',
+            mailtoSubject: 'CatMsg%20Premium%20Subscription%20Deal',
+            bullets: [
+              '🏷️ خصم 16% في متجر عملات مياو على جميع الملصقات والشارات والأقلام',
+              '🪙 0% عملات إضافية على المهام (مكافآت عادلة للجميع)',
+              '💎 شارة VIP الماسية المميزة للملف الشخصي',
+              '✨ جميع ميزات CatMsg الأساسية مجانية 100%'
+            ]
+          },
+          {
+            id: 'business',
+            cssClass: 'tier-business',
+            badge: '🏢👑 أعمال',
+            title: 'CatMsg المميز للأعمال (Business)',
+            subtitle: 'أعلى باقة للأعمال والفرق',
+            color: '#10B981',
+            mailtoSubject: 'CatMsg%20Premium%20Business%20Deal',
+            bullets: [
+              '🏷️ خصم 25% في متجر عملات مياو على جميع الملصقات والشارات والأقلام',
+              '🪙 0% عملات إضافية على المهام (مكافآت عادلة للجميع)',
+              '🏢👑 شارة الأعمال الحصرية وأولوية تمييز بيت القطط',
+              '🤝 دعم الصفقات متعددة الحسابات والفرق مباشرة مع المالك'
+            ]
+          }
+        ],
         copyEmailBtn: '📋 نسخ الإيميل',
         emailDealBtn: '✉️ راسل المالك للاتفاق',
         cancelBtn: 'إلغاء',
@@ -1530,7 +1662,54 @@
           '🪙 任务额外喵币 0%（保持所有玩家任务奖励公平）',
           '💎 专属 VIP 钻石资料徽章'
         ],
-        premiumDealRule: '🔒 专属获取方式：CatMsg 会员仅可通过联系站长直接洽谈获得：',
+        premiumDealRule: '🔒 专属获取方式：CatMsg 会员基础版、CatMsg 会员及 CatMsg 会员商业版均仅可通过联系站长直接洽谈获得：',
+        premiumTiers: [
+          {
+            id: 'basic',
+            cssClass: 'tier-basic',
+            badge: '💠 基础版',
+            title: 'CatMsg 会员基础版 (Basic)',
+            subtitle: '入门 VIP 档位（权益较少）',
+            color: '#5CE1E6',
+            mailtoSubject: 'CatMsg%20Premium%20Basic%20Deal',
+            bullets: [
+              '🏷️ 贴纸、徽章与白板画笔享 8% 喵币商店折扣',
+              '🪙 任务额外喵币 0%（全员公平）',
+              '💠 基础 VIP 个人资料标签',
+              '✨ 所有核心 CatMsg 功能保持 100% 免费'
+            ]
+          },
+          {
+            id: 'standard',
+            cssClass: 'tier-standard',
+            badge: '💎 推荐',
+            title: 'CatMsg 会员 (Premium)',
+            subtitle: '标准 VIP 档位',
+            color: '#FFD166',
+            mailtoSubject: 'CatMsg%20Premium%20Subscription%20Deal',
+            bullets: [
+              '🏷️ 全部贴纸、皇家徽章与白板画笔享 16% 喵币折扣',
+              '🪙 任务额外喵币 0%（全员公平）',
+              '💎 专属 VIP 钻石资料徽章',
+              '✨ 所有核心 CatMsg 功能保持 100% 免费'
+            ]
+          },
+          {
+            id: 'business',
+            cssClass: 'tier-business',
+            badge: '🏢👑 商业版',
+            title: 'CatMsg 会员商业版 (Business)',
+            subtitle: '顶级商业与团队档位',
+            color: '#10B981',
+            mailtoSubject: 'CatMsg%20Premium%20Business%20Deal',
+            bullets: [
+              '🏷️ 全部贴纸、皇家徽章与白板画笔享 25% 喵币折扣',
+              '🪙 任务额外喵币 0%（全员公平）',
+              '🏢👑 专属商业 VIP 徽章与猫屋优先标识',
+              '🤝 支持与站长洽谈多账号及团队商业合作方案'
+            ]
+          }
+        ],
         copyEmailBtn: '📋 复制邮箱',
         emailDealBtn: '✉️ 发邮件联系站长',
         cancelBtn: '取消',
@@ -1690,7 +1869,54 @@
           '🪙 0% доп. МяуКоинов за квесты (честные награды для всех игроков)',
           '💎 Эксклюзивный бриллиантовый VIP-значок профиля'
         ],
-        premiumDealRule: '🔒 ЭКСКЛЮЗИВНЫЙ ДОСТУП: CatMsg Премиум можно получить ТОЛЬКО по личной договорённости с владельцем:',
+        premiumDealRule: '🔒 ЭКСКЛЮЗИВНЫЙ ДОСТУП: CatMsg Премиум Базовый, CatMsg Премиум и CatMsg Премиум Бизнес можно получить ТОЛЬКО по личной договорённости с владельцем:',
+        premiumTiers: [
+          {
+            id: 'basic',
+            cssClass: 'tier-basic',
+            badge: '💠 БАЗОВЫЙ',
+            title: 'CatMsg Премиум Базовый (Basic)',
+            subtitle: 'Начальный VIP-уровень (меньше бонусов)',
+            color: '#5CE1E6',
+            mailtoSubject: 'CatMsg%20Premium%20Basic%20Deal',
+            bullets: [
+              '🏷️ Скидка 8% в магазине МяуКоинов на стикеры, значки и маркеры',
+              '🪙 0% доп. МяуКоинов за квесты (честно для всех)',
+              '💠 Базовый VIP-тег профиля',
+              '✨ Все основные функции CatMsg на 100% бесплатны'
+            ]
+          },
+          {
+            id: 'standard',
+            cssClass: 'tier-standard',
+            badge: '💎 ПОПУЛЯРНЫЙ',
+            title: 'CatMsg Премиум (Premium)',
+            subtitle: 'Стандартный VIP-уровень',
+            color: '#FFD166',
+            mailtoSubject: 'CatMsg%20Premium%20Subscription%20Deal',
+            bullets: [
+              '🏷️ Скидка 16% в магазине на все стикеры, королевские значки и маркеры',
+              '🪙 0% доп. МяуКоинов за квесты (честно для всех)',
+              '💎 Эксклюзивный бриллиантовый VIP-значок профиля',
+              '✨ Все основные функции CatMsg на 100% бесплатны'
+            ]
+          },
+          {
+            id: 'business',
+            cssClass: 'tier-business',
+            badge: '🏢👑 БИЗНЕС',
+            title: 'CatMsg Премиум Бизнес (Business)',
+            subtitle: 'Максимальный уровень для команд и бизнеса',
+            color: '#10B981',
+            mailtoSubject: 'CatMsg%20Premium%20Business%20Deal',
+            bullets: [
+              '🏷️ Скидка 25% в магазине на все стикеры, королевские значки и маркеры',
+              '🪙 0% доп. МяуКоинов за квесты (честно для всех)',
+              '🏢👑 Эксклюзивный бизнес-значок VIP и приоритетный тег Кото-дома',
+              '🤝 Поддержка мультиаккаунтных и командных сделок с владельцем'
+            ]
+          }
+        ],
         copyEmailBtn: '📋 Копировать почту',
         emailDealBtn: '✉️ Написать владельцу',
         cancelBtn: 'Отмена',
@@ -3505,12 +3731,44 @@
       ctx.fillText(cap[1], w / 2, h - 18);
     }
 
+    function getUserPremiumDiscountPercent() {
+      if (!state.currentUser || !state.currentUser.isPremium) return 0;
+      const plan = String(state.currentUser.premiumPlan || '').toLowerCase();
+      if (plan.includes('business')) return 25;
+      if (plan.includes('basic')) return 8;
+      return 16;
+    }
+
     function getEffectiveCoinPrice(basePrice) {
       if (!basePrice || basePrice <= 0) return 0;
-      if (state.currentUser && state.currentUser.isPremium) {
-        return Math.max(1, Math.round(basePrice * 0.84));
+      const pct = getUserPremiumDiscountPercent();
+      if (pct > 0) {
+        return Math.max(1, Math.round(basePrice * (1 - pct / 100)));
       }
       return basePrice;
+    }
+
+    function renderPremiumTiersGrid(L) {
+      const tiers = L.premiumTiers || I18N.en.premiumTiers || [];
+      return `
+        <div class="premium-tiers-grid">
+          ${tiers.map(tier => `
+            <div class="premium-tier-box ${tier.cssClass}">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap">
+                <span style="font-weight:900;font-size:13.5px;color:${tier.color}">${escapeHtml(tier.title)}</span>
+                <span class="badge-tag" style="color:${tier.color};border-color:${tier.color};font-size:10px">${escapeHtml(tier.badge)}</span>
+              </div>
+              <div style="font-size:11.5px;color:var(--text-muted);font-weight:700">${escapeHtml(tier.subtitle)}</div>
+              <div style="display:flex;flex-direction:column;gap:4px;margin:4px 0;flex:1">
+                ${(tier.bullets || []).map(b => `<div style="font-size:11.5px;color:var(--text-secondary);line-height:1.35">${escapeHtml(b)}</div>`).join('')}
+              </div>
+              <a href="mailto:${OWNER_EMAIL}?subject=${tier.mailtoSubject}" class="btn-outline" style="text-decoration:none;text-align:center;font-size:11.5px;padding:7px 10px;border-color:${tier.color};color:${tier.color};margin-top:4px">
+                ✉️ ${escapeHtml(tier.title)}
+              </a>
+            </div>
+          `).join('')}
+        </div>
+      `;
     }
 
     function getEffectiveQuestReward(baseReward) {
@@ -4167,7 +4425,7 @@
             ` : `
               <button class="btn-gold" onclick="selectOrUnlockMarker('marker_emerald')">
                 <span class="marker-swatch" style="background:#10B981;vertical-align:middle;margin-inline-end:4px"></span>
-                ${L.unlockBtn(getEffectiveCoinPrice(25))}${state.currentUser.isPremium ? ' 💎 -16%' : ''}
+                ${L.unlockBtn(getEffectiveCoinPrice(25))}${getUserPremiumDiscountPercent() > 0 ? ` 💎 -${getUserPremiumDiscountPercent()}%` : ''}
               </button>
             `}
 
@@ -4397,7 +4655,7 @@
                       `).join('')}
                     </div>
                     <div style="font-size:10.5px;margin-top:4px;color:${owned ? 'var(--mint)' : 'var(--gold)'};font-weight:700">
-                      ${owned ? L.tapToSend : `🔒 🪙 ${getEffectiveCoinPrice(s.priceCoins)}${state.currentUser.isPremium && s.priceCoins > 0 ? ' (💎 -16%)' : ''}`}
+                      ${owned ? L.tapToSend : `🔒 🪙 ${getEffectiveCoinPrice(s.priceCoins)}${getUserPremiumDiscountPercent() > 0 && s.priceCoins > 0 ? ` (💎 -${getUserPremiumDiscountPercent()}%)` : ''}`}
                     </div>
                   </div>
                 `;
@@ -4593,9 +4851,7 @@
                   <span class="lifetime-premium-tag">${state.currentUser.isPremium ? L.premiumActiveTag : 'VIP DEAL ONLY'}</span>
                 </div>
                 <div style="color:var(--text-secondary);font-size:13px;margin-top:5px;line-height:1.45">${L.premiumCardDesc}</div>
-                <div style="margin-top:8px;display:flex;flex-direction:column;gap:4px">
-                  ${(L.premiumQolBullets || []).map(b => `<div style="font-size:12px;color:var(--mint);font-weight:700">${escapeHtml(b)}</div>`).join('')}
-                </div>
+                ${renderPremiumTiersGrid(L)}
                 <div style="color:var(--text-primary);font-size:12.5px;font-weight:800;margin-top:10px">
                   ${L.premiumDealRule}
                   <span style="color:var(--gold);text-decoration:underline;margin-inline-start:4px">${OWNER_EMAIL}</span>
@@ -5198,17 +5454,15 @@
       if (state.modal === 'premium') {
         return `
           <div class="modal-backdrop" onclick="if(event.target===this){state.modal=null;render()}">
-            <div class="modal-card" style="max-width:520px;border-color:var(--gold)">
-              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+            <div class="modal-card" style="max-width:760px;border-color:var(--gold)">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
                 <span style="font-weight:900;font-size:19px;color:var(--gold)">${L.premiumCardTitle}</span>
                 <span class="lifetime-premium-tag">${state.currentUser.isPremium ? L.premiumActiveTag : '💎 VIP'}</span>
               </div>
               <div style="color:var(--text-secondary);font-size:13.5px;line-height:1.5;margin-bottom:10px">
                 ${L.premiumCardDesc}
               </div>
-              <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:10px 12px;margin-bottom:14px;display:flex;flex-direction:column;gap:6px">
-                ${(L.premiumQolBullets || []).map(b => `<div style="font-size:12.5px;color:var(--mint);font-weight:700">${escapeHtml(b)}</div>`).join('')}
-              </div>
+              ${renderPremiumTiersGrid(L)}
               <div class="premium-card" style="margin-bottom:14px">
                 <div style="font-weight:800;font-size:13px;color:var(--text-primary);line-height:1.45">
                   ${L.premiumDealRule}
