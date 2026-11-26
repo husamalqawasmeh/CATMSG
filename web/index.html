@@ -1286,6 +1286,8 @@
         dailyPuzzleRewardClaimed: '✓ +5 🪙 Daily Reward Claimed Today (Come back tomorrow!)',
         dailyPuzzlePeekBtn: '👁️ Peek Full Cat Picture',
         dailyPuzzleShuffleBtn: '🔀 Reshuffle Puzzle',
+        dailyPuzzleChoosePrompt: 'Choose 1 of today\'s 3 cute kittens for your Daily Puzzle:',
+        dailyPuzzleChangeCatBtn: '🐱 Change Cat',
         biweeklyCoinsTitle: '🎁 Subscription Perk: +35 Free MeowCoins Every 2 Weeks',
         biweeklyCoinsClaimBtn: '🪙 Claim +35 Free MeowCoins!',
         biweeklyCoinsNextIn: (d, h) => `⏳ Next +35 🪙 claim in ${d}d ${h}h`,
@@ -1515,6 +1517,8 @@
         dailyPuzzleRewardClaimed: '✓ تم استلام مكافأة +5 🪙 اليوم (عد غداً!)',
         dailyPuzzlePeekBtn: '👁️ معاينة الصورة الكاملة',
         dailyPuzzleShuffleBtn: '🔀 خلط القطع',
+        dailyPuzzleChoosePrompt: 'اختر واحدة من القطط الـ 3 اللطيفة للغز اليوم:',
+        dailyPuzzleChangeCatBtn: '🐱 تغيير القطة',
         biweeklyCoinsTitle: '🎁 ميزة الاشتراك: +35 عملة مياو مجانية كل أسبوعين',
         biweeklyCoinsClaimBtn: '🪙 استلم +35 عملة مياو مجانية!',
         biweeklyCoinsNextIn: (d, h) => `⏳ الاستلام القادم (+35 🪙) بعد ${d} يوم و ${h} ساعة`,
@@ -1744,6 +1748,8 @@
         dailyPuzzleRewardClaimed: '✓ 今日 +5 🪙 奖励已领取（明天再来！）',
         dailyPuzzlePeekBtn: '👁️ 偷看完整猫图',
         dailyPuzzleShuffleBtn: '🔀 重新打乱拼图',
+        dailyPuzzleChoosePrompt: '从今天这 3 只可爱小猫中选择 1 只作为每日拼图：',
+        dailyPuzzleChangeCatBtn: '🐱 更换小猫',
         biweeklyCoinsTitle: '🎁 订阅福利：每 2 周免费领取 +35 喵币',
         biweeklyCoinsClaimBtn: '🪙 领取 +35 免费喵币！',
         biweeklyCoinsNextIn: (d, h) => `⏳ 距离下次领取 +35 🪙 还有 ${d}天 ${h}小时`,
@@ -1973,6 +1979,8 @@
         dailyPuzzleRewardClaimed: '✓ Награда +5 🪙 на сегодня получена (приходите завтра!)',
         dailyPuzzlePeekBtn: '👁️ Подсмотреть картинку',
         dailyPuzzleShuffleBtn: '🔀 Перемешать пазл',
+        dailyPuzzleChoosePrompt: 'Выберите 1 из 3 милых котят для сегодняшнего пазла:',
+        dailyPuzzleChangeCatBtn: '🐱 Сменить котёнка',
         biweeklyCoinsTitle: '🎁 Бонус подписки: +35 бесплатных МяуКоинов каждые 2 недели',
         biweeklyCoinsClaimBtn: '🪙 Забрать +35 бесплатных МяуКоинов!',
         biweeklyCoinsNextIn: (d, h) => `⏳ Следующие +35 🪙 через ${d}д ${h}ч`,
@@ -2565,6 +2573,15 @@
           winner.currentUser.lastDailyPuzzleRewardDate = puzB;
         } else if (puzA > puzB) {
           winner.currentUser.lastDailyPuzzleRewardDate = puzA;
+        }
+        const chDateA = (snapA.currentUser && snapA.currentUser.dailyPuzzleChoiceDate) || '';
+        const chDateB = (snapB.currentUser && snapB.currentUser.dailyPuzzleChoiceDate) || '';
+        if (chDateB > chDateA && snapB.currentUser) {
+          winner.currentUser.dailyPuzzleChoiceDate = chDateB;
+          winner.currentUser.dailyPuzzleChoiceId = snapB.currentUser.dailyPuzzleChoiceId || null;
+        } else if (chDateA > chDateB && snapA.currentUser) {
+          winner.currentUser.dailyPuzzleChoiceDate = chDateA;
+          winner.currentUser.dailyPuzzleChoiceId = snapA.currentUser.dailyPuzzleChoiceId || null;
         }
       }
       return winner;
@@ -4278,19 +4295,19 @@
     }
 
     const DAILY_CAT_PUZZLES = [
-      { id: 'tuxedo', title: 'Sir Tuxedo Whiskers 🎩🐱', bg: ['#1E1B4B', '#4338CA'], coat: '#1F2937', earInner: '#FDA4AF', eyes: '#34D399', accessory: 'bowtie' },
-      { id: 'calico', title: 'Strawberry Teacup Kitty 🍓🐱', bg: ['#831843', '#DB2777'], coat: '#FFF7ED', earInner: '#FBCFE8', eyes: '#0F172A', accessory: 'strawberry' },
-      { id: 'tabby', title: 'Sunny Orange Loaf ☀️🧡', bg: ['#7C2D12', '#EA580C'], coat: '#FB923C', earInner: '#FED7AA', eyes: '#1E293B', accessory: 'sun' },
-      { id: 'astro', title: 'Astro Space Kitty 🚀🌙', bg: ['#0F172A', '#0284C7'], coat: '#F8FAFC', earInner: '#93C5FD', eyes: '#38BDF8', accessory: 'astro' },
-      { id: 'sakura', title: 'Sakura Blossom Cat 🌸🐱', bg: ['#581C87', '#EC4899'], coat: '#FEF2F2', earInner: '#F9A8D4', eyes: '#6D28D9', accessory: 'sakura' },
-      { id: 'king', title: 'Golden Castle Loaf 👑🏰', bg: ['#422006', '#CA8A04'], coat: '#FEF08A', earInner: '#FDBA74', eyes: '#1E1B4B', accessory: 'crown' },
-      { id: 'mint', title: 'Matcha Cream Kitten 🍵🐾', bg: ['#064E3B', '#10B981'], coat: '#F0FDF4', earInner: '#86EFAC', eyes: '#065F46', accessory: 'leaf' }
+      { id: 'cat_blep', title: 'Silver Tabby Kitten 🐾', src: '/puzzle_cat_1.jpg' },
+      { id: 'cat_fluffy', title: 'Fluffy Tabby Kitten 🤍', src: '/puzzle_cat_2.jpg' },
+      { id: 'cat_ginger', title: 'Cozy Ginger Kitten 🧡', src: '/puzzle_cat_3.jpg' }
     ];
 
-    function getTodaysCatPuzzleSpec() {
-      const parts = getTodayDateKey().split('-').map(Number);
-      const daySeed = parts[0] * 372 + parts[1] * 31 + parts[2];
-      return DAILY_CAT_PUZZLES[daySeed % DAILY_CAT_PUZZLES.length];
+    function getTodaysChosenPuzzleSpec() {
+      const todayKey = getTodayDateKey();
+      const userChoiceDate = state.currentUser && state.currentUser.dailyPuzzleChoiceDate;
+      const userChoiceId = state.currentUser && state.currentUser.dailyPuzzleChoiceId;
+      if (userChoiceDate === todayKey && userChoiceId) {
+        return DAILY_CAT_PUZZLES.find(p => p.id === userChoiceId) || null;
+      }
+      return null;
     }
 
     function createShuffledPuzzleBoard() {
@@ -4309,25 +4326,68 @@
     }
 
     function openDailyCatPuzzle() {
+      const chosen = getTodaysChosenPuzzleSpec();
       const todayKey = getTodayDateKey();
-      if (!state.dailyPuzzle || state.dailyPuzzle.dateKey !== todayKey) {
-        state.dailyPuzzle = {
-          dateKey: todayKey,
-          board: createShuffledPuzzleBoard(),
-          selectedPos: null,
-          moves: 0,
-          solved: false,
-          showPeek: false
-        };
+      if (chosen) {
+        if (!state.dailyPuzzle || state.dailyPuzzle.dateKey !== todayKey || state.dailyPuzzle.puzzleId !== chosen.id) {
+          state.dailyPuzzle = {
+            dateKey: todayKey,
+            puzzleId: chosen.id,
+            board: createShuffledPuzzleBoard(),
+            selectedPos: null,
+            moves: 0,
+            solved: false,
+            showPeek: false
+          };
+        }
+      } else {
+        state.dailyPuzzle = null;
       }
       state.modal = 'dailyPuzzle';
       render();
-      setTimeout(renderDailyCatPuzzleCanvases, 30);
+    }
+
+    function selectDailyCatPuzzle(puzzleId) {
+      const spec = DAILY_CAT_PUZZLES.find(p => p.id === puzzleId);
+      if (!spec) return;
+      const todayKey = getTodayDateKey();
+      state.currentUser.dailyPuzzleChoiceDate = todayKey;
+      state.currentUser.dailyPuzzleChoiceId = spec.id;
+      state.dailyPuzzle = {
+        dateKey: todayKey,
+        puzzleId: spec.id,
+        board: createShuffledPuzzleBoard(),
+        selectedPos: null,
+        moves: 0,
+        solved: false,
+        showPeek: false
+      };
+      autoPersistIfEnabled();
+      render();
+    }
+
+    function clearDailyCatChoiceForToday() {
+      const todayKey = getTodayDateKey();
+      if ((state.dailyPuzzle && state.dailyPuzzle.solved) || state.currentUser.lastDailyPuzzleRewardDate === todayKey) {
+        return;
+      }
+      state.currentUser.dailyPuzzleChoiceDate = null;
+      state.currentUser.dailyPuzzleChoiceId = null;
+      state.dailyPuzzle = null;
+      autoPersistIfEnabled();
+      render();
     }
 
     function resetDailyCatPuzzle() {
+      const chosen = getTodaysChosenPuzzleSpec();
+      if (!chosen) {
+        state.dailyPuzzle = null;
+        render();
+        return;
+      }
       state.dailyPuzzle = {
         dateKey: getTodayDateKey(),
+        puzzleId: chosen.id,
         board: createShuffledPuzzleBoard(),
         selectedPos: null,
         moves: 0,
@@ -4335,14 +4395,12 @@
         showPeek: false
       };
       render();
-      setTimeout(renderDailyCatPuzzleCanvases, 30);
     }
 
     function toggleDailyPuzzlePeek() {
       if (!state.dailyPuzzle) return;
       state.dailyPuzzle.showPeek = !state.dailyPuzzle.showPeek;
       render();
-      setTimeout(renderDailyCatPuzzleCanvases, 30);
     }
 
     function clickDailyPuzzleTile(posIdx) {
@@ -4350,13 +4408,11 @@
       if (state.dailyPuzzle.selectedPos === null) {
         state.dailyPuzzle.selectedPos = posIdx;
         render();
-        setTimeout(renderDailyCatPuzzleCanvases, 10);
         return;
       }
       if (state.dailyPuzzle.selectedPos === posIdx) {
         state.dailyPuzzle.selectedPos = null;
         render();
-        setTimeout(renderDailyCatPuzzleCanvases, 10);
         return;
       }
       const a = state.dailyPuzzle.selectedPos;
@@ -4374,7 +4430,6 @@
           state.currentUser.meowCoins = (state.currentUser.meowCoins || 0) + 5;
           autoPersistIfEnabled();
           render();
-          setTimeout(renderDailyCatPuzzleCanvases, 20);
           showToast(
             state.lang === 'ar'
               ? '🧩🐱 أحسنت! أكملت لغز القطة اللطيفة اليوم وحصلت على +5 🪙 عملات مياو!'
@@ -4383,7 +4438,6 @@
           return;
         }
         render();
-        setTimeout(renderDailyCatPuzzleCanvases, 20);
         showToast(
           state.lang === 'ar'
             ? '🧩✨ أكملت اللغز بنجاح! تم استلام مكافأة اليوم (+5 🪙) مسبقاً — عد غداً!'
@@ -4393,218 +4447,6 @@
       }
 
       render();
-      setTimeout(renderDailyCatPuzzleCanvases, 10);
-    }
-
-    function buildCuteCatArtworkCanvas(spec, size = 300) {
-      const c = document.createElement('canvas');
-      c.width = size;
-      c.height = size;
-      const ctx = c.getContext('2d');
-
-      const grad = ctx.createLinearGradient(0, 0, size, size);
-      grad.addColorStop(0, spec.bg[0]);
-      grad.addColorStop(1, spec.bg[1]);
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, size, size);
-
-      // Cute sparkles & floating paw dots background
-      ctx.fillStyle = 'rgba(255,255,255,0.16)';
-      const dots = [[36, 44, 5], [258, 52, 6], [42, 246, 5], [254, 240, 7], [150, 28, 4], [272, 148, 4], [24, 152, 4]];
-      for (const [dx, dy, dr] of dots) {
-        ctx.beginPath();
-        ctx.arc(dx, dy, dr, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      // Soft grid frame hints inside artwork so corners/edges are fun to spot
-      ctx.strokeStyle = 'rgba(255,255,255,0.15)';
-      ctx.lineWidth = 4;
-      ctx.strokeRect(12, 12, size - 24, size - 24);
-
-      const cx = size / 2;
-      const cy = size * 0.54;
-
-      // Chubby cat loaf body at bottom center
-      ctx.fillStyle = spec.coat;
-      ctx.beginPath();
-      ctx.ellipse(cx, cy + 58, 76, 48, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Ears
-      ctx.fillStyle = spec.coat;
-      ctx.beginPath();
-      ctx.moveTo(cx - 66, cy - 18);
-      ctx.lineTo(cx - 58, cy - 92);
-      ctx.lineTo(cx - 10, cy - 52);
-      ctx.closePath();
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.moveTo(cx + 66, cy - 18);
-      ctx.lineTo(cx + 58, cy - 92);
-      ctx.lineTo(cx + 10, cy - 52);
-      ctx.closePath();
-      ctx.fill();
-
-      // Inner pink ears
-      ctx.fillStyle = spec.earInner;
-      ctx.beginPath();
-      ctx.moveTo(cx - 56, cy - 28);
-      ctx.lineTo(cx - 52, cy - 76);
-      ctx.lineTo(cx - 20, cy - 48);
-      ctx.closePath();
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.moveTo(cx + 56, cy - 28);
-      ctx.lineTo(cx + 52, cy - 76);
-      ctx.lineTo(cx + 20, cy - 48);
-      ctx.closePath();
-      ctx.fill();
-
-      // Head
-      ctx.fillStyle = spec.coat;
-      ctx.beginPath();
-      ctx.ellipse(cx, cy - 12, 72, 60, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Forehead stripes
-      ctx.fillStyle = 'rgba(255,159,104,0.38)';
-      for (const ox of [-14, 0, 14]) {
-        ctx.beginPath();
-        ctx.roundRect(cx + ox - 3, cy - 66, 6, 18, 3);
-        ctx.fill();
-      }
-
-      // Big kawaii sparkling eyes
-      ctx.fillStyle = spec.eyes;
-      ctx.beginPath();
-      ctx.arc(cx - 27, cy - 16, 13, 0, Math.PI * 2);
-      ctx.arc(cx + 27, cy - 16, 13, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = '#FFFFFF';
-      ctx.beginPath();
-      ctx.arc(cx - 31, cy - 21, 5, 0, Math.PI * 2);
-      ctx.arc(cx + 23, cy - 21, 5, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.beginPath();
-      ctx.arc(cx - 22, cy - 11, 2.5, 0, Math.PI * 2);
-      ctx.arc(cx + 32, cy - 11, 2.5, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Rosy cheeks
-      ctx.fillStyle = 'rgba(255, 126, 182, 0.55)';
-      ctx.beginPath();
-      ctx.ellipse(cx - 44, cy + 2, 12, 7, 0, 0, Math.PI * 2);
-      ctx.ellipse(cx + 44, cy + 2, 12, 7, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Cute pink nose & :3 mouth
-      ctx.fillStyle = '#FF7EB6';
-      ctx.beginPath();
-      ctx.moveTo(cx, cy - 2);
-      ctx.lineTo(cx - 7, cy - 10);
-      ctx.lineTo(cx + 7, cy - 10);
-      ctx.closePath();
-      ctx.fill();
-
-      ctx.strokeStyle = spec.coat === '#1F2937' ? '#F9FAFB' : '#374151';
-      ctx.lineWidth = 3.5;
-      ctx.lineCap = 'round';
-      ctx.beginPath();
-      ctx.arc(cx - 8, cy + 4, 8, 0.1, Math.PI - 0.1);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.arc(cx + 8, cy + 4, 8, 0.1, Math.PI - 0.1);
-      ctx.stroke();
-
-      // Whiskers
-      ctx.lineWidth = 2.5;
-      ctx.strokeStyle = spec.coat === '#1F2937' ? '#D1D5DB' : 'rgba(55,65,81,0.75)';
-      for (const wy of [-12, -4, 4]) {
-        ctx.beginPath();
-        ctx.moveTo(cx - 52, cy + wy);
-        ctx.lineTo(cx - 88, cy + wy - 4);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(cx + 52, cy + wy);
-        ctx.lineTo(cx + 88, cy + wy - 4);
-        ctx.stroke();
-      }
-
-      // Little paws
-      ctx.fillStyle = '#FFFFFF';
-      ctx.beginPath();
-      ctx.ellipse(cx - 28, cy + 52, 14, 10, 0, 0, Math.PI * 2);
-      ctx.ellipse(cx + 28, cy + 52, 14, 10, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Unique accessory per daily puzzle
-      if (spec.accessory === 'crown' || spec.accessory === 'sakura') {
-        ctx.fillStyle = spec.accessory === 'crown' ? '#FFD166' : '#FF7EB6';
-        ctx.beginPath();
-        ctx.moveTo(cx - 28, cy - 66);
-        ctx.lineTo(cx - 22, cy - 96);
-        ctx.lineTo(cx - 8, cy - 76);
-        ctx.lineTo(cx, cy - 104);
-        ctx.lineTo(cx + 8, cy - 76);
-        ctx.lineTo(cx + 22, cy - 96);
-        ctx.lineTo(cx + 28, cy - 66);
-        ctx.closePath();
-        ctx.fill();
-      } else if (spec.accessory === 'bowtie' || spec.accessory === 'strawberry') {
-        ctx.fillStyle = '#EF4444';
-        ctx.beginPath();
-        ctx.moveTo(cx, cy + 36);
-        ctx.lineTo(cx - 22, cy + 24);
-        ctx.lineTo(cx - 22, cy + 48);
-        ctx.closePath();
-        ctx.fill();
-        ctx.beginPath();
-        ctx.moveTo(cx, cy + 36);
-        ctx.lineTo(cx + 22, cy + 24);
-        ctx.lineTo(cx + 22, cy + 48);
-        ctx.closePath();
-        ctx.fill();
-      } else if (spec.accessory === 'astro') {
-        ctx.strokeStyle = 'rgba(147, 197, 253, 0.75)';
-        ctx.lineWidth = 5;
-        ctx.beginPath();
-        ctx.arc(cx, cy - 18, 92, 0, Math.PI * 2);
-        ctx.stroke();
-      } else {
-        ctx.fillStyle = '#FFD166';
-        ctx.font = 'bold 28px Nunito, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('🐟✨', cx, 48);
-      }
-
-      return c;
-    }
-
-    function renderDailyCatPuzzleCanvases() {
-      if (state.modal !== 'dailyPuzzle' || !state.dailyPuzzle) return;
-      const spec = getTodaysCatPuzzleSpec();
-      const master = buildCuteCatArtworkCanvas(spec, 300);
-
-      const peekCanvas = document.getElementById('daily-puzzle-peek-canvas');
-      if (peekCanvas) {
-        const pCtx = peekCanvas.getContext('2d');
-        pCtx.clearRect(0, 0, peekCanvas.width, peekCanvas.height);
-        pCtx.drawImage(master, 0, 0, peekCanvas.width, peekCanvas.height);
-      }
-
-      for (let pos = 0; pos < 9; pos++) {
-        const tileCanvas = document.getElementById(`daily-puzzle-tile-${pos}`);
-        if (!tileCanvas) continue;
-        const pieceIdx = state.dailyPuzzle.board[pos];
-        const sx = (pieceIdx % 3) * 100;
-        const sy = Math.floor(pieceIdx / 3) * 100;
-        const tCtx = tileCanvas.getContext('2d');
-        tCtx.clearRect(0, 0, tileCanvas.width, tileCanvas.height);
-        tCtx.drawImage(master, sx, sy, 100, 100, 0, 0, tileCanvas.width, tileCanvas.height);
-      }
     }
 
     function renderPremiumTiersGrid(L) {
@@ -6509,34 +6351,70 @@
         `;
       }
       if (state.modal === 'dailyPuzzle') {
-        const dp = state.dailyPuzzle || { dateKey: getTodayDateKey(), board: [0,1,2,3,4,5,6,7,8], selectedPos: null, moves: 0, solved: false, showPeek: false };
-        const spec = getTodaysCatPuzzleSpec();
-        const claimedToday = state.currentUser.lastDailyPuzzleRewardDate === getTodayDateKey();
+        const todayKey = getTodayDateKey();
+        const chosenSpec = getTodaysChosenPuzzleSpec();
+        const claimedToday = state.currentUser.lastDailyPuzzleRewardDate === todayKey;
+        if (!chosenSpec) {
+          return `
+            <div class="modal-backdrop" onclick="if(event.target===this){state.modal=null;render()}">
+              <div class="modal-card" style="max-width:600px;border-color:var(--yarn-blue)">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px">
+                  <span style="font-weight:900;font-size:18px;color:var(--yarn-blue)">🧩 ${L.dailyPuzzleTitle}</span>
+                  <button class="icon-btn" onclick="state.modal=null;render()">✕</button>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:10px">
+                  <span style="font-weight:800;font-size:13px;color:var(--gold)">📅 ${escapeHtml(todayKey)}</span>
+                  <span class="badge-tag" style="color:${claimedToday ? 'var(--mint)' : 'var(--gold)'}">${claimedToday ? L.dailyPuzzleRewardClaimed : L.dailyPuzzleRewardReady}</span>
+                </div>
+                <div style="color:var(--text-secondary);font-size:12.5px;margin-bottom:12px">${L.dailyPuzzleSub}</div>
+                <div style="font-size:13px;font-weight:800;color:var(--text-primary);margin-bottom:10px">${L.dailyPuzzleChoosePrompt}</div>
+                <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px">
+                  ${DAILY_CAT_PUZZLES.map(p => `
+                    <div style="background:var(--card-bg);border:2px solid rgba(92,225,230,0.45);border-radius:14px;padding:8px;cursor:pointer;text-align:center;transition:transform 0.12s" onclick="selectDailyCatPuzzle('${p.id}')">
+                      <img src="${p.src}" alt="${escapeHtml(p.title)}" style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:10px;display:block;margin-bottom:6px" />
+                      <div style="font-weight:800;font-size:12px;color:var(--gold)">${escapeHtml(p.title)}</div>
+                    </div>
+                  `).join('')}
+                </div>
+                <div style="display:flex;justify-content:flex-end">
+                  <button class="btn-primary" onclick="state.modal=null;render()">${L.closeBtn}</button>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+        const dp = (state.dailyPuzzle && state.dailyPuzzle.dateKey === todayKey && state.dailyPuzzle.puzzleId === chosenSpec.id)
+          ? state.dailyPuzzle
+          : { dateKey: todayKey, puzzleId: chosenSpec.id, board: [0,1,2,3,4,5,6,7,8], selectedPos: null, moves: 0, solved: false, showPeek: false };
         return `
           <div class="modal-backdrop" onclick="if(event.target===this){state.modal=null;render()}">
-            <div class="modal-card" style="max-width:520px;border-color:var(--yarn-blue)">
+            <div class="modal-card" style="max-width:540px;border-color:var(--yarn-blue)">
               <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px">
                 <span style="font-weight:900;font-size:18px;color:var(--yarn-blue)">🧩 ${L.dailyPuzzleTitle}</span>
                 <button class="icon-btn" onclick="state.modal=null;render()">✕</button>
               </div>
               <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:10px">
-                <span style="font-weight:800;font-size:13px;color:var(--gold)">${escapeHtml(spec.title)} • ${escapeHtml(dp.dateKey)}</span>
+                <span style="font-weight:800;font-size:13px;color:var(--gold)">${escapeHtml(chosenSpec.title)} • ${escapeHtml(dp.dateKey)}</span>
                 <span class="badge-tag" style="color:${claimedToday ? 'var(--mint)' : 'var(--gold)'}">${claimedToday ? L.dailyPuzzleRewardClaimed : L.dailyPuzzleRewardReady}</span>
               </div>
               <div style="color:var(--text-secondary);font-size:12.5px;margin-bottom:12px">${L.dailyPuzzleSub}</div>
 
               ${dp.showPeek ? `
                 <div style="text-align:center;margin-bottom:12px">
-                  <canvas id="daily-puzzle-peek-canvas" width="210" height="210" style="border-radius:14px;border:2px solid var(--gold);box-shadow:0 6px 18px rgba(0,0,0,0.35)"></canvas>
+                  <img src="${chosenSpec.src}" alt="${escapeHtml(chosenSpec.title)}" style="width:210px;height:210px;object-fit:cover;border-radius:14px;border:2px solid var(--gold);box-shadow:0 6px 18px rgba(0,0,0,0.35)" />
                 </div>
               ` : ''}
 
               <div class="puzzle-grid">
-                ${dp.board.map((pieceIdx, posIdx) => `
-                  <div class="puzzle-tile ${dp.selectedPos === posIdx ? 'selected' : ''}" onclick="clickDailyPuzzleTile(${posIdx})">
-                    <canvas id="daily-puzzle-tile-${posIdx}" width="100" height="100"></canvas>
-                  </div>
-                `).join('')}
+                ${dp.board.map((pieceIdx, posIdx) => {
+                  const col = pieceIdx % 3;
+                  const row = Math.floor(pieceIdx / 3);
+                  return `
+                    <div class="puzzle-tile ${dp.selectedPos === posIdx ? 'selected' : ''}" onclick="clickDailyPuzzleTile(${posIdx})">
+                      <div style="width:100%;height:100%;background-image:url('${chosenSpec.src}');background-size:300% 300%;background-position:${col * 50}% ${row * 50}%;background-repeat:no-repeat"></div>
+                    </div>
+                  `;
+                }).join('')}
               </div>
 
               <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:14px">
@@ -6544,6 +6422,7 @@
                   ${dp.solved ? `🎉 Solved in ${dp.moves} swap(s)!` : `🔄 Moves: ${dp.moves} (Click any 2 tiles to swap)`}
                 </span>
                 <div style="display:flex;gap:8px;flex-wrap:wrap">
+                  ${(!dp.solved && !claimedToday) ? `<button class="btn-outline" onclick="clearDailyCatChoiceForToday()">${L.dailyPuzzleChangeCatBtn}</button>` : ''}
                   <button class="btn-outline" onclick="toggleDailyPuzzlePeek()">${L.dailyPuzzlePeekBtn}</button>
                   <button class="btn-outline" onclick="resetDailyCatPuzzle()">${L.dailyPuzzleShuffleBtn}</button>
                   <button class="btn-primary" onclick="state.modal=null;render()">${L.closeBtn}</button>
