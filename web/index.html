@@ -1279,9 +1279,9 @@
         launchAppBtn: '🚀 Launch Activity',
         exitActivityBtn: '✕ Exit Activity',
         onlyAppInstalledNote: 'Apps & Activities (3)',
-        dailyPuzzleTitle: 'Daily Cute Cat Image Puzzle',
-        dailyPuzzleSub: 'Swap tiles to complete today\'s cute cat picture! Rewards +5 🪙 MeowCoins once on your first completion each day.',
-        dailyPuzzlePlayBtn: '🧩 Play Daily Puzzle (+5 🪙)',
+        dailyPuzzleTitle: 'Daily Kitten Puzzle',
+        dailyPuzzleSub: 'Swap tiles to complete today\'s kitten picture! Rewards +5 🪙 MeowCoins once on your first completion each day.',
+        dailyPuzzlePlayBtn: '🧩 Play Daily Kitten Puzzle (+5 🪙)',
         dailyPuzzleRewardReady: '🎁 +5 🪙 Daily First-Completion Reward Available Today!',
         dailyPuzzleRewardClaimed: '✓ +5 🪙 Daily Reward Claimed Today (Come back tomorrow!)',
         dailyPuzzlePeekBtn: '👁️ Peek Full Cat Picture',
@@ -1510,9 +1510,9 @@
         launchAppBtn: '🚀 تشغيل النشاط',
         exitActivityBtn: '✕ إغلاق النشاط',
         onlyAppInstalledNote: 'التطبيقات والأنشطة (3)',
-        dailyPuzzleTitle: 'لغز صورة القطة اللطيفة اليومي',
-        dailyPuzzleSub: 'بدّل القطع لإكمال صورة القطة اللطيفة اليوم! يمنحك +5 🪙 عملات مياو عند إكماله لأول مرة في اليوم.',
-        dailyPuzzlePlayBtn: '🧩 العب اللغز اليومي (+5 🪙)',
+        dailyPuzzleTitle: 'لغز القطة الصغيرة اليومي',
+        dailyPuzzleSub: 'بدّل القطع لإكمال صورة القطة الصغيرة اليوم! يمنحك +5 🪙 عملات مياو عند إكماله لأول مرة في اليوم.',
+        dailyPuzzlePlayBtn: '🧩 العب لغز القطة الصغيرة اليومي (+5 🪙)',
         dailyPuzzleRewardReady: '🎁 مكافأة +5 🪙 متاحة اليوم عند الإكمال الأول!',
         dailyPuzzleRewardClaimed: '✓ تم استلام مكافأة +5 🪙 اليوم (عد غداً!)',
         dailyPuzzlePeekBtn: '👁️ معاينة الصورة الكاملة',
@@ -1741,9 +1741,9 @@
         launchAppBtn: '🚀 启动活动',
         exitActivityBtn: '✕ 退出活动',
         onlyAppInstalledNote: '应用与活动 (3)',
-        dailyPuzzleTitle: '每日可爱猫咪拼图',
-        dailyPuzzleSub: '交换图块拼出今天的可爱猫咪图片！每天首次完成奖励 +5 🪙 喵币。',
-        dailyPuzzlePlayBtn: '🧩 开始每日拼图 (+5 🪙)',
+        dailyPuzzleTitle: '每日小猫拼图',
+        dailyPuzzleSub: '交换图块拼出今天的小猫图片！每天首次完成奖励 +5 🪙 喵币。',
+        dailyPuzzlePlayBtn: '🧩 开始每日小猫拼图 (+5 🪙)',
         dailyPuzzleRewardReady: '🎁 今日首次完成可领 +5 🪙 喵币奖励！',
         dailyPuzzleRewardClaimed: '✓ 今日 +5 🪙 奖励已领取（明天再来！）',
         dailyPuzzlePeekBtn: '👁️ 偷看完整猫图',
@@ -1972,9 +1972,9 @@
         launchAppBtn: '🚀 Запустить',
         exitActivityBtn: '✕ Выйти',
         onlyAppInstalledNote: 'Приложения и активности (3)',
-        dailyPuzzleTitle: 'Ежедневный пазл с милым котиком',
-        dailyPuzzleSub: 'Меняйте плитки местами, чтобы собрать милую картинку котика дня! +5 🪙 МяуКоинов за первое прохождение в день.',
-        dailyPuzzlePlayBtn: '🧩 Играть в пазл дня (+5 🪙)',
+        dailyPuzzleTitle: 'Ежедневный пазл с котёнком',
+        dailyPuzzleSub: 'Меняйте плитки местами, чтобы собрать картинку котёнка дня! +5 🪙 МяуКоинов за первое прохождение в день.',
+        dailyPuzzlePlayBtn: '🧩 Играть в пазл с котёнком (+5 🪙)',
         dailyPuzzleRewardReady: '🎁 Награда +5 🪙 доступна сегодня за первое решение!',
         dailyPuzzleRewardClaimed: '✓ Награда +5 🪙 на сегодня получена (приходите завтра!)',
         dailyPuzzlePeekBtn: '👁️ Подсмотреть картинку',
@@ -4285,7 +4285,7 @@
       return basePrice;
     }
 
-    // --- DAILY CUTE CAT IMAGE PUZZLE (+5 MEOWCOINS ONCE PER DAY ON FIRST COMPLETION) ---
+    // --- DAILY KITTEN PUZZLE (+5 MEOWCOINS ONCE PER DAY ON FIRST COMPLETION) ---
     function getTodayDateKey() {
       const d = new Date();
       const y = d.getFullYear();
@@ -4432,8 +4432,12 @@
           render();
           showToast(
             state.lang === 'ar'
-              ? '🧩🐱 أحسنت! أكملت لغز القطة اللطيفة اليوم وحصلت على +5 🪙 عملات مياو!'
-              : '🧩🐱 Purrfect! Completed today\'s Cute Cat Puzzle for +5 🪙 MeowCoins!'
+              ? '🧩🐱 أحسنت! أكملت لغز القطة الصغيرة اليوم وحصلت على +5 🪙 عملات مياو!'
+              : state.lang === 'zh'
+              ? '🧩🐱 太棒了！完成了今天的每日小猫拼图，获得 +5 🪙 喵币！'
+              : state.lang === 'ru'
+              ? '🧩🐱 Мяурфектно! Вы решили пазл с котёнком дня и получили +5 🪙 МяуКоинов!'
+              : '🧩🐱 Purrfect! Completed today\'s Kitten Puzzle for +5 🪙 MeowCoins!'
           );
           return;
         }
@@ -5744,7 +5748,7 @@
             </div>
           </div>
 
-          <!-- DAILY CUTE CAT IMAGE PUZZLE (+5 MEOWCOINS ON FIRST COMPLETION EACH DAY) -->
+          <!-- DAILY KITTEN PUZZLE (+5 MEOWCOINS ON FIRST COMPLETION EACH DAY) -->
           <div class="welcome-card" style="border-color:rgba(92,225,230,0.55);background:linear-gradient(135deg,rgba(92,225,230,0.12),rgba(255,126,182,0.12))">
             <div style="font-size:40px">🧩🐱</div>
             <div style="flex:1">
@@ -6304,7 +6308,7 @@
                   </button>
                 </div>
 
-                <!-- DAILY CUTE CAT IMAGE PUZZLE -->
+                <!-- DAILY KITTEN PUZZLE -->
                 <div class="discord-app-tile" style="margin-top:12px;border-color:rgba(92,225,230,0.55)" onclick="openDailyCatPuzzle()">
                   <div style="width:54px;height:54px;border-radius:16px;background:linear-gradient(135deg,#5CE1E6,#FF7EB6);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;box-shadow:0 6px 16px rgba(92,225,230,0.3)">
                     🧩
