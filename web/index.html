@@ -2214,16 +2214,39 @@
       ];
     }
 
-    function ensureAllUsersQuestsMerged(existingQuests) {
+    function mergeQuestsPreservingProgress(existingQuests, incomingQuests) {
       const defaults = createZeroProgressQuests();
-      if (!Array.isArray(existingQuests) || existingQuests.length === 0) return defaults;
-      const merged = [...existingQuests];
-      for (const defQ of defaults) {
-        if (!merged.some(q => q && q.id === defQ.id)) {
-          merged.push({ ...defQ });
-        }
+      const map = new Map();
+      for (const q of defaults) {
+        map.set(q.id, { ...q });
       }
-      return merged;
+      const listA = Array.isArray(existingQuests) ? existingQuests : [];
+      for (const q of listA) {
+        if (!q || !q.id) continue;
+        const cur = map.get(q.id) || { ...q };
+        map.set(q.id, {
+          ...cur,
+          ...q,
+          currentProgress: Math.max(cur.currentProgress || 0, q.currentProgress || 0),
+          isClaimed: !!(cur.isClaimed || q.isClaimed)
+        });
+      }
+      const listB = Array.isArray(incomingQuests) ? incomingQuests : [];
+      for (const q of listB) {
+        if (!q || !q.id) continue;
+        const cur = map.get(q.id) || { ...q };
+        map.set(q.id, {
+          ...cur,
+          ...q,
+          currentProgress: Math.max(cur.currentProgress || 0, q.currentProgress || 0),
+          isClaimed: !!(cur.isClaimed || q.isClaimed)
+        });
+      }
+      return Array.from(map.values());
+    }
+
+    function ensureAllUsersQuestsMerged(existingQuests) {
+      return mergeQuestsPreservingProgress(existingQuests, null);
     }
 
     const LEGACY_CAT_BOT_IDS = ['user_mochi', 'user_pounce', 'user_duchess', 'user_mittens', 'user_shadow'];
@@ -2521,6 +2544,11 @@
       const bucksTimeA = (snapA.currentUser && snapA.currentUser.meowBucksUpdatedAt) ? (Date.parse(snapA.currentUser.meowBucksUpdatedAt) || 0) : 0;
       const bucksTimeB = (snapB.currentUser && snapB.currentUser.meowBucksUpdatedAt) ? (Date.parse(snapB.currentUser.meowBucksUpdatedAt) || 0) : 0;
       if (winner.currentUser) {
+        // MeowCoins: NEVER decrease on snapshot merge or update
+        const coinsA = (snapA.currentUser && typeof snapA.currentUser.meowCoins === 'number') ? snapA.currentUser.meowCoins : 0;
+        const coinsB = (snapB.currentUser && typeof snapB.currentUser.meowCoins === 'number') ? snapB.currentUser.meowCoins : 0;
+        winner.currentUser.meowCoins = Math.max(coinsA, coinsB);
+
         if (bucksTimeA === 0 && bucksTimeB === 0) {
           winner.currentUser.meowBucks = Math.max(bucksA, bucksB);
         } else if (bucksTimeB > bucksTimeA) {
@@ -2530,8 +2558,33 @@
           winner.currentUser.meowBucks = bucksA;
           winner.currentUser.meowBucksUpdatedAt = snapA.currentUser.meowBucksUpdatedAt;
         } else {
-          winner.currentUser.meowBucks = winner === snapB ? bucksB : bucksA;
+          winner.currentUser.meowBucks = Math.max(bucksA, bucksB);
         }
+
+        // Unlocked Badges, Stickers, Markers, and Redeemed Codes: Union from both snapshots
+        const badgesA = Array.isArray(snapA.currentUser && snapA.currentUser.unlockedBadges) ? snapA.currentUser.unlockedBadges : [];
+        const badgesB = Array.isArray(snapB.currentUser && snapB.currentUser.unlockedBadges) ? snapB.currentUser.unlockedBadges : [];
+        winner.currentUser.unlockedBadges = Array.from(new Set([...badgesA, ...badgesB]));
+
+        const stickersA = Array.isArray(snapA.currentUser && snapA.currentUser.unlockedStickerIds) ? snapA.currentUser.unlockedStickerIds : [];
+        const stickersB = Array.isArray(snapB.currentUser && snapB.currentUser.unlockedStickerIds) ? snapB.currentUser.unlockedStickerIds : [];
+        winner.currentUser.unlockedStickerIds = Array.from(new Set([...stickersA, ...stickersB]));
+
+        const markersA = Array.isArray(snapA.currentUser && snapA.currentUser.unlockedMarkers) ? snapA.currentUser.unlockedMarkers : [];
+        const markersB = Array.isArray(snapB.currentUser && snapB.currentUser.unlockedMarkers) ? snapB.currentUser.unlockedMarkers : [];
+        winner.currentUser.unlockedMarkers = Array.from(new Set([...markersA, ...markersB, 'marker_white']));
+
+        const codesA = Array.isArray(snapA.currentUser && snapA.currentUser.redeemedCodes) ? snapA.currentUser.redeemedCodes : [];
+        const codesB = Array.isArray(snapB.currentUser && snapB.currentUser.redeemedCodes) ? snapB.currentUser.redeemedCodes : [];
+        winner.currentUser.redeemedCodes = Array.from(new Set([...codesA, ...codesB]));
+
+        if ((snapA.currentUser && snapA.currentUser.phoneRewardClaimed) || (snapB.currentUser && snapB.currentUser.phoneRewardClaimed)) {
+          winner.currentUser.phoneRewardClaimed = true;
+        }
+        if ((snapA.currentUser && snapA.currentUser.allQuestsBonusClaimed) || (snapB.currentUser && snapB.currentUser.allQuestsBonusClaimed)) {
+          winner.currentUser.allQuestsBonusClaimed = true;
+        }
+
         const avatarTimeA = (snapA.currentUser && snapA.currentUser.avatarUpdatedAt) ? (Date.parse(snapA.currentUser.avatarUpdatedAt) || 0) : 0;
         const avatarTimeB = (snapB.currentUser && snapB.currentUser.avatarUpdatedAt) ? (Date.parse(snapB.currentUser.avatarUpdatedAt) || 0) : 0;
         if (avatarTimeB > avatarTimeA && snapB.currentUser) {
@@ -2584,6 +2637,36 @@
           winner.currentUser.dailyPuzzleChoiceId = snapA.currentUser.dailyPuzzleChoiceId || null;
         }
       }
+
+      // Quests: Deep-merge preserving all completed and partial quest progress
+      winner.quests = mergeQuestsPreservingProgress(snapA.quests, snapB.quests);
+
+      // Channel Messages: Merge by ID so chat messages are never lost on update
+      const allChannels = new Set([
+        ...Object.keys(snapA.messagesByChannel || {}),
+        ...Object.keys(snapB.messagesByChannel || {})
+      ]);
+      const mergedMessages = {};
+      for (const ch of allChannels) {
+        const listA = Array.isArray(snapA.messagesByChannel && snapA.messagesByChannel[ch]) ? snapA.messagesByChannel[ch] : [];
+        const listB = Array.isArray(snapB.messagesByChannel && snapB.messagesByChannel[ch]) ? snapB.messagesByChannel[ch] : [];
+        const msgMap = new Map();
+        for (const m of listA) { if (m && m.id) msgMap.set(m.id, m); }
+        for (const m of listB) { if (m && m.id) msgMap.set(m.id, m); }
+        mergedMessages[ch] = Array.from(msgMap.values());
+      }
+      winner.messagesByChannel = mergedMessages;
+
+      // Whiteboard strokes: keep whichever is non-empty / richer
+      const strokesA = Array.isArray(snapA.whiteboardStrokes) ? snapA.whiteboardStrokes : [];
+      const strokesB = Array.isArray(snapB.whiteboardStrokes) ? snapB.whiteboardStrokes : [];
+      winner.whiteboardStrokes = strokesB.length >= strokesA.length ? strokesB : strokesA;
+
+      // Visited channels: Union
+      const vA = Array.isArray(snapA.visitedChannels) ? snapA.visitedChannels : [];
+      const vB = Array.isArray(snapB.visitedChannels) ? snapB.visitedChannels : [];
+      winner.visitedChannels = Array.from(new Set([...vA, ...vB]));
+
       return winner;
     }
 
@@ -2680,6 +2763,19 @@
         const snapRemovedIds = Array.isArray(snap.currentUser.removedFriendIds) ? snap.currentUser.removedFriendIds : [];
         const resolvedFriendIds = snapFriendIds.filter(fid => !snapRemovedIds.includes(fid));
 
+        const snapCoins = (snap.currentUser && typeof snap.currentUser.meowCoins === 'number') ? snap.currentUser.meowCoins : 0;
+        const currentCoins = typeof state.currentUser.meowCoins === 'number' ? state.currentUser.meowCoins : 0;
+        const resolvedCoins = Math.max(currentCoins, snapCoins);
+
+        const snapBadges = Array.isArray(snap.currentUser && snap.currentUser.unlockedBadges) ? snap.currentUser.unlockedBadges : [];
+        const curBadges = Array.isArray(state.currentUser.unlockedBadges) ? state.currentUser.unlockedBadges : [];
+
+        const snapStickers = Array.isArray(snap.currentUser && snap.currentUser.unlockedStickerIds) ? snap.currentUser.unlockedStickerIds : [];
+        const curStickers = Array.isArray(state.currentUser.unlockedStickerIds) ? state.currentUser.unlockedStickerIds : [];
+
+        const snapCodes = Array.isArray(snap.currentUser && snap.currentUser.redeemedCodes) ? snap.currentUser.redeemedCodes : [];
+        const curCodes = Array.isArray(state.currentUser.redeemedCodes) ? state.currentUser.redeemedCodes : [];
+
         state.currentUser = {
           phoneNumber: '',
           phoneRewardClaimed: false,
@@ -2697,6 +2793,12 @@
           unlockedMarkers: ['marker_white'],
           ...state.currentUser,
           ...snap.currentUser,
+          meowCoins: resolvedCoins,
+          unlockedBadges: Array.from(new Set([...curBadges, ...snapBadges])),
+          unlockedStickerIds: Array.from(new Set([...curStickers, ...snapStickers])),
+          redeemedCodes: Array.from(new Set([...curCodes, ...snapCodes])),
+          phoneRewardClaimed: !!(state.currentUser.phoneRewardClaimed || (snap.currentUser && snap.currentUser.phoneRewardClaimed)),
+          allQuestsBonusClaimed: !!(state.currentUser.allQuestsBonusClaimed || (snap.currentUser && snap.currentUser.allQuestsBonusClaimed)),
           avatarEmoji: resolvedAvatarEmoji,
           avatarManuallyCustomized: ownerAvatarCustomized,
           meowBucks: typeof snap.currentUser.meowBucks === 'number' ? snap.currentUser.meowBucks : (state.currentUser.meowBucks || 0),
@@ -2773,15 +2875,7 @@
           ];
         }
       }
-      if (Array.isArray(snap.quests) && snap.quests.length > 0) {
-        if (!snap.version) {
-          state.quests = createZeroProgressQuests();
-        } else {
-          state.quests = ensureAllUsersQuestsMerged(snap.quests);
-        }
-      } else {
-        state.quests = ensureAllUsersQuestsMerged(state.quests);
-      }
+      state.quests = mergeQuestsPreservingProgress(state.quests, snap.quests);
       if (Array.isArray(snap.whiteboardStrokes) && snap.whiteboardStrokes.length > 0) {
         state.whiteboardStrokes = snap.whiteboardStrokes;
       }
@@ -2801,7 +2895,10 @@
       let localSnap = null;
       let localNeedsPersist = false;
       try {
-        const raw = localStorage.getItem(storageKey);
+        let raw = localStorage.getItem(storageKey);
+        if (!raw && activeUser === 'abood') {
+          raw = localStorage.getItem('catmsg_saved_state_v1') || localStorage.getItem('catmsg_user_abood_v2');
+        }
         if (raw) {
           localSnap = JSON.parse(raw);
         } else {
@@ -2889,29 +2986,35 @@
       }
     });
 
-    // Global Sign-Out Enforcement & Cross-Browser Cloud Account Sync
-    (function enforceGlobalSignOutOnce() {
+    // Session Persistence & Cross-Browser Cloud Account Sync (Progress is preserved across updates)
+    (async function initSessionAndSync() {
       syncPromoCodesFromCloud();
-      syncAccountsFromCloud().then(() => {
-        if (!state.isSignedIn) render();
-      });
+      await syncAccountsFromCloud();
       try {
-        if (localStorage.getItem(GLOBAL_SIGNOUT_EPOCH_KEY) !== 'v5') {
-          localStorage.setItem(GLOBAL_SIGNOUT_EPOCH_KEY, 'v5');
-          localStorage.removeItem(ACTIVE_USER_KEY);
-          state.isSignedIn = false;
-        } else {
-          const active = localStorage.getItem(ACTIVE_USER_KEY);
-          if (active) {
-            state.isSignedIn = true;
-            loadSavedUserData(active);
-          } else {
-            state.isSignedIn = false;
+        let active = localStorage.getItem(ACTIVE_USER_KEY);
+        // If active user is not explicitly in localStorage, check if an existing account was saved locally
+        if (!active) {
+          const storedAccs = getStoredAccounts();
+          const accKeys = Object.keys(storedAccs);
+          if (accKeys.includes('abood') || localStorage.getItem(STORAGE_KEY) || localStorage.getItem(OWNER_LOGGED_IN_ONCE_KEY)) {
+            active = 'abood';
+            localStorage.setItem(ACTIVE_USER_KEY, 'abood');
+          } else if (accKeys.length === 1) {
+            active = accKeys[0];
+            localStorage.setItem(ACTIVE_USER_KEY, active);
           }
         }
+
+        if (active) {
+          state.isSignedIn = true;
+          await loadSavedUserData(active);
+        } else {
+          state.isSignedIn = false;
+        }
       } catch (e) {
-        state.isSignedIn = false;
+        console.warn('Init session error:', e);
       }
+      render();
     })();
 
     // --- SIGN IN / SIGN UP / GOOGLE LOGIN / SIGN OUT FUNCTIONS ---
